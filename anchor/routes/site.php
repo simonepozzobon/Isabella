@@ -6,11 +6,31 @@
 $home_page = Registry::get('home_page');
 
 Route::get('api/search-post/(:any)', function($slug) {
-  $post = Post::slug($slug);
-  if ($post->status != 'published') {
-    return Reponse::json('not found', 500);
-  }
-  return Response::json($post, 200);
+    $post = Post::slug($slug);
+    if ($post->status != 'published') {
+        return Reponse::json('not found', 500);
+    }
+    if ($extend = Extend::field('post', 'featured_img', $post->id)) {
+      $post->featured_img = Extend::value($extend, '');
+    }
+    return Response::json($post, 200);
+});
+
+Route::get('api/search-posts', function(){
+    $posts = Post::all();
+    // if ($posts->count() == 0) {
+    //   return Reponse::json('not found', 500);
+    // }
+
+    // $posts = new Items($posts);
+
+    foreach ($posts[1] as $key => $post) {
+      if ($extend = Extend::field('post', 'featured_img', $post->id)) {
+        $post->featured_img = Extend::value($extend, '');
+      }
+    }
+
+    return Response::json($posts, 200);
 });
 
 Route::get(array('(:all)'), function () use ($home_page) {

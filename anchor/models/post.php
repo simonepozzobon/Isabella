@@ -13,7 +13,7 @@ class post extends Base
     public static function slug($slug)
     {
         $post = static::get('slug', $slug);
-        
+
         if (!empty($post)) {
             $post->total_comments = static::getCommentCount($post);
             return $post;
@@ -95,5 +95,29 @@ class post extends Base
     public static function perPage()
     {
         return (Config::meta('show_all_posts') ? self::count() + 1 : Config::meta('posts_per_page'));
+    }
+
+    public static function all($category = null)
+    {
+        // get total
+        $query = static::left_join(Base::table('users'), Base::table('users.id'), '=', Base::table('posts.author'))
+            ->where(Base::table('posts.status'), '=', 'published');
+
+        if ($category) {
+            $query->where(Base::table('posts.category'), '=', $category->id);
+        }
+
+        $total = $query->count();
+
+        // get posts
+        $posts = $query->sort(Base::table('posts.created'), 'desc')
+            ->get([
+                Base::table('posts.*'),
+                Base::table('users.id as author_id'),
+                Base::table('users.bio as author_bio'),
+                Base::table('users.real_name as author_name'),
+              ]);
+
+        return array($total, $posts);
     }
 }
