@@ -8,7 +8,7 @@
   </head>
   <body>
     <div id="app">
-      <transition name="slide-fade">
+      <transition @enter="enterTransition" @before-leave="leaveTransition">
         <router-view></router-view>
       </transition>
     </div>
