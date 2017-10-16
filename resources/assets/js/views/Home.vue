@@ -1,13 +1,10 @@
 <template>
-  <div class="">
+  <main>
     <div class="action">
       <div class="row pb-5">
         <div class="col justify-content-around">
           <svg ref="logo" width="15rem" height=15rem viewBox="0 0 868 868" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="mx-auto d-block">
               <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
-              <title>Page 1</title>
-              <desc>Created with Sketch.</desc>
-              <defs></defs>
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g transform="translate(57.000000, 0.000000)">
                       <polygon id="Fill-1" fill="#252121" points="377.8569 -0.0002 -0.0001 216.9438 -0.0001 652.2708 377.8569 867.7778 754.2779 652.2708 754.2779 216.9438"></polygon>
@@ -31,7 +28,7 @@
       </div>
       <div class="row">
         <div class="col justify-content-around">
-          <v-link href="/works" class="btn btn-lg btn-block btn-primary">Isabella Fornasiero</v-link>
+          <a href="/works" class="btn btn-lg btn-block btn-primary">Isabella Fornasiero</a>
         </div>
       </div>
     </div>
@@ -40,15 +37,13 @@
         <source src="/themes/default/video/video.mp4" type="video/mp4">
       </video>
     </div>
-  </div>
+  </main>
 </template>
 <script>
   import mojs from 'mo-js'
   import MojsPlayer from 'mojs-player'
-  import VLink from '../components/VLink.vue'
 
   export default {
-    props: ['video_src'],
     data () {
         return {
           var: ''
@@ -67,8 +62,5 @@
           }).play();
       },
     },
-    components: {
-      VLink
-    }
   }
 </script>

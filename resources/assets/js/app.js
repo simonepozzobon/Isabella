@@ -5,29 +5,29 @@ window.Popper = Popper;
 require('bootstrap')
 
 import Vue from 'vue'
-import routes from './routes'
-import VLink from './components/VLink.vue'
+import VueResource from 'vue-resource'
+import VueRouter from 'vue-router'
+
+Vue.use(VueResource)
+Vue.use(VueRouter)
+
+var Home = Vue.component('Home', require('./views/Home.vue'));
+var Works = Vue.component('Works', require('./views/Works.vue'));
+var SingleWork = Vue.component('SingleWork', require('./views/single/Work.vue'));
+
+const router = new VueRouter({
+  mode: 'history',
+  routes: [
+    { path: '/', component: Home},
+    { path: '/works', component: Works},
+    { path: '/work/:slug', component: SingleWork}
+  ]
+})
 
 const app = new Vue({
-  el: '#app',
-  data: {
-    currentRoute: window.location.pathname
-  },
-  components: {
-    VLink
-  },
-  computed: {
-    ViewComponent () {
-      const matchingView = routes[this.currentRoute]
-      return matchingView
-        ? require('./pages/' + matchingView + '.vue')
-        : require('./pages/404.vue')
-    }
-  },
-  render (h) {
-    return h(this.ViewComponent)
-  }
-})
+  router
+}).$mount('#app')
+
 
 window.addEventListener('popstate', () => {
   app.currentRoute = window.location.pathname
