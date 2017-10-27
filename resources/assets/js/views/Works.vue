@@ -1,14 +1,15 @@
 <template>
   <main-layout>
     <div class="container pt-5">
-      <grid :items="posts"></grid>
+      <transition>
+        <grid @loadComplete="ready"></grid>
+      </transition>
     </div>
   </main-layout>
 </template>
 <script>
 import MainLayout from '../layouts/MainLayout.vue'
 import Grid from '../components/grid.vue'
-import axios from 'axios'
 import mojs from 'mo-js'
 import MojsPlayer from 'mojs-player'
 import ScrollReveal from 'scrollreveal'
@@ -21,39 +22,21 @@ export default {
       }
   },
   mounted () {
-    this.getPosts();
-    window.sr = ScrollReveal();
-    _.delay(function(){
-        sr.reveal('.box', {
-            distance: '30vh',
-            scale: 0.9,
-            duration: 450,
-            delay: 60,
-            viewFactor: 0.5,
-            easing: 'ease-in-out',
-            viewOffset: {top: 50}
-        }, 150);
-    }, 250);
   },
   methods: {
-    getPosts()
-    {
-        var vue = this;
-        axios.get('/api/search-posts')
-        .then(response => {
-            vue.posts = response.data[1];
-        });
-    },
-
     ready()
     {
-
+      window.sr = ScrollReveal();
+      sr.reveal('.box', {
+          distance: '80vh',
+          scale: 0.9,
+          duration: 400,
+          delay: 60,
+          viewFactor: 0.5,
+          easing: 'cubic-bezier(.25, 1, .25, 1)',
+          viewOffset: {top: 50}
+      }, 20);
     },
-
-    hello: function(el, done)
-    {
-      alert(el);
-    }
   },
   components: {
     MainLayout,
