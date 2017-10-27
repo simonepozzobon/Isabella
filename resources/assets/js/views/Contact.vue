@@ -1,11 +1,9 @@
 <template>
   <main-layout>
     <div class="container">
-      <div class="row">
-        <div class="col">
-          <div class="d-flex justify-content-around">
-            info@isabellafornasiero.com
-          </div>
+      <div class="row h-100 justify-content-center align-items-center">
+        <div class="col text-center p-5">
+          <p>info (at) isabellafornasiero.com</p>
         </div>
       </div>
     </div>
@@ -25,4 +23,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
+  .container {
+    height: calc(100vh - 92px)
+  }
+
 </style>

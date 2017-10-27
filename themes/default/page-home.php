@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="<?php echo theme_url('/css/app.css'); ?>">
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="h-100 w-100">
       <transition :css="false" @enter="enter" @before-leave="beforeLeave" @leave="leave">
         <router-view></router-view>
       </transition>
