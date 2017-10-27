@@ -1,29 +1,39 @@
 <template>
   <main-layout>
     <div class="container pt-5">
-      <div class="row">
-          <grid-el v-for="(post, index) in posts" :key="index" :post="post">
-          </grid-el>
-      </div>
+      <grid :items="posts"></grid>
     </div>
   </main-layout>
 </template>
 <script>
-import MainLayout from '../layouts/MainLayout.vue';
-import GridEl from '../components/GridEl.vue';
+import MainLayout from '../layouts/MainLayout.vue'
+import Grid from '../components/grid.vue'
 import axios from 'axios'
 import mojs from 'mo-js'
 import MojsPlayer from 'mojs-player'
+import ScrollReveal from 'scrollreveal'
 
 export default {
   props: [''],
   data () {
       return {
-        posts: []
+        posts: [],
       }
   },
   mounted () {
     this.getPosts();
+    window.sr = ScrollReveal();
+    _.delay(function(){
+        sr.reveal('.box', {
+            distance: '30vh',
+            scale: 0.9,
+            duration: 450,
+            delay: 60,
+            viewFactor: 0.5,
+            easing: 'ease-in-out',
+            viewOffset: {top: 50}
+        }, 150);
+    }, 250);
   },
   methods: {
     getPosts()
@@ -34,10 +44,23 @@ export default {
             vue.posts = response.data[1];
         });
     },
+
+    ready()
+    {
+
+    },
+
+    hello: function(el, done)
+    {
+      alert(el);
+    }
   },
   components: {
     MainLayout,
-    GridEl
-  }
+    Grid
+  },
 }
 </script>
+<style>
+.sr .box { visibility: hidden; }
+</style>
