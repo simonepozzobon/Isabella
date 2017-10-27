@@ -5,7 +5,7 @@
         <img src="/themes/default/img/logo.svg" width="30" height="30">
       </a>
       <div class="d-flex justify-content-end">
-        <a class="nav-link">
+        <a @click="changeColor" class="nav-link">
           <svg width="30px" height="30px" viewBox="0 0 798 798" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g transform="translate(23.000000, 14.000000)">
@@ -28,7 +28,15 @@
 <script>
 import FooterLayout from './FooterLayout.vue'
 
+
 export default {
+  mounted() {
+  },
+  methods: {
+    changeColor() {
+        var vue = this;
+    }
+  },
   components: {
     FooterLayout
   }
