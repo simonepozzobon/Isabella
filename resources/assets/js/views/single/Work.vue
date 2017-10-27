@@ -28,7 +28,7 @@ export default {
     var slug = this.$route.params.slug;
     this.getPost(slug);
     window.addEventListener('resize', _.debounce(() => {
-      this.resizeImg();
+      // this.resizeImg();
       this.resizeFeatured();
     }, 250));
   },
@@ -38,10 +38,10 @@ export default {
         axios.get('/api/search-post/'+slug)
         .then(response => {
             this.article = response.data.data;
-            var regex = /<img(.*?)>/g;
-            this.article.html = this.article.html.replace(regex, '<img $1 class="mx-auto d-block pt-5">');
+            // var regex = /<img(.*?)>/g;
+            // this.article.html = this.article.html.replace(regex, '<img $1 class="mx-auto d-block pt-5">');
             _.delay(() => {
-              this.resizeImg();
+              // this.resizeImg();
               this.resizeFeatured();
             }, 50);
         });

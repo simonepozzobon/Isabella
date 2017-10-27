@@ -1,8 +1,10 @@
 <template>
   <main-layout>
-    <div class="row">
-        <grid-el v-for="(post, index) in posts" :key="index" :post="post">
-        </grid-el>
+    <div class="container pt-5">
+      <div class="row">
+          <grid-el v-for="(post, index) in posts" :key="index" :post="post">
+          </grid-el>
+      </div>
     </div>
   </main-layout>
 </template>

@@ -11,11 +11,6 @@ import VueRouter from 'vue-router'
 Vue.use(VueResource)
 Vue.use(VueRouter)
 
-// var Home = Vue.component('Home', );
-// var Works = Vue.component('Works', );
-// var About = Vue.component('About', );
-// var SingleWork = Vue.component('SingleWork', );
-
 const router = new VueRouter({
   mode: 'history',
   routes: [
@@ -32,21 +27,38 @@ import mojs from 'mo-js'
 const app = new Vue({
   router,
   methods: {
-    enterTransition(el)
+    enter: function(el, done)
     {
-      var transition = new mojs.Html({
+      el.style.display = 'auto';
+      var enterTransition = new mojs.Html({
         el: el,
         opacity: {0 : 1},
+        duration: 500,
+        easing: 'sin.in',
+        onComplete: function () {
+        }
       }).play();
     },
-    leaveTransition(el)
+
+    beforeLeave: function(el, done)
     {
-      var transition = new mojs.Html({
+      var leaveTransition = new mojs.Html({
         el: el,
         opacity: {1 : 0},
+        duration: 250,
+        easing: 'sin.out',
+        onComplete: function ()
+        {
+
+        }
       }).play();
+    },
+
+    leave: function(el, done)
+    {
+      el.style.display = 'none';
     }
-  }
+  },
 }).$mount('#app')
 
 

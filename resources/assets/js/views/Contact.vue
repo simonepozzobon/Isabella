@@ -1,6 +1,14 @@
 <template>
   <main-layout>
-    contatti
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="d-flex justify-content-around">
+            info@isabellafornasiero.com
+          </div>
+        </div>
+      </div>
+    </div>
   </main-layout>
 </template>
 <script>

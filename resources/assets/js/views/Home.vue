@@ -3,24 +3,23 @@
     <div class="action">
       <div class="row pb-5">
         <div class="col justify-content-around">
-          <svg ref="logo" width="15rem" height=15rem viewBox="0 0 868 868" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="mx-auto d-block">
-              <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+          <svg ref="logo" viewBox="0 0 868 868" width="180" height="180" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="mx-auto d-block">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g transform="translate(57.000000, 0.000000)">
-                      <polygon id="Fill-1" fill="#252121" points="377.8569 -0.0002 -0.0001 216.9438 -0.0001 652.2708 377.8569 867.7778 754.2779 652.2708 754.2779 216.9438"></polygon>
-                      <path d="M235.8068,250.5967 L235.8068,610.5717" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M282.0891,250.5967 L282.0891,610.3077" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M163.2648,556.7984 L354.7348,556.7984" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M163.2101,602.6655 L354.6801,602.6655" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M163.2326,303.5835 L354.7016,303.5835" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M163.2326,257.7514 L354.7016,257.7514" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M382.9914,250.5967 L382.9914,610.3077" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M429.2219,250.5884 L429.2219,610.3004" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M429.2805,366.9365 L496.7705,366.9365" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M429.2209,412.7354 L496.7319,412.7354" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M387.0246,304.6958 L603.2926,304.6958" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <path d="M375.4289,257.7514 L603.2919,257.7514" stroke="#FBF2E5" stroke-width="15.296"></path>
-                      <polygon stroke="#FBF2E5" stroke-width="15.222" points="127.743 645.694 637.917 645.694 637.917 215.564 127.743 215.564"></polygon>
+                      <polygon class="svg-black" points="377.8569 -0.0002 -0.0001 216.9438 -0.0001 652.2708 377.8569 867.7778 754.2779 652.2708 754.2779 216.9438"></polygon>
+                      <path d="M235.8068,250.5967 L235.8068,610.5717" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M282.0891,250.5967 L282.0891,610.3077" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M163.2648,556.7984 L354.7348,556.7984" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M163.2101,602.6655 L354.6801,602.6655" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M163.2326,303.5835 L354.7016,303.5835" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M163.2326,257.7514 L354.7016,257.7514" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M382.9914,250.5967 L382.9914,610.3077" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M429.2219,250.5884 L429.2219,610.3004" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M429.2805,366.9365 L496.7705,366.9365" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M429.2209,412.7354 L496.7319,412.7354" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M387.0246,304.6958 L603.2926,304.6958" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <path d="M375.4289,257.7514 L603.2919,257.7514" class="svg-white-stroke" stroke-width="15.296"></path>
+                      <polygon class="svg-white-stroke" stroke-width="15.222" points="127.743 645.694 637.917 645.694 637.917 215.564 127.743 215.564"></polygon>
                   </g>
               </g>
           </svg>
@@ -28,20 +27,20 @@
       </div>
       <div class="row">
         <div class="col justify-content-around">
-          <a href="/works" class="btn btn-lg btn-block btn-primary">Isabella Fornasiero</a>
+          <router-link v-bind:to="'/works'" class="btn btn-lg btn-block btn-primary">Isabella Fornasiero</router-link>
         </div>
       </div>
     </div>
-    <div class="video-hero">
-      <video autoplay loop id="video-background" muted plays-inline>
-        <source src="/themes/default/video/video.mp4" type="video/mp4">
-      </video>
+    <div id="video-home">
+      <iframe frameborder="0" height="140%" width="140%" src="https://player.vimeo.com/video/240074870?autoplay=1&loop=1">
+      </iframe>
     </div>
   </main>
 </template>
 <script>
   import mojs from 'mo-js'
   import MojsPlayer from 'mojs-player'
+  import $ from 'jquery'
 
   export default {
     data () {
@@ -50,6 +49,7 @@
         }
     },
     mounted () {
+      $('.controls-wrapper').remove();
 
     },
     methods: {

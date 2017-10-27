@@ -16,14 +16,12 @@
               </g>
           </svg>
         </a>
-        <a class="nav-link active" href="/works">Works</a>
-        <a class="nav-link" href="/about">About</a>
-        <a class="nav-link" href="/contacts">Contacts</a>
+        <router-link class="nav-link active" :to="'/works'">Works</router-link>
+        <router-link class="nav-link" :to="'/about'">About</router-link>
+        <router-link class="nav-link" :to="'/contacts'">Contacts</router-link>
       </div>
     </nav>
-    <div class="container p-5">
       <slot></slot>
-    </div>
     <footer-layout></footer-layout>
   </main>
 </template>

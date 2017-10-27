@@ -1,7 +1,7 @@
 <template>
-  <div class="col-md-4 col-lg-3" ref="col">
+  <div class="col-md-4 col-lg-4" ref="col">
     <div class="row pb-4">
-      <div class="col">
+      <div class="col work">
         <div class="container-fluid img_grid" ref="img_grid">
           <img :src="img" alt="Titolo" class="d-block mx-auto">
         </div>
@@ -9,7 +9,8 @@
     </div>
     <div class="row">
       <div class="col">
-        <a :href="'/work/'+link"><h2 class="text-center">{{title}}</h2></a>
+        <!-- <a :href="'/work/'+link"><h2 class="text-center">{{title}}</h2></a> -->
+        <router-link v-bind:to="'/work/'+link"><h2 class="text-center">{{title}}</h2></router-link>
       </div>
     </div>
   </div>
@@ -40,7 +41,7 @@ export default {
     resizeCol()
     {
       var col = this.$refs['col'].offsetWidth;
-      this.$refs['img_grid'].style.height = col+'px';
+      this.$refs['img_grid'].style.height = (col - 30)+'px';
     },
   }
 
@@ -56,6 +57,11 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  .work {
+    padding-top: 15px;
+    padding-bottom: 15px;
   }
 
 </style>

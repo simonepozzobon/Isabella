@@ -8,7 +8,7 @@
   </head>
   <body>
     <div id="app">
-      <transition @enter="enterTransition" @before-leave="leaveTransition">
+      <transition :css="false" @enter="enter" @before-leave="beforeLeave" @leave="leave">
         <router-view></router-view>
       </transition>
     </div>
