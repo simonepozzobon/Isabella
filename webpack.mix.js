@@ -10,5 +10,6 @@ mix
       'popper.js/dist/umd/popper.js': ['Popper'],
   })
   .browserSync({
-      proxy: 'http://isabella.dev:8888/'
+      proxy: 'http://isabella.dev:8888/',
+      browser: "google chrome"
   });

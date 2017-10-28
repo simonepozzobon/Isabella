@@ -8,7 +8,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <router-link v-bind:to="'/work/'+link"><h2 class="text-center">{{title}}</h2></router-link>
+        <router-link v-bind:to="'/work/'+link"><h4 class="title text-center">{{title}}</h4></router-link>
       </div>
     </div>
   </div>

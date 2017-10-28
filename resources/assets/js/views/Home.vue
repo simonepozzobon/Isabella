@@ -31,9 +31,14 @@
         </div>
       </div>
     </div>
-    <div id="video-home">
+    <!-- <div id="video-home">
       <iframe frameborder="0" height="140%" width="140%" src="https://player.vimeo.com/video/240074870?autoplay=1&loop=1">
       </iframe>
+    </div> -->
+    <div class="video-hero">
+      <video autoplay loop id="video-background" muted plays-inline>
+        <source src="/themes/default/video/video.mp4" type="video/mp4">
+      </video>
     </div>
   </main>
 </template>

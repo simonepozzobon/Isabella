@@ -49,3 +49,4 @@ vendor/
 # Don't commit the updater files
 /anchor_update/
 /anchor_update/*
+node_modules/
