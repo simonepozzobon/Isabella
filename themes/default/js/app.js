@@ -67580,7 +67580,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "\n#hero-img[data-v-416a9e79] {\n  min-height: 140px;\n  background-size: cover !important;\n  background-position: center center !important;\n  -webkit-box-shadow: inset 0 0 5rem rgba(0,0,0,.015);\n          box-shadow: inset 0 0 5rem rgba(0,0,0,.015);\n}\n.hero_img[data-v-416a9e79] {\n  overflow: hidden;\n  min-height: 100px;\n}\n", ""]);
+exports.push([module.i, "\n#hero-img[data-v-416a9e79] {\n  min-height: 140px;\n  background-size: cover !important;\n  background-position: center center !important;\n  -webkit-box-shadow: inset 0 0 5rem rgba(0,0,0,.05);\n          box-shadow: inset 0 0 5rem rgba(0,0,0,.05);\n}\n.hero_img[data-v-416a9e79] {\n  overflow: hidden;\n  min-height: 100px;\n}\n", ""]);
 
 // exports
 

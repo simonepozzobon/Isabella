@@ -101,7 +101,7 @@ export default {
     min-height: 140px;
     background-size: cover !important;
     background-position: center center !important;
-    box-shadow: inset 0 0 5rem rgba(0,0,0,.015);
+    box-shadow: inset 0 0 5rem rgba(0,0,0,.05);
   }
 
   .hero_img {
