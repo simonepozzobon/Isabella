@@ -6,7 +6,7 @@ webpackJsonp([0],[
 
 
 var bind = __webpack_require__(18);
-var isBuffer = __webpack_require__(54);
+var isBuffer = __webpack_require__(55);
 
 /*global toString:true*/
 
@@ -418,7 +418,8 @@ module.exports = function normalizeComponent (
 
 
 /***/ }),
-/* 2 */
+/* 2 */,
+/* 3 */
 /***/ (function(module, exports) {
 
 /*
@@ -500,7 +501,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -519,7 +520,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(35)
+var listToStyles = __webpack_require__(36)
 
 /*
 type StyleObject = {
@@ -721,7 +722,6 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 4 */,
 /* 5 */,
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -729,9 +729,9 @@ function applyToTag (styleElement, obj) {
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(37)
+var __vue_script__ = __webpack_require__(38)
 /* template */
-var __vue_template__ = __webpack_require__(41)
+var __vue_template__ = __webpack_require__(42)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -12795,7 +12795,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(56);
+var normalizeHeaderName = __webpack_require__(57);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -39275,13 +39275,13 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(50)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(51)(module)))
 
 /***/ }),
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(53);
+module.exports = __webpack_require__(54);
 
 /***/ }),
 /* 18 */
@@ -39309,12 +39309,12 @@ module.exports = function bind(fn, thisArg) {
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(57);
-var buildURL = __webpack_require__(59);
-var parseHeaders = __webpack_require__(60);
-var isURLSameOrigin = __webpack_require__(61);
+var settle = __webpack_require__(58);
+var buildURL = __webpack_require__(60);
+var parseHeaders = __webpack_require__(61);
+var isURLSameOrigin = __webpack_require__(62);
 var createError = __webpack_require__(20);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(62);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(63);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -39411,7 +39411,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(63);
+      var cookies = __webpack_require__(64);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -39495,7 +39495,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(58);
+var enhanceError = __webpack_require__(59);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -39555,12 +39555,1961 @@ module.exports = Cancel;
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(24);
-module.exports = __webpack_require__(89);
+/* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * VERSION: 1.20.3
+ * DATE: 2017-10-02
+ * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
+ * This work is subject to the terms at http://greensock.com/standard-license or for
+ * Club GreenSock members, the software agreement that was issued with your membership.
+ * 
+ * @author: Jack Doyle, jack@greensock.com
+ */
+(function(window, moduleName) {
 
+		"use strict";
+		var _exports = {},
+			_doc = window.document,
+			_globals = window.GreenSockGlobals = window.GreenSockGlobals || window;
+		if (_globals.TweenLite) {
+			return; //in case the core set of classes is already loaded, don't instantiate twice.
+		}
+		var _namespace = function(ns) {
+				var a = ns.split("."),
+					p = _globals, i;
+				for (i = 0; i < a.length; i++) {
+					p[a[i]] = p = p[a[i]] || {};
+				}
+				return p;
+			},
+			gs = _namespace("com.greensock"),
+			_tinyNum = 0.0000000001,
+			_slice = function(a) { //don't use Array.prototype.slice.call(target, 0) because that doesn't work in IE8 with a NodeList that's returned by querySelectorAll()
+				var b = [],
+					l = a.length,
+					i;
+				for (i = 0; i !== l; b.push(a[i++])) {}
+				return b;
+			},
+			_emptyFunc = function() {},
+			_isArray = (function() { //works around issues in iframe environments where the Array global isn't shared, thus if the object originates in a different window/iframe, "(obj instanceof Array)" will evaluate false. We added some speed optimizations to avoid Object.prototype.toString.call() unless it's absolutely necessary because it's VERY slow (like 20x slower)
+				var toString = Object.prototype.toString,
+					array = toString.call([]);
+				return function(obj) {
+					return obj != null && (obj instanceof Array || (typeof(obj) === "object" && !!obj.push && toString.call(obj) === array));
+				};
+			}()),
+			a, i, p, _ticker, _tickerActive,
+			_defLookup = {},
+
+			/**
+			 * @constructor
+			 * Defines a GreenSock class, optionally with an array of dependencies that must be instantiated first and passed into the definition.
+			 * This allows users to load GreenSock JS files in any order even if they have interdependencies (like CSSPlugin extends TweenPlugin which is
+			 * inside TweenLite.js, but if CSSPlugin is loaded first, it should wait to run its code until TweenLite.js loads and instantiates TweenPlugin
+			 * and then pass TweenPlugin to CSSPlugin's definition). This is all done automatically and internally.
+			 *
+			 * Every definition will be added to a "com.greensock" global object (typically window, but if a window.GreenSockGlobals object is found,
+			 * it will go there as of v1.7). For example, TweenLite will be found at window.com.greensock.TweenLite and since it's a global class that should be available anywhere,
+			 * it is ALSO referenced at window.TweenLite. However some classes aren't considered global, like the base com.greensock.core.Animation class, so
+			 * those will only be at the package like window.com.greensock.core.Animation. Again, if you define a GreenSockGlobals object on the window, everything
+			 * gets tucked neatly inside there instead of on the window directly. This allows you to do advanced things like load multiple versions of GreenSock
+			 * files and put them into distinct objects (imagine a banner ad uses a newer version but the main site uses an older one). In that case, you could
+			 * sandbox the banner one like:
+			 *
+			 * <script>
+			 *     var gs = window.GreenSockGlobals = {}; //the newer version we're about to load could now be referenced in a "gs" object, like gs.TweenLite.to(...). Use whatever alias you want as long as it's unique, "gs" or "banner" or whatever.
+			 * </script>
+			 * <script src="js/greensock/v1.7/TweenMax.js"></script>
+			 * <script>
+			 *     window.GreenSockGlobals = window._gsQueue = window._gsDefine = null; //reset it back to null (along with the special _gsQueue variable) so that the next load of TweenMax affects the window and we can reference things directly like TweenLite.to(...)
+			 * </script>
+			 * <script src="js/greensock/v1.6/TweenMax.js"></script>
+			 * <script>
+			 *     gs.TweenLite.to(...); //would use v1.7
+			 *     TweenLite.to(...); //would use v1.6
+			 * </script>
+			 *
+			 * @param {!string} ns The namespace of the class definition, leaving off "com.greensock." as that's assumed. For example, "TweenLite" or "plugins.CSSPlugin" or "easing.Back".
+			 * @param {!Array.<string>} dependencies An array of dependencies (described as their namespaces minus "com.greensock." prefix). For example ["TweenLite","plugins.TweenPlugin","core.Animation"]
+			 * @param {!function():Object} func The function that should be called and passed the resolved dependencies which will return the actual class for this definition.
+			 * @param {boolean=} global If true, the class will be added to the global scope (typically window unless you define a window.GreenSockGlobals object)
+			 */
+			Definition = function(ns, dependencies, func, global) {
+				this.sc = (_defLookup[ns]) ? _defLookup[ns].sc : []; //subclasses
+				_defLookup[ns] = this;
+				this.gsClass = null;
+				this.func = func;
+				var _classes = [];
+				this.check = function(init) {
+					var i = dependencies.length,
+						missing = i,
+						cur, a, n, cl;
+					while (--i > -1) {
+						if ((cur = _defLookup[dependencies[i]] || new Definition(dependencies[i], [])).gsClass) {
+							_classes[i] = cur.gsClass;
+							missing--;
+						} else if (init) {
+							cur.sc.push(this);
+						}
+					}
+					if (missing === 0 && func) {
+						a = ("com.greensock." + ns).split(".");
+						n = a.pop();
+						cl = _namespace(a.join("."))[n] = this.gsClass = func.apply(func, _classes);
+
+						//exports to multiple environments
+						if (global) {
+							_globals[n] = _exports[n] = cl; //provides a way to avoid global namespace pollution. By default, the main classes like TweenLite, Power1, Strong, etc. are added to window unless a GreenSockGlobals is defined. So if you want to have things added to a custom object instead, just do something like window.GreenSockGlobals = {} before loading any GreenSock files. You can even set up an alias like window.GreenSockGlobals = windows.gs = {} so that you can access everything like gs.TweenLite. Also remember that ALL classes are added to the window.com.greensock object (in their respective packages, like com.greensock.easing.Power1, com.greensock.TweenLite, etc.)
+							if (typeof(module) !== "undefined" && module.exports) { //node
+								if (ns === moduleName) {
+									module.exports = _exports[moduleName] = cl;
+									for (i in _exports) {
+										cl[i] = _exports[i];
+									}
+								} else if (_exports[moduleName]) {
+									_exports[moduleName][n] = cl;
+								}
+							} else if (true){ //AMD
+								!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() { return cl; }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+							}
+						}
+						for (i = 0; i < this.sc.length; i++) {
+							this.sc[i].check();
+						}
+					}
+				};
+				this.check(true);
+			},
+
+			//used to create Definition instances (which basically registers a class that has dependencies).
+			_gsDefine = window._gsDefine = function(ns, dependencies, func, global) {
+				return new Definition(ns, dependencies, func, global);
+			},
+
+			//a quick way to create a class that doesn't have any dependencies. Returns the class, but first registers it in the GreenSock namespace so that other classes can grab it (other classes might be dependent on the class).
+			_class = gs._class = function(ns, func, global) {
+				func = func || function() {};
+				_gsDefine(ns, [], function(){ return func; }, global);
+				return func;
+			};
+
+		_gsDefine.globals = _globals;
+
+
+
+/*
+ * ----------------------------------------------------------------
+ * Ease
+ * ----------------------------------------------------------------
+ */
+		var _baseParams = [0, 0, 1, 1],
+			Ease = _class("easing.Ease", function(func, extraParams, type, power) {
+				this._func = func;
+				this._type = type || 0;
+				this._power = power || 0;
+				this._params = extraParams ? _baseParams.concat(extraParams) : _baseParams;
+			}, true),
+			_easeMap = Ease.map = {},
+			_easeReg = Ease.register = function(ease, names, types, create) {
+				var na = names.split(","),
+					i = na.length,
+					ta = (types || "easeIn,easeOut,easeInOut").split(","),
+					e, name, j, type;
+				while (--i > -1) {
+					name = na[i];
+					e = create ? _class("easing."+name, null, true) : gs.easing[name] || {};
+					j = ta.length;
+					while (--j > -1) {
+						type = ta[j];
+						_easeMap[name + "." + type] = _easeMap[type + name] = e[type] = ease.getRatio ? ease : ease[type] || new ease();
+					}
+				}
+			};
+
+		p = Ease.prototype;
+		p._calcEnd = false;
+		p.getRatio = function(p) {
+			if (this._func) {
+				this._params[0] = p;
+				return this._func.apply(null, this._params);
+			}
+			var t = this._type,
+				pw = this._power,
+				r = (t === 1) ? 1 - p : (t === 2) ? p : (p < 0.5) ? p * 2 : (1 - p) * 2;
+			if (pw === 1) {
+				r *= r;
+			} else if (pw === 2) {
+				r *= r * r;
+			} else if (pw === 3) {
+				r *= r * r * r;
+			} else if (pw === 4) {
+				r *= r * r * r * r;
+			}
+			return (t === 1) ? 1 - r : (t === 2) ? r : (p < 0.5) ? r / 2 : 1 - (r / 2);
+		};
+
+		//create all the standard eases like Linear, Quad, Cubic, Quart, Quint, Strong, Power0, Power1, Power2, Power3, and Power4 (each with easeIn, easeOut, and easeInOut)
+		a = ["Linear","Quad","Cubic","Quart","Quint,Strong"];
+		i = a.length;
+		while (--i > -1) {
+			p = a[i]+",Power"+i;
+			_easeReg(new Ease(null,null,1,i), p, "easeOut", true);
+			_easeReg(new Ease(null,null,2,i), p, "easeIn" + ((i === 0) ? ",easeNone" : ""));
+			_easeReg(new Ease(null,null,3,i), p, "easeInOut");
+		}
+		_easeMap.linear = gs.easing.Linear.easeIn;
+		_easeMap.swing = gs.easing.Quad.easeInOut; //for jQuery folks
+
+
+/*
+ * ----------------------------------------------------------------
+ * EventDispatcher
+ * ----------------------------------------------------------------
+ */
+		var EventDispatcher = _class("events.EventDispatcher", function(target) {
+			this._listeners = {};
+			this._eventTarget = target || this;
+		});
+		p = EventDispatcher.prototype;
+
+		p.addEventListener = function(type, callback, scope, useParam, priority) {
+			priority = priority || 0;
+			var list = this._listeners[type],
+				index = 0,
+				listener, i;
+			if (this === _ticker && !_tickerActive) {
+				_ticker.wake();
+			}
+			if (list == null) {
+				this._listeners[type] = list = [];
+			}
+			i = list.length;
+			while (--i > -1) {
+				listener = list[i];
+				if (listener.c === callback && listener.s === scope) {
+					list.splice(i, 1);
+				} else if (index === 0 && listener.pr < priority) {
+					index = i + 1;
+				}
+			}
+			list.splice(index, 0, {c:callback, s:scope, up:useParam, pr:priority});
+		};
+
+		p.removeEventListener = function(type, callback) {
+			var list = this._listeners[type], i;
+			if (list) {
+				i = list.length;
+				while (--i > -1) {
+					if (list[i].c === callback) {
+						list.splice(i, 1);
+						return;
+					}
+				}
+			}
+		};
+
+		p.dispatchEvent = function(type) {
+			var list = this._listeners[type],
+				i, t, listener;
+			if (list) {
+				i = list.length;
+				if (i > 1) { 
+					list = list.slice(0); //in case addEventListener() is called from within a listener/callback (otherwise the index could change, resulting in a skip)
+				}
+				t = this._eventTarget;
+				while (--i > -1) {
+					listener = list[i];
+					if (listener) {
+						if (listener.up) {
+							listener.c.call(listener.s || t, {type:type, target:t});
+						} else {
+							listener.c.call(listener.s || t);
+						}
+					}
+				}
+			}
+		};
+
+
+/*
+ * ----------------------------------------------------------------
+ * Ticker
+ * ----------------------------------------------------------------
+ */
+ 		var _reqAnimFrame = window.requestAnimationFrame,
+			_cancelAnimFrame = window.cancelAnimationFrame,
+			_getTime = Date.now || function() {return new Date().getTime();},
+			_lastUpdate = _getTime();
+
+		//now try to determine the requestAnimationFrame and cancelAnimationFrame functions and if none are found, we'll use a setTimeout()/clearTimeout() polyfill.
+		a = ["ms","moz","webkit","o"];
+		i = a.length;
+		while (--i > -1 && !_reqAnimFrame) {
+			_reqAnimFrame = window[a[i] + "RequestAnimationFrame"];
+			_cancelAnimFrame = window[a[i] + "CancelAnimationFrame"] || window[a[i] + "CancelRequestAnimationFrame"];
+		}
+
+		_class("Ticker", function(fps, useRAF) {
+			var _self = this,
+				_startTime = _getTime(),
+				_useRAF = (useRAF !== false && _reqAnimFrame) ? "auto" : false,
+				_lagThreshold = 500,
+				_adjustedLag = 33,
+				_tickWord = "tick", //helps reduce gc burden
+				_fps, _req, _id, _gap, _nextTime,
+				_tick = function(manual) {
+					var elapsed = _getTime() - _lastUpdate,
+						overlap, dispatch;
+					if (elapsed > _lagThreshold) {
+						_startTime += elapsed - _adjustedLag;
+					}
+					_lastUpdate += elapsed;
+					_self.time = (_lastUpdate - _startTime) / 1000;
+					overlap = _self.time - _nextTime;
+					if (!_fps || overlap > 0 || manual === true) {
+						_self.frame++;
+						_nextTime += overlap + (overlap >= _gap ? 0.004 : _gap - overlap);
+						dispatch = true;
+					}
+					if (manual !== true) { //make sure the request is made before we dispatch the "tick" event so that timing is maintained. Otherwise, if processing the "tick" requires a bunch of time (like 15ms) and we're using a setTimeout() that's based on 16.7ms, it'd technically take 31.7ms between frames otherwise.
+						_id = _req(_tick);
+					}
+					if (dispatch) {
+						_self.dispatchEvent(_tickWord);
+					}
+				};
+
+			EventDispatcher.call(_self);
+			_self.time = _self.frame = 0;
+			_self.tick = function() {
+				_tick(true);
+			};
+
+			_self.lagSmoothing = function(threshold, adjustedLag) {
+				if (!arguments.length) { //if lagSmoothing() is called with no arguments, treat it like a getter that returns a boolean indicating if it's enabled or not. This is purposely undocumented and is for internal use.
+					return (_lagThreshold < 1 / _tinyNum);
+				}
+				_lagThreshold = threshold || (1 / _tinyNum); //zero should be interpreted as basically unlimited
+				_adjustedLag = Math.min(adjustedLag, _lagThreshold, 0);
+			};
+
+			_self.sleep = function() {
+				if (_id == null) {
+					return;
+				}
+				if (!_useRAF || !_cancelAnimFrame) {
+					clearTimeout(_id);
+				} else {
+					_cancelAnimFrame(_id);
+				}
+				_req = _emptyFunc;
+				_id = null;
+				if (_self === _ticker) {
+					_tickerActive = false;
+				}
+			};
+
+			_self.wake = function(seamless) {
+				if (_id !== null) {
+					_self.sleep();
+				} else if (seamless) {
+					_startTime += -_lastUpdate + (_lastUpdate = _getTime());
+				} else if (_self.frame > 10) { //don't trigger lagSmoothing if we're just waking up, and make sure that at least 10 frames have elapsed because of the iOS bug that we work around below with the 1.5-second setTimout().
+					_lastUpdate = _getTime() - _lagThreshold + 5;
+				}
+				_req = (_fps === 0) ? _emptyFunc : (!_useRAF || !_reqAnimFrame) ? function(f) { return setTimeout(f, ((_nextTime - _self.time) * 1000 + 1) | 0); } : _reqAnimFrame;
+				if (_self === _ticker) {
+					_tickerActive = true;
+				}
+				_tick(2);
+			};
+
+			_self.fps = function(value) {
+				if (!arguments.length) {
+					return _fps;
+				}
+				_fps = value;
+				_gap = 1 / (_fps || 60);
+				_nextTime = this.time + _gap;
+				_self.wake();
+			};
+
+			_self.useRAF = function(value) {
+				if (!arguments.length) {
+					return _useRAF;
+				}
+				_self.sleep();
+				_useRAF = value;
+				_self.fps(_fps);
+			};
+			_self.fps(fps);
+
+			//a bug in iOS 6 Safari occasionally prevents the requestAnimationFrame from working initially, so we use a 1.5-second timeout that automatically falls back to setTimeout() if it senses this condition.
+			setTimeout(function() {
+				if (_useRAF === "auto" && _self.frame < 5 && _doc.visibilityState !== "hidden") {
+					_self.useRAF(false);
+				}
+			}, 1500);
+		});
+
+		p = gs.Ticker.prototype = new gs.events.EventDispatcher();
+		p.constructor = gs.Ticker;
+
+
+/*
+ * ----------------------------------------------------------------
+ * Animation
+ * ----------------------------------------------------------------
+ */
+		var Animation = _class("core.Animation", function(duration, vars) {
+				this.vars = vars = vars || {};
+				this._duration = this._totalDuration = duration || 0;
+				this._delay = Number(vars.delay) || 0;
+				this._timeScale = 1;
+				this._active = (vars.immediateRender === true);
+				this.data = vars.data;
+				this._reversed = (vars.reversed === true);
+
+				if (!_rootTimeline) {
+					return;
+				}
+				if (!_tickerActive) { //some browsers (like iOS 6 Safari) shut down JavaScript execution when the tab is disabled and they [occasionally] neglect to start up requestAnimationFrame again when returning - this code ensures that the engine starts up again properly.
+					_ticker.wake();
+				}
+
+				var tl = this.vars.useFrames ? _rootFramesTimeline : _rootTimeline;
+				tl.add(this, tl._time);
+
+				if (this.vars.paused) {
+					this.paused(true);
+				}
+			});
+
+		_ticker = Animation.ticker = new gs.Ticker();
+		p = Animation.prototype;
+		p._dirty = p._gc = p._initted = p._paused = false;
+		p._totalTime = p._time = 0;
+		p._rawPrevTime = -1;
+		p._next = p._last = p._onUpdate = p._timeline = p.timeline = null;
+		p._paused = false;
+
+
+		//some browsers (like iOS) occasionally drop the requestAnimationFrame event when the user switches to a different tab and then comes back again, so we use a 2-second setTimeout() to sense if/when that condition occurs and then wake() the ticker.
+		var _checkTimeout = function() {
+				if (_tickerActive && _getTime() - _lastUpdate > 2000 && (_doc.visibilityState !== "hidden" || !_ticker.lagSmoothing())) { //note: if the tab is hidden, we should still wake if lagSmoothing has been disabled.
+					_ticker.wake();
+				}
+				var t = setTimeout(_checkTimeout, 2000);
+				if (t.unref) {
+					// allows a node process to exit even if the timeout’s callback hasn't been invoked. Without it, the node process could hang as this function is called every two seconds.
+					t.unref();
+				}
+			};
+		_checkTimeout();
+
+
+		p.play = function(from, suppressEvents) {
+			if (from != null) {
+				this.seek(from, suppressEvents);
+			}
+			return this.reversed(false).paused(false);
+		};
+
+		p.pause = function(atTime, suppressEvents) {
+			if (atTime != null) {
+				this.seek(atTime, suppressEvents);
+			}
+			return this.paused(true);
+		};
+
+		p.resume = function(from, suppressEvents) {
+			if (from != null) {
+				this.seek(from, suppressEvents);
+			}
+			return this.paused(false);
+		};
+
+		p.seek = function(time, suppressEvents) {
+			return this.totalTime(Number(time), suppressEvents !== false);
+		};
+
+		p.restart = function(includeDelay, suppressEvents) {
+			return this.reversed(false).paused(false).totalTime(includeDelay ? -this._delay : 0, (suppressEvents !== false), true);
+		};
+
+		p.reverse = function(from, suppressEvents) {
+			if (from != null) {
+				this.seek((from || this.totalDuration()), suppressEvents);
+			}
+			return this.reversed(true).paused(false);
+		};
+
+		p.render = function(time, suppressEvents, force) {
+			//stub - we override this method in subclasses.
+		};
+
+		p.invalidate = function() {
+			this._time = this._totalTime = 0;
+			this._initted = this._gc = false;
+			this._rawPrevTime = -1;
+			if (this._gc || !this.timeline) {
+				this._enabled(true);
+			}
+			return this;
+		};
+
+		p.isActive = function() {
+			var tl = this._timeline, //the 2 root timelines won't have a _timeline; they're always active.
+				startTime = this._startTime,
+				rawTime;
+			return (!tl || (!this._gc && !this._paused && tl.isActive() && (rawTime = tl.rawTime(true)) >= startTime && rawTime < startTime + this.totalDuration() / this._timeScale - 0.0000001));
+		};
+
+		p._enabled = function (enabled, ignoreTimeline) {
+			if (!_tickerActive) {
+				_ticker.wake();
+			}
+			this._gc = !enabled;
+			this._active = this.isActive();
+			if (ignoreTimeline !== true) {
+				if (enabled && !this.timeline) {
+					this._timeline.add(this, this._startTime - this._delay);
+				} else if (!enabled && this.timeline) {
+					this._timeline._remove(this, true);
+				}
+			}
+			return false;
+		};
+
+
+		p._kill = function(vars, target) {
+			return this._enabled(false, false);
+		};
+
+		p.kill = function(vars, target) {
+			this._kill(vars, target);
+			return this;
+		};
+
+		p._uncache = function(includeSelf) {
+			var tween = includeSelf ? this : this.timeline;
+			while (tween) {
+				tween._dirty = true;
+				tween = tween.timeline;
+			}
+			return this;
+		};
+
+		p._swapSelfInParams = function(params) {
+			var i = params.length,
+				copy = params.concat();
+			while (--i > -1) {
+				if (params[i] === "{self}") {
+					copy[i] = this;
+				}
+			}
+			return copy;
+		};
+
+		p._callback = function(type) {
+			var v = this.vars,
+				callback = v[type],
+				params = v[type + "Params"],
+				scope = v[type + "Scope"] || v.callbackScope || this,
+				l = params ? params.length : 0;
+			switch (l) { //speed optimization; call() is faster than apply() so use it when there are only a few parameters (which is by far most common). Previously we simply did var v = this.vars; v[type].apply(v[type + "Scope"] || v.callbackScope || this, v[type + "Params"] || _blankArray);
+				case 0: callback.call(scope); break;
+				case 1: callback.call(scope, params[0]); break;
+				case 2: callback.call(scope, params[0], params[1]); break;
+				default: callback.apply(scope, params);
+			}
+		};
+
+//----Animation getters/setters --------------------------------------------------------
+
+		p.eventCallback = function(type, callback, params, scope) {
+			if ((type || "").substr(0,2) === "on") {
+				var v = this.vars;
+				if (arguments.length === 1) {
+					return v[type];
+				}
+				if (callback == null) {
+					delete v[type];
+				} else {
+					v[type] = callback;
+					v[type + "Params"] = (_isArray(params) && params.join("").indexOf("{self}") !== -1) ? this._swapSelfInParams(params) : params;
+					v[type + "Scope"] = scope;
+				}
+				if (type === "onUpdate") {
+					this._onUpdate = callback;
+				}
+			}
+			return this;
+		};
+
+		p.delay = function(value) {
+			if (!arguments.length) {
+				return this._delay;
+			}
+			if (this._timeline.smoothChildTiming) {
+				this.startTime( this._startTime + value - this._delay );
+			}
+			this._delay = value;
+			return this;
+		};
+
+		p.duration = function(value) {
+			if (!arguments.length) {
+				this._dirty = false;
+				return this._duration;
+			}
+			this._duration = this._totalDuration = value;
+			this._uncache(true); //true in case it's a TweenMax or TimelineMax that has a repeat - we'll need to refresh the totalDuration.
+			if (this._timeline.smoothChildTiming) if (this._time > 0) if (this._time < this._duration) if (value !== 0) {
+				this.totalTime(this._totalTime * (value / this._duration), true);
+			}
+			return this;
+		};
+
+		p.totalDuration = function(value) {
+			this._dirty = false;
+			return (!arguments.length) ? this._totalDuration : this.duration(value);
+		};
+
+		p.time = function(value, suppressEvents) {
+			if (!arguments.length) {
+				return this._time;
+			}
+			if (this._dirty) {
+				this.totalDuration();
+			}
+			return this.totalTime((value > this._duration) ? this._duration : value, suppressEvents);
+		};
+
+		p.totalTime = function(time, suppressEvents, uncapped) {
+			if (!_tickerActive) {
+				_ticker.wake();
+			}
+			if (!arguments.length) {
+				return this._totalTime;
+			}
+			if (this._timeline) {
+				if (time < 0 && !uncapped) {
+					time += this.totalDuration();
+				}
+				if (this._timeline.smoothChildTiming) {
+					if (this._dirty) {
+						this.totalDuration();
+					}
+					var totalDuration = this._totalDuration,
+						tl = this._timeline;
+					if (time > totalDuration && !uncapped) {
+						time = totalDuration;
+					}
+					this._startTime = (this._paused ? this._pauseTime : tl._time) - ((!this._reversed ? time : totalDuration - time) / this._timeScale);
+					if (!tl._dirty) { //for performance improvement. If the parent's cache is already dirty, it already took care of marking the ancestors as dirty too, so skip the function call here.
+						this._uncache(false);
+					}
+					//in case any of the ancestor timelines had completed but should now be enabled, we should reset their totalTime() which will also ensure that they're lined up properly and enabled. Skip for animations that are on the root (wasteful). Example: a TimelineLite.exportRoot() is performed when there's a paused tween on the root, the export will not complete until that tween is unpaused, but imagine a child gets restarted later, after all [unpaused] tweens have completed. The startTime of that child would get pushed out, but one of the ancestors may have completed.
+					if (tl._timeline) {
+						while (tl._timeline) {
+							if (tl._timeline._time !== (tl._startTime + tl._totalTime) / tl._timeScale) {
+								tl.totalTime(tl._totalTime, true);
+							}
+							tl = tl._timeline;
+						}
+					}
+				}
+				if (this._gc) {
+					this._enabled(true, false);
+				}
+				if (this._totalTime !== time || this._duration === 0) {
+					if (_lazyTweens.length) {
+						_lazyRender();
+					}
+					this.render(time, suppressEvents, false);
+					if (_lazyTweens.length) { //in case rendering caused any tweens to lazy-init, we should render them because typically when someone calls seek() or time() or progress(), they expect an immediate render.
+						_lazyRender();
+					}
+				}
+			}
+			return this;
+		};
+
+		p.progress = p.totalProgress = function(value, suppressEvents) {
+			var duration = this.duration();
+			return (!arguments.length) ? (duration ? this._time / duration : this.ratio) : this.totalTime(duration * value, suppressEvents);
+		};
+
+		p.startTime = function(value) {
+			if (!arguments.length) {
+				return this._startTime;
+			}
+			if (value !== this._startTime) {
+				this._startTime = value;
+				if (this.timeline) if (this.timeline._sortChildren) {
+					this.timeline.add(this, value - this._delay); //ensures that any necessary re-sequencing of Animations in the timeline occurs to make sure the rendering order is correct.
+				}
+			}
+			return this;
+		};
+
+		p.endTime = function(includeRepeats) {
+			return this._startTime + ((includeRepeats != false) ? this.totalDuration() : this.duration()) / this._timeScale;
+		};
+
+		p.timeScale = function(value) {
+			if (!arguments.length) {
+				return this._timeScale;
+			}
+			var pauseTime, t;
+			value = value || _tinyNum; //can't allow zero because it'll throw the math off
+			if (this._timeline && this._timeline.smoothChildTiming) {
+				pauseTime = this._pauseTime;
+				t = (pauseTime || pauseTime === 0) ? pauseTime : this._timeline.totalTime();
+				this._startTime = t - ((t - this._startTime) * this._timeScale / value);
+			}
+			this._timeScale = value;
+			t = this.timeline;
+			while (t && t.timeline) { //must update the duration/totalDuration of all ancestor timelines immediately in case in the middle of a render loop, one tween alters another tween's timeScale which shoves its startTime before 0, forcing the parent timeline to shift around and shiftChildren() which could affect that next tween's render (startTime). Doesn't matter for the root timeline though.
+				t._dirty = true;
+				t.totalDuration();
+				t = t.timeline;
+			}
+			return this;
+		};
+
+		p.reversed = function(value) {
+			if (!arguments.length) {
+				return this._reversed;
+			}
+			if (value != this._reversed) {
+				this._reversed = value;
+				this.totalTime(((this._timeline && !this._timeline.smoothChildTiming) ? this.totalDuration() - this._totalTime : this._totalTime), true);
+			}
+			return this;
+		};
+
+		p.paused = function(value) {
+			if (!arguments.length) {
+				return this._paused;
+			}
+			var tl = this._timeline,
+				raw, elapsed;
+			if (value != this._paused) if (tl) {
+				if (!_tickerActive && !value) {
+					_ticker.wake();
+				}
+				raw = tl.rawTime();
+				elapsed = raw - this._pauseTime;
+				if (!value && tl.smoothChildTiming) {
+					this._startTime += elapsed;
+					this._uncache(false);
+				}
+				this._pauseTime = value ? raw : null;
+				this._paused = value;
+				this._active = this.isActive();
+				if (!value && elapsed !== 0 && this._initted && this.duration()) {
+					raw = tl.smoothChildTiming ? this._totalTime : (raw - this._startTime) / this._timeScale;
+					this.render(raw, (raw === this._totalTime), true); //in case the target's properties changed via some other tween or manual update by the user, we should force a render.
+				}
+			}
+			if (this._gc && !value) {
+				this._enabled(true, false);
+			}
+			return this;
+		};
+
+
+/*
+ * ----------------------------------------------------------------
+ * SimpleTimeline
+ * ----------------------------------------------------------------
+ */
+		var SimpleTimeline = _class("core.SimpleTimeline", function(vars) {
+			Animation.call(this, 0, vars);
+			this.autoRemoveChildren = this.smoothChildTiming = true;
+		});
+
+		p = SimpleTimeline.prototype = new Animation();
+		p.constructor = SimpleTimeline;
+		p.kill()._gc = false;
+		p._first = p._last = p._recent = null;
+		p._sortChildren = false;
+
+		p.add = p.insert = function(child, position, align, stagger) {
+			var prevTween, st;
+			child._startTime = Number(position || 0) + child._delay;
+			if (child._paused) if (this !== child._timeline) { //we only adjust the _pauseTime if it wasn't in this timeline already. Remember, sometimes a tween will be inserted again into the same timeline when its startTime is changed so that the tweens in the TimelineLite/Max are re-ordered properly in the linked list (so everything renders in the proper order).
+				child._pauseTime = child._startTime + ((this.rawTime() - child._startTime) / child._timeScale);
+			}
+			if (child.timeline) {
+				child.timeline._remove(child, true); //removes from existing timeline so that it can be properly added to this one.
+			}
+			child.timeline = child._timeline = this;
+			if (child._gc) {
+				child._enabled(true, true);
+			}
+			prevTween = this._last;
+			if (this._sortChildren) {
+				st = child._startTime;
+				while (prevTween && prevTween._startTime > st) {
+					prevTween = prevTween._prev;
+				}
+			}
+			if (prevTween) {
+				child._next = prevTween._next;
+				prevTween._next = child;
+			} else {
+				child._next = this._first;
+				this._first = child;
+			}
+			if (child._next) {
+				child._next._prev = child;
+			} else {
+				this._last = child;
+			}
+			child._prev = prevTween;
+			this._recent = child;
+			if (this._timeline) {
+				this._uncache(true);
+			}
+			return this;
+		};
+
+		p._remove = function(tween, skipDisable) {
+			if (tween.timeline === this) {
+				if (!skipDisable) {
+					tween._enabled(false, true);
+				}
+
+				if (tween._prev) {
+					tween._prev._next = tween._next;
+				} else if (this._first === tween) {
+					this._first = tween._next;
+				}
+				if (tween._next) {
+					tween._next._prev = tween._prev;
+				} else if (this._last === tween) {
+					this._last = tween._prev;
+				}
+				tween._next = tween._prev = tween.timeline = null;
+				if (tween === this._recent) {
+					this._recent = this._last;
+				}
+
+				if (this._timeline) {
+					this._uncache(true);
+				}
+			}
+			return this;
+		};
+
+		p.render = function(time, suppressEvents, force) {
+			var tween = this._first,
+				next;
+			this._totalTime = this._time = this._rawPrevTime = time;
+			while (tween) {
+				next = tween._next; //record it here because the value could change after rendering...
+				if (tween._active || (time >= tween._startTime && !tween._paused && !tween._gc)) {
+					if (!tween._reversed) {
+						tween.render((time - tween._startTime) * tween._timeScale, suppressEvents, force);
+					} else {
+						tween.render(((!tween._dirty) ? tween._totalDuration : tween.totalDuration()) - ((time - tween._startTime) * tween._timeScale), suppressEvents, force);
+					}
+				}
+				tween = next;
+			}
+		};
+
+		p.rawTime = function() {
+			if (!_tickerActive) {
+				_ticker.wake();
+			}
+			return this._totalTime;
+		};
+
+/*
+ * ----------------------------------------------------------------
+ * TweenLite
+ * ----------------------------------------------------------------
+ */
+		var TweenLite = _class("TweenLite", function(target, duration, vars) {
+				Animation.call(this, duration, vars);
+				this.render = TweenLite.prototype.render; //speed optimization (avoid prototype lookup on this "hot" method)
+
+				if (target == null) {
+					throw "Cannot tween a null target.";
+				}
+
+				this.target = target = (typeof(target) !== "string") ? target : TweenLite.selector(target) || target;
+
+				var isSelector = (target.jquery || (target.length && target !== window && target[0] && (target[0] === window || (target[0].nodeType && target[0].style && !target.nodeType)))),
+					overwrite = this.vars.overwrite,
+					i, targ, targets;
+
+				this._overwrite = overwrite = (overwrite == null) ? _overwriteLookup[TweenLite.defaultOverwrite] : (typeof(overwrite) === "number") ? overwrite >> 0 : _overwriteLookup[overwrite];
+
+				if ((isSelector || target instanceof Array || (target.push && _isArray(target))) && typeof(target[0]) !== "number") {
+					this._targets = targets = _slice(target);  //don't use Array.prototype.slice.call(target, 0) because that doesn't work in IE8 with a NodeList that's returned by querySelectorAll()
+					this._propLookup = [];
+					this._siblings = [];
+					for (i = 0; i < targets.length; i++) {
+						targ = targets[i];
+						if (!targ) {
+							targets.splice(i--, 1);
+							continue;
+						} else if (typeof(targ) === "string") {
+							targ = targets[i--] = TweenLite.selector(targ); //in case it's an array of strings
+							if (typeof(targ) === "string") {
+								targets.splice(i+1, 1); //to avoid an endless loop (can't imagine why the selector would return a string, but just in case)
+							}
+							continue;
+						} else if (targ.length && targ !== window && targ[0] && (targ[0] === window || (targ[0].nodeType && targ[0].style && !targ.nodeType))) { //in case the user is passing in an array of selector objects (like jQuery objects), we need to check one more level and pull things out if necessary. Also note that <select> elements pass all the criteria regarding length and the first child having style, so we must also check to ensure the target isn't an HTML node itself.
+							targets.splice(i--, 1);
+							this._targets = targets = targets.concat(_slice(targ));
+							continue;
+						}
+						this._siblings[i] = _register(targ, this, false);
+						if (overwrite === 1) if (this._siblings[i].length > 1) {
+							_applyOverwrite(targ, this, null, 1, this._siblings[i]);
+						}
+					}
+
+				} else {
+					this._propLookup = {};
+					this._siblings = _register(target, this, false);
+					if (overwrite === 1) if (this._siblings.length > 1) {
+						_applyOverwrite(target, this, null, 1, this._siblings);
+					}
+				}
+				if (this.vars.immediateRender || (duration === 0 && this._delay === 0 && this.vars.immediateRender !== false)) {
+					this._time = -_tinyNum; //forces a render without having to set the render() "force" parameter to true because we want to allow lazying by default (using the "force" parameter always forces an immediate full render)
+					this.render(Math.min(0, -this._delay)); //in case delay is negative
+				}
+			}, true),
+			_isSelector = function(v) {
+				return (v && v.length && v !== window && v[0] && (v[0] === window || (v[0].nodeType && v[0].style && !v.nodeType))); //we cannot check "nodeType" if the target is window from within an iframe, otherwise it will trigger a security error in some browsers like Firefox.
+			},
+			_autoCSS = function(vars, target) {
+				var css = {},
+					p;
+				for (p in vars) {
+					if (!_reservedProps[p] && (!(p in target) || p === "transform" || p === "x" || p === "y" || p === "width" || p === "height" || p === "className" || p === "border") && (!_plugins[p] || (_plugins[p] && _plugins[p]._autoCSS))) { //note: <img> elements contain read-only "x" and "y" properties. We should also prioritize editing css width/height rather than the element's properties.
+						css[p] = vars[p];
+						delete vars[p];
+					}
+				}
+				vars.css = css;
+			};
+
+		p = TweenLite.prototype = new Animation();
+		p.constructor = TweenLite;
+		p.kill()._gc = false;
+
+//----TweenLite defaults, overwrite management, and root updates ----------------------------------------------------
+
+		p.ratio = 0;
+		p._firstPT = p._targets = p._overwrittenProps = p._startAt = null;
+		p._notifyPluginsOfEnabled = p._lazy = false;
+
+		TweenLite.version = "1.20.3";
+		TweenLite.defaultEase = p._ease = new Ease(null, null, 1, 1);
+		TweenLite.defaultOverwrite = "auto";
+		TweenLite.ticker = _ticker;
+		TweenLite.autoSleep = 120;
+		TweenLite.lagSmoothing = function(threshold, adjustedLag) {
+			_ticker.lagSmoothing(threshold, adjustedLag);
+		};
+
+		TweenLite.selector = window.$ || window.jQuery || function(e) {
+			var selector = window.$ || window.jQuery;
+			if (selector) {
+				TweenLite.selector = selector;
+				return selector(e);
+			}
+			return (typeof(_doc) === "undefined") ? e : (_doc.querySelectorAll ? _doc.querySelectorAll(e) : _doc.getElementById((e.charAt(0) === "#") ? e.substr(1) : e));
+		};
+
+		var _lazyTweens = [],
+			_lazyLookup = {},
+			_numbersExp = /(?:(-|-=|\+=)?\d*\.?\d*(?:e[\-+]?\d+)?)[0-9]/ig,
+			_relExp = /[\+-]=-?[\.\d]/,
+			//_nonNumbersExp = /(?:([\-+](?!(\d|=)))|[^\d\-+=e]|(e(?![\-+][\d])))+/ig,
+			_setRatio = function(v) {
+				var pt = this._firstPT,
+					min = 0.000001,
+					val;
+				while (pt) {
+					val = !pt.blob ? pt.c * v + pt.s : (v === 1 && this.end != null) ? this.end : v ? this.join("") : this.start;
+					if (pt.m) {
+						val = pt.m(val, this._target || pt.t);
+					} else if (val < min) if (val > -min && !pt.blob) { //prevents issues with converting very small numbers to strings in the browser
+						val = 0;
+					}
+					if (!pt.f) {
+						pt.t[pt.p] = val;
+					} else if (pt.fp) {
+						pt.t[pt.p](pt.fp, val);
+					} else {
+						pt.t[pt.p](val);
+					}
+					pt = pt._next;
+				}
+			},
+			//compares two strings (start/end), finds the numbers that are different and spits back an array representing the whole value but with the changing values isolated as elements. For example, "rgb(0,0,0)" and "rgb(100,50,0)" would become ["rgb(", 0, ",", 50, ",0)"]. Notice it merges the parts that are identical (performance optimization). The array also has a linked list of PropTweens attached starting with _firstPT that contain the tweening data (t, p, s, c, f, etc.). It also stores the starting value as a "start" property so that we can revert to it if/when necessary, like when a tween rewinds fully. If the quantity of numbers differs between the start and end, it will always prioritize the end value(s). The pt parameter is optional - it's for a PropTween that will be appended to the end of the linked list and is typically for actually setting the value after all of the elements have been updated (with array.join("")).
+			_blobDif = function(start, end, filter, pt) {
+				var a = [],
+					charIndex = 0,
+					s = "",
+					color = 0,
+					startNums, endNums, num, i, l, nonNumbers, currentNum;
+				a.start = start;
+				a.end = end;
+				start = a[0] = start + ""; //ensure values are strings
+				end = a[1] = end + "";
+				if (filter) {
+					filter(a); //pass an array with the starting and ending values and let the filter do whatever it needs to the values.
+					start = a[0];
+					end = a[1];
+				}
+				a.length = 0;
+				startNums = start.match(_numbersExp) || [];
+				endNums = end.match(_numbersExp) || [];
+				if (pt) {
+					pt._next = null;
+					pt.blob = 1;
+					a._firstPT = a._applyPT = pt; //apply last in the linked list (which means inserting it first)
+				}
+				l = endNums.length;
+				for (i = 0; i < l; i++) {
+					currentNum = endNums[i];
+					nonNumbers = end.substr(charIndex, end.indexOf(currentNum, charIndex)-charIndex);
+					s += (nonNumbers || !i) ? nonNumbers : ","; //note: SVG spec allows omission of comma/space when a negative sign is wedged between two numbers, like 2.5-5.3 instead of 2.5,-5.3 but when tweening, the negative value may switch to positive, so we insert the comma just in case.
+					charIndex += nonNumbers.length;
+					if (color) { //sense rgba() values and round them.
+						color = (color + 1) % 5;
+					} else if (nonNumbers.substr(-5) === "rgba(") {
+						color = 1;
+					}
+					if (currentNum === startNums[i] || startNums.length <= i) {
+						s += currentNum;
+					} else {
+						if (s) {
+							a.push(s);
+							s = "";
+						}
+						num = parseFloat(startNums[i]);
+						a.push(num);
+						a._firstPT = {_next: a._firstPT, t:a, p: a.length-1, s:num, c:((currentNum.charAt(1) === "=") ? parseInt(currentNum.charAt(0) + "1", 10) * parseFloat(currentNum.substr(2)) : (parseFloat(currentNum) - num)) || 0, f:0, m:(color && color < 4) ? Math.round : 0};
+						//note: we don't set _prev because we'll never need to remove individual PropTweens from this list.
+					}
+					charIndex += currentNum.length;
+				}
+				s += end.substr(charIndex);
+				if (s) {
+					a.push(s);
+				}
+				a.setRatio = _setRatio;
+				if (_relExp.test(end)) { //if the end string contains relative values, delete it so that on the final render (in _setRatio()), we don't actually set it to the string with += or -= characters (forces it to use the calculated value).
+					a.end = null;
+				}
+				return a;
+			},
+			//note: "funcParam" is only necessary for function-based getters/setters that require an extra parameter like getAttribute("width") and setAttribute("width", value). In this example, funcParam would be "width". Used by AttrPlugin for example.
+			_addPropTween = function(target, prop, start, end, overwriteProp, mod, funcParam, stringFilter, index) {
+				if (typeof(end) === "function") {
+					end = end(index || 0, target);
+				}
+				var type = typeof(target[prop]),
+					getterName = (type !== "function") ? "" : ((prop.indexOf("set") || typeof(target["get" + prop.substr(3)]) !== "function") ? prop : "get" + prop.substr(3)),
+					s = (start !== "get") ? start : !getterName ? target[prop] : funcParam ? target[getterName](funcParam) : target[getterName](),
+					isRelative = (typeof(end) === "string" && end.charAt(1) === "="),
+					pt = {t:target, p:prop, s:s, f:(type === "function"), pg:0, n:overwriteProp || prop, m:(!mod ? 0 : (typeof(mod) === "function") ? mod : Math.round), pr:0, c:isRelative ? parseInt(end.charAt(0) + "1", 10) * parseFloat(end.substr(2)) : (parseFloat(end) - s) || 0},
+					blob;
+
+				if (typeof(s) !== "number" || (typeof(end) !== "number" && !isRelative)) {
+					if (funcParam || isNaN(s) || (!isRelative && isNaN(end)) || typeof(s) === "boolean" || typeof(end) === "boolean") {
+						//a blob (string that has multiple numbers in it)
+						pt.fp = funcParam;
+						blob = _blobDif(s, (isRelative ? parseFloat(pt.s) + pt.c : end), stringFilter || TweenLite.defaultStringFilter, pt);
+						pt = {t: blob, p: "setRatio", s: 0, c: 1, f: 2, pg: 0, n: overwriteProp || prop, pr: 0, m: 0}; //"2" indicates it's a Blob property tween. Needed for RoundPropsPlugin for example.
+					} else {
+						pt.s = parseFloat(s);
+						if (!isRelative) {
+							pt.c = (parseFloat(end) - pt.s) || 0;
+						}
+					}
+				}
+				if (pt.c) { //only add it to the linked list if there's a change.
+					if ((pt._next = this._firstPT)) {
+						pt._next._prev = pt;
+					}
+					this._firstPT = pt;
+					return pt;
+				}
+			},
+			_internals = TweenLite._internals = {isArray:_isArray, isSelector:_isSelector, lazyTweens:_lazyTweens, blobDif:_blobDif}, //gives us a way to expose certain private values to other GreenSock classes without contaminating tha main TweenLite object.
+			_plugins = TweenLite._plugins = {},
+			_tweenLookup = _internals.tweenLookup = {},
+			_tweenLookupNum = 0,
+			_reservedProps = _internals.reservedProps = {ease:1, delay:1, overwrite:1, onComplete:1, onCompleteParams:1, onCompleteScope:1, useFrames:1, runBackwards:1, startAt:1, onUpdate:1, onUpdateParams:1, onUpdateScope:1, onStart:1, onStartParams:1, onStartScope:1, onReverseComplete:1, onReverseCompleteParams:1, onReverseCompleteScope:1, onRepeat:1, onRepeatParams:1, onRepeatScope:1, easeParams:1, yoyo:1, immediateRender:1, repeat:1, repeatDelay:1, data:1, paused:1, reversed:1, autoCSS:1, lazy:1, onOverwrite:1, callbackScope:1, stringFilter:1, id:1, yoyoEase:1},
+			_overwriteLookup = {none:0, all:1, auto:2, concurrent:3, allOnStart:4, preexisting:5, "true":1, "false":0},
+			_rootFramesTimeline = Animation._rootFramesTimeline = new SimpleTimeline(),
+			_rootTimeline = Animation._rootTimeline = new SimpleTimeline(),
+			_nextGCFrame = 30,
+			_lazyRender = _internals.lazyRender = function() {
+				var i = _lazyTweens.length,
+					tween;
+				_lazyLookup = {};
+				while (--i > -1) {
+					tween = _lazyTweens[i];
+					if (tween && tween._lazy !== false) {
+						tween.render(tween._lazy[0], tween._lazy[1], true);
+						tween._lazy = false;
+					}
+				}
+				_lazyTweens.length = 0;
+			};
+
+		_rootTimeline._startTime = _ticker.time;
+		_rootFramesTimeline._startTime = _ticker.frame;
+		_rootTimeline._active = _rootFramesTimeline._active = true;
+		setTimeout(_lazyRender, 1); //on some mobile devices, there isn't a "tick" before code runs which means any lazy renders wouldn't run before the next official "tick".
+
+		Animation._updateRoot = TweenLite.render = function() {
+				var i, a, p;
+				if (_lazyTweens.length) { //if code is run outside of the requestAnimationFrame loop, there may be tweens queued AFTER the engine refreshed, so we need to ensure any pending renders occur before we refresh again.
+					_lazyRender();
+				}
+				_rootTimeline.render((_ticker.time - _rootTimeline._startTime) * _rootTimeline._timeScale, false, false);
+				_rootFramesTimeline.render((_ticker.frame - _rootFramesTimeline._startTime) * _rootFramesTimeline._timeScale, false, false);
+				if (_lazyTweens.length) {
+					_lazyRender();
+				}
+				if (_ticker.frame >= _nextGCFrame) { //dump garbage every 120 frames or whatever the user sets TweenLite.autoSleep to
+					_nextGCFrame = _ticker.frame + (parseInt(TweenLite.autoSleep, 10) || 120);
+					for (p in _tweenLookup) {
+						a = _tweenLookup[p].tweens;
+						i = a.length;
+						while (--i > -1) {
+							if (a[i]._gc) {
+								a.splice(i, 1);
+							}
+						}
+						if (a.length === 0) {
+							delete _tweenLookup[p];
+						}
+					}
+					//if there are no more tweens in the root timelines, or if they're all paused, make the _timer sleep to reduce load on the CPU slightly
+					p = _rootTimeline._first;
+					if (!p || p._paused) if (TweenLite.autoSleep && !_rootFramesTimeline._first && _ticker._listeners.tick.length === 1) {
+						while (p && p._paused) {
+							p = p._next;
+						}
+						if (!p) {
+							_ticker.sleep();
+						}
+					}
+				}
+			};
+
+		_ticker.addEventListener("tick", Animation._updateRoot);
+
+		var _register = function(target, tween, scrub) {
+				var id = target._gsTweenID, a, i;
+				if (!_tweenLookup[id || (target._gsTweenID = id = "t" + (_tweenLookupNum++))]) {
+					_tweenLookup[id] = {target:target, tweens:[]};
+				}
+				if (tween) {
+					a = _tweenLookup[id].tweens;
+					a[(i = a.length)] = tween;
+					if (scrub) {
+						while (--i > -1) {
+							if (a[i] === tween) {
+								a.splice(i, 1);
+							}
+						}
+					}
+				}
+				return _tweenLookup[id].tweens;
+			},
+			_onOverwrite = function(overwrittenTween, overwritingTween, target, killedProps) {
+				var func = overwrittenTween.vars.onOverwrite, r1, r2;
+				if (func) {
+					r1 = func(overwrittenTween, overwritingTween, target, killedProps);
+				}
+				func = TweenLite.onOverwrite;
+				if (func) {
+					r2 = func(overwrittenTween, overwritingTween, target, killedProps);
+				}
+				return (r1 !== false && r2 !== false);
+			},
+			_applyOverwrite = function(target, tween, props, mode, siblings) {
+				var i, changed, curTween, l;
+				if (mode === 1 || mode >= 4) {
+					l = siblings.length;
+					for (i = 0; i < l; i++) {
+						if ((curTween = siblings[i]) !== tween) {
+							if (!curTween._gc) {
+								if (curTween._kill(null, target, tween)) {
+									changed = true;
+								}
+							}
+						} else if (mode === 5) {
+							break;
+						}
+					}
+					return changed;
+				}
+				//NOTE: Add 0.0000000001 to overcome floating point errors that can cause the startTime to be VERY slightly off (when a tween's time() is set for example)
+				var startTime = tween._startTime + _tinyNum,
+					overlaps = [],
+					oCount = 0,
+					zeroDur = (tween._duration === 0),
+					globalStart;
+				i = siblings.length;
+				while (--i > -1) {
+					if ((curTween = siblings[i]) === tween || curTween._gc || curTween._paused) {
+						//ignore
+					} else if (curTween._timeline !== tween._timeline) {
+						globalStart = globalStart || _checkOverlap(tween, 0, zeroDur);
+						if (_checkOverlap(curTween, globalStart, zeroDur) === 0) {
+							overlaps[oCount++] = curTween;
+						}
+					} else if (curTween._startTime <= startTime) if (curTween._startTime + curTween.totalDuration() / curTween._timeScale > startTime) if (!((zeroDur || !curTween._initted) && startTime - curTween._startTime <= 0.0000000002)) {
+						overlaps[oCount++] = curTween;
+					}
+				}
+
+				i = oCount;
+				while (--i > -1) {
+					curTween = overlaps[i];
+					if (mode === 2) if (curTween._kill(props, target, tween)) {
+						changed = true;
+					}
+					if (mode !== 2 || (!curTween._firstPT && curTween._initted)) {
+						if (mode !== 2 && !_onOverwrite(curTween, tween)) {
+							continue;
+						}
+						if (curTween._enabled(false, false)) { //if all property tweens have been overwritten, kill the tween.
+							changed = true;
+						}
+					}
+				}
+				return changed;
+			},
+			_checkOverlap = function(tween, reference, zeroDur) {
+				var tl = tween._timeline,
+					ts = tl._timeScale,
+					t = tween._startTime;
+				while (tl._timeline) {
+					t += tl._startTime;
+					ts *= tl._timeScale;
+					if (tl._paused) {
+						return -100;
+					}
+					tl = tl._timeline;
+				}
+				t /= ts;
+				return (t > reference) ? t - reference : ((zeroDur && t === reference) || (!tween._initted && t - reference < 2 * _tinyNum)) ? _tinyNum : ((t += tween.totalDuration() / tween._timeScale / ts) > reference + _tinyNum) ? 0 : t - reference - _tinyNum;
+			};
+
+
+//---- TweenLite instance methods -----------------------------------------------------------------------------
+
+		p._init = function() {
+			var v = this.vars,
+				op = this._overwrittenProps,
+				dur = this._duration,
+				immediate = !!v.immediateRender,
+				ease = v.ease,
+				i, initPlugins, pt, p, startVars, l;
+			if (v.startAt) {
+				if (this._startAt) {
+					this._startAt.render(-1, true); //if we've run a startAt previously (when the tween instantiated), we should revert it so that the values re-instantiate correctly particularly for relative tweens. Without this, a TweenLite.fromTo(obj, 1, {x:"+=100"}, {x:"-=100"}), for example, would actually jump to +=200 because the startAt would run twice, doubling the relative change.
+					this._startAt.kill();
+				}
+				startVars = {};
+				for (p in v.startAt) { //copy the properties/values into a new object to avoid collisions, like var to = {x:0}, from = {x:500}; timeline.fromTo(e, 1, from, to).fromTo(e, 1, to, from);
+					startVars[p] = v.startAt[p];
+				}
+				startVars.data = "isStart";
+				startVars.overwrite = false;
+				startVars.immediateRender = true;
+				startVars.lazy = (immediate && v.lazy !== false);
+				startVars.startAt = startVars.delay = null; //no nesting of startAt objects allowed (otherwise it could cause an infinite loop).
+				startVars.onUpdate = v.onUpdate;
+				startVars.onUpdateParams = v.onUpdateParams;
+				startVars.onUpdateScope = v.onUpdateScope || v.callbackScope || this;
+				this._startAt = TweenLite.to(this.target, 0, startVars);
+				if (immediate) {
+					if (this._time > 0) {
+						this._startAt = null; //tweens that render immediately (like most from() and fromTo() tweens) shouldn't revert when their parent timeline's playhead goes backward past the startTime because the initial render could have happened anytime and it shouldn't be directly correlated to this tween's startTime. Imagine setting up a complex animation where the beginning states of various objects are rendered immediately but the tween doesn't happen for quite some time - if we revert to the starting values as soon as the playhead goes backward past the tween's startTime, it will throw things off visually. Reversion should only happen in TimelineLite/Max instances where immediateRender was false (which is the default in the convenience methods like from()).
+					} else if (dur !== 0) {
+						return; //we skip initialization here so that overwriting doesn't occur until the tween actually begins. Otherwise, if you create several immediateRender:true tweens of the same target/properties to drop into a TimelineLite or TimelineMax, the last one created would overwrite the first ones because they didn't get placed into the timeline yet before the first render occurs and kicks in overwriting.
+					}
+				}
+			} else if (v.runBackwards && dur !== 0) {
+				//from() tweens must be handled uniquely: their beginning values must be rendered but we don't want overwriting to occur yet (when time is still 0). Wait until the tween actually begins before doing all the routines like overwriting. At that time, we should render at the END of the tween to ensure that things initialize correctly (remember, from() tweens go backwards)
+				if (this._startAt) {
+					this._startAt.render(-1, true);
+					this._startAt.kill();
+					this._startAt = null;
+				} else {
+					if (this._time !== 0) { //in rare cases (like if a from() tween runs and then is invalidate()-ed), immediateRender could be true but the initial forced-render gets skipped, so there's no need to force the render in this context when the _time is greater than 0
+						immediate = false;
+					}
+					pt = {};
+					for (p in v) { //copy props into a new object and skip any reserved props, otherwise onComplete or onUpdate or onStart could fire. We should, however, permit autoCSS to go through.
+						if (!_reservedProps[p] || p === "autoCSS") {
+							pt[p] = v[p];
+						}
+					}
+					pt.overwrite = 0;
+					pt.data = "isFromStart"; //we tag the tween with as "isFromStart" so that if [inside a plugin] we need to only do something at the very END of a tween, we have a way of identifying this tween as merely the one that's setting the beginning values for a "from()" tween. For example, clearProps in CSSPlugin should only get applied at the very END of a tween and without this tag, from(...{height:100, clearProps:"height", delay:1}) would wipe the height at the beginning of the tween and after 1 second, it'd kick back in.
+					pt.lazy = (immediate && v.lazy !== false);
+					pt.immediateRender = immediate; //zero-duration tweens render immediately by default, but if we're not specifically instructed to render this tween immediately, we should skip this and merely _init() to record the starting values (rendering them immediately would push them to completion which is wasteful in that case - we'd have to render(-1) immediately after)
+					this._startAt = TweenLite.to(this.target, 0, pt);
+					if (!immediate) {
+						this._startAt._init(); //ensures that the initial values are recorded
+						this._startAt._enabled(false); //no need to have the tween render on the next cycle. Disable it because we'll always manually control the renders of the _startAt tween.
+						if (this.vars.immediateRender) {
+							this._startAt = null;
+						}
+					} else if (this._time === 0) {
+						return;
+					}
+				}
+			}
+			this._ease = ease = (!ease) ? TweenLite.defaultEase : (ease instanceof Ease) ? ease : (typeof(ease) === "function") ? new Ease(ease, v.easeParams) : _easeMap[ease] || TweenLite.defaultEase;
+			if (v.easeParams instanceof Array && ease.config) {
+				this._ease = ease.config.apply(ease, v.easeParams);
+			}
+			this._easeType = this._ease._type;
+			this._easePower = this._ease._power;
+			this._firstPT = null;
+
+			if (this._targets) {
+				l = this._targets.length;
+				for (i = 0; i < l; i++) {
+					if ( this._initProps( this._targets[i], (this._propLookup[i] = {}), this._siblings[i], (op ? op[i] : null), i) ) {
+						initPlugins = true;
+					}
+				}
+			} else {
+				initPlugins = this._initProps(this.target, this._propLookup, this._siblings, op, 0);
+			}
+
+			if (initPlugins) {
+				TweenLite._onPluginEvent("_onInitAllProps", this); //reorders the array in order of priority. Uses a static TweenPlugin method in order to minimize file size in TweenLite
+			}
+			if (op) if (!this._firstPT) if (typeof(this.target) !== "function") { //if all tweening properties have been overwritten, kill the tween. If the target is a function, it's probably a delayedCall so let it live.
+				this._enabled(false, false);
+			}
+			if (v.runBackwards) {
+				pt = this._firstPT;
+				while (pt) {
+					pt.s += pt.c;
+					pt.c = -pt.c;
+					pt = pt._next;
+				}
+			}
+			this._onUpdate = v.onUpdate;
+			this._initted = true;
+		};
+
+		p._initProps = function(target, propLookup, siblings, overwrittenProps, index) {
+			var p, i, initPlugins, plugin, pt, v;
+			if (target == null) {
+				return false;
+			}
+
+			if (_lazyLookup[target._gsTweenID]) {
+				_lazyRender(); //if other tweens of the same target have recently initted but haven't rendered yet, we've got to force the render so that the starting values are correct (imagine populating a timeline with a bunch of sequential tweens and then jumping to the end)
+			}
+
+			if (!this.vars.css) if (target.style) if (target !== window && target.nodeType) if (_plugins.css) if (this.vars.autoCSS !== false) { //it's so common to use TweenLite/Max to animate the css of DOM elements, we assume that if the target is a DOM element, that's what is intended (a convenience so that users don't have to wrap things in css:{}, although we still recommend it for a slight performance boost and better specificity). Note: we cannot check "nodeType" on the window inside an iframe.
+				_autoCSS(this.vars, target);
+			}
+			for (p in this.vars) {
+				v = this.vars[p];
+				if (_reservedProps[p]) {
+					if (v) if ((v instanceof Array) || (v.push && _isArray(v))) if (v.join("").indexOf("{self}") !== -1) {
+						this.vars[p] = v = this._swapSelfInParams(v, this);
+					}
+
+				} else if (_plugins[p] && (plugin = new _plugins[p]())._onInitTween(target, this.vars[p], this, index)) {
+
+					//t - target 		[object]
+					//p - property 		[string]
+					//s - start			[number]
+					//c - change		[number]
+					//f - isFunction	[boolean]
+					//n - name			[string]
+					//pg - isPlugin 	[boolean]
+					//pr - priority		[number]
+					//m - mod           [function | 0]
+					this._firstPT = pt = {_next:this._firstPT, t:plugin, p:"setRatio", s:0, c:1, f:1, n:p, pg:1, pr:plugin._priority, m:0};
+					i = plugin._overwriteProps.length;
+					while (--i > -1) {
+						propLookup[plugin._overwriteProps[i]] = this._firstPT;
+					}
+					if (plugin._priority || plugin._onInitAllProps) {
+						initPlugins = true;
+					}
+					if (plugin._onDisable || plugin._onEnable) {
+						this._notifyPluginsOfEnabled = true;
+					}
+					if (pt._next) {
+						pt._next._prev = pt;
+					}
+
+				} else {
+					propLookup[p] = _addPropTween.call(this, target, p, "get", v, p, 0, null, this.vars.stringFilter, index);
+				}
+			}
+
+			if (overwrittenProps) if (this._kill(overwrittenProps, target)) { //another tween may have tried to overwrite properties of this tween before init() was called (like if two tweens start at the same time, the one created second will run first)
+				return this._initProps(target, propLookup, siblings, overwrittenProps, index);
+			}
+			if (this._overwrite > 1) if (this._firstPT) if (siblings.length > 1) if (_applyOverwrite(target, this, propLookup, this._overwrite, siblings)) {
+				this._kill(propLookup, target);
+				return this._initProps(target, propLookup, siblings, overwrittenProps, index);
+			}
+			if (this._firstPT) if ((this.vars.lazy !== false && this._duration) || (this.vars.lazy && !this._duration)) { //zero duration tweens don't lazy render by default; everything else does.
+				_lazyLookup[target._gsTweenID] = true;
+			}
+			return initPlugins;
+		};
+
+		p.render = function(time, suppressEvents, force) {
+			var prevTime = this._time,
+				duration = this._duration,
+				prevRawPrevTime = this._rawPrevTime,
+				isComplete, callback, pt, rawPrevTime;
+			if (time >= duration - 0.0000001 && time >= 0) { //to work around occasional floating point math artifacts.
+				this._totalTime = this._time = duration;
+				this.ratio = this._ease._calcEnd ? this._ease.getRatio(1) : 1;
+				if (!this._reversed ) {
+					isComplete = true;
+					callback = "onComplete";
+					force = (force || this._timeline.autoRemoveChildren); //otherwise, if the animation is unpaused/activated after it's already finished, it doesn't get removed from the parent timeline.
+				}
+				if (duration === 0) if (this._initted || !this.vars.lazy || force) { //zero-duration tweens are tricky because we must discern the momentum/direction of time in order to determine whether the starting values should be rendered or the ending values. If the "playhead" of its timeline goes past the zero-duration tween in the forward direction or lands directly on it, the end values should be rendered, but if the timeline's "playhead" moves past it in the backward direction (from a postitive time to a negative time), the starting values must be rendered.
+					if (this._startTime === this._timeline._duration) { //if a zero-duration tween is at the VERY end of a timeline and that timeline renders at its end, it will typically add a tiny bit of cushion to the render time to prevent rounding errors from getting in the way of tweens rendering their VERY end. If we then reverse() that timeline, the zero-duration tween will trigger its onReverseComplete even though technically the playhead didn't pass over it again. It's a very specific edge case we must accommodate.
+						time = 0;
+					}
+					if (prevRawPrevTime < 0 || (time <= 0 && time >= -0.0000001) || (prevRawPrevTime === _tinyNum && this.data !== "isPause")) if (prevRawPrevTime !== time) { //note: when this.data is "isPause", it's a callback added by addPause() on a timeline that we should not be triggered when LEAVING its exact start time. In other words, tl.addPause(1).play(1) shouldn't pause.
+						force = true;
+						if (prevRawPrevTime > _tinyNum) {
+							callback = "onReverseComplete";
+						}
+					}
+					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || prevRawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+				}
+
+			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
+				this._totalTime = this._time = 0;
+				this.ratio = this._ease._calcEnd ? this._ease.getRatio(0) : 0;
+				if (prevTime !== 0 || (duration === 0 && prevRawPrevTime > 0)) {
+					callback = "onReverseComplete";
+					isComplete = this._reversed;
+				}
+				if (time < 0) {
+					this._active = false;
+					if (duration === 0) if (this._initted || !this.vars.lazy || force) { //zero-duration tweens are tricky because we must discern the momentum/direction of time in order to determine whether the starting values should be rendered or the ending values. If the "playhead" of its timeline goes past the zero-duration tween in the forward direction or lands directly on it, the end values should be rendered, but if the timeline's "playhead" moves past it in the backward direction (from a postitive time to a negative time), the starting values must be rendered.
+						if (prevRawPrevTime >= 0 && !(prevRawPrevTime === _tinyNum && this.data === "isPause")) {
+							force = true;
+						}
+						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || prevRawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
+					}
+				}
+				if (!this._initted || (this._startAt && this._startAt.progress())) { //if we render the very beginning (time == 0) of a fromTo(), we must force the render (normal tweens wouldn't need to render at a time of 0 when the prevTime was also 0). This is also mandatory to make sure overwriting kicks in immediately. Also, we check progress() because if startAt has already rendered at its end, we should force a render at its beginning. Otherwise, if you put the playhead directly on top of where a fromTo({immediateRender:false}) starts, and then move it backwards, the from() won't revert its values.
+					force = true;
+				}
+			} else {
+				this._totalTime = this._time = time;
+
+				if (this._easeType) {
+					var r = time / duration, type = this._easeType, pow = this._easePower;
+					if (type === 1 || (type === 3 && r >= 0.5)) {
+						r = 1 - r;
+					}
+					if (type === 3) {
+						r *= 2;
+					}
+					if (pow === 1) {
+						r *= r;
+					} else if (pow === 2) {
+						r *= r * r;
+					} else if (pow === 3) {
+						r *= r * r * r;
+					} else if (pow === 4) {
+						r *= r * r * r * r;
+					}
+
+					if (type === 1) {
+						this.ratio = 1 - r;
+					} else if (type === 2) {
+						this.ratio = r;
+					} else if (time / duration < 0.5) {
+						this.ratio = r / 2;
+					} else {
+						this.ratio = 1 - (r / 2);
+					}
+
+				} else {
+					this.ratio = this._ease.getRatio(time / duration);
+				}
+			}
+
+			if (this._time === prevTime && !force) {
+				return;
+			} else if (!this._initted) {
+				this._init();
+				if (!this._initted || this._gc) { //immediateRender tweens typically won't initialize until the playhead advances (_time is greater than 0) in order to ensure that overwriting occurs properly. Also, if all of the tweening properties have been overwritten (which would cause _gc to be true, as set in _init()), we shouldn't continue otherwise an onStart callback could be called for example.
+					return;
+				} else if (!force && this._firstPT && ((this.vars.lazy !== false && this._duration) || (this.vars.lazy && !this._duration))) {
+					this._time = this._totalTime = prevTime;
+					this._rawPrevTime = prevRawPrevTime;
+					_lazyTweens.push(this);
+					this._lazy = [time, suppressEvents];
+					return;
+				}
+				//_ease is initially set to defaultEase, so now that init() has run, _ease is set properly and we need to recalculate the ratio. Overall this is faster than using conditional logic earlier in the method to avoid having to set ratio twice because we only init() once but renderTime() gets called VERY frequently.
+				if (this._time && !isComplete) {
+					this.ratio = this._ease.getRatio(this._time / duration);
+				} else if (isComplete && this._ease._calcEnd) {
+					this.ratio = this._ease.getRatio((this._time === 0) ? 0 : 1);
+				}
+			}
+			if (this._lazy !== false) { //in case a lazy render is pending, we should flush it because the new render is occurring now (imagine a lazy tween instantiating and then immediately the user calls tween.seek(tween.duration()), skipping to the end - the end render would be forced, and then if we didn't flush the lazy render, it'd fire AFTER the seek(), rendering it at the wrong time.
+				this._lazy = false;
+			}
+			if (!this._active) if (!this._paused && this._time !== prevTime && time >= 0) {
+				this._active = true;  //so that if the user renders a tween (as opposed to the timeline rendering it), the timeline is forced to re-render and align it with the proper time/frame on the next rendering cycle. Maybe the tween already finished but the user manually re-renders it as halfway done.
+			}
+			if (prevTime === 0) {
+				if (this._startAt) {
+					if (time >= 0) {
+						this._startAt.render(time, true, force);
+					} else if (!callback) {
+						callback = "_dummyGS"; //if no callback is defined, use a dummy value just so that the condition at the end evaluates as true because _startAt should render AFTER the normal render loop when the time is negative. We could handle this in a more intuitive way, of course, but the render loop is the MOST important thing to optimize, so this technique allows us to avoid adding extra conditional logic in a high-frequency area.
+					}
+				}
+				if (this.vars.onStart) if (this._time !== 0 || duration === 0) if (!suppressEvents) {
+					this._callback("onStart");
+				}
+			}
+			pt = this._firstPT;
+			while (pt) {
+				if (pt.f) {
+					pt.t[pt.p](pt.c * this.ratio + pt.s);
+				} else {
+					pt.t[pt.p] = pt.c * this.ratio + pt.s;
+				}
+				pt = pt._next;
+			}
+
+			if (this._onUpdate) {
+				if (time < 0) if (this._startAt && time !== -0.0001) { //if the tween is positioned at the VERY beginning (_startTime 0) of its parent timeline, it's illegal for the playhead to go back further, so we should not render the recorded startAt values.
+					this._startAt.render(time, true, force); //note: for performance reasons, we tuck this conditional logic inside less traveled areas (most tweens don't have an onUpdate). We'd just have it at the end before the onComplete, but the values should be updated before any onUpdate is called, so we ALSO put it here and then if it's not called, we do so later near the onComplete.
+				}
+				if (!suppressEvents) if (this._time !== prevTime || isComplete || force) {
+					this._callback("onUpdate");
+				}
+			}
+			if (callback) if (!this._gc || force) { //check _gc because there's a chance that kill() could be called in an onUpdate
+				if (time < 0 && this._startAt && !this._onUpdate && time !== -0.0001) { //-0.0001 is a special value that we use when looping back to the beginning of a repeated TimelineMax, in which case we shouldn't render the _startAt values.
+					this._startAt.render(time, true, force);
+				}
+				if (isComplete) {
+					if (this._timeline.autoRemoveChildren) {
+						this._enabled(false, false);
+					}
+					this._active = false;
+				}
+				if (!suppressEvents && this.vars[callback]) {
+					this._callback(callback);
+				}
+				if (duration === 0 && this._rawPrevTime === _tinyNum && rawPrevTime !== _tinyNum) { //the onComplete or onReverseComplete could trigger movement of the playhead and for zero-duration tweens (which must discern direction) that land directly back on their start time, we don't want to fire again on the next render. Think of several addPause()'s in a timeline that forces the playhead to a certain spot, but what if it's already paused and another tween is tweening the "time" of the timeline? Each time it moves [forward] past that spot, it would move back, and since suppressEvents is true, it'd reset _rawPrevTime to _tinyNum so that when it begins again, the callback would fire (so ultimately it could bounce back and forth during that tween). Again, this is a very uncommon scenario, but possible nonetheless.
+					this._rawPrevTime = 0;
+				}
+			}
+		};
+
+		p._kill = function(vars, target, overwritingTween) {
+			if (vars === "all") {
+				vars = null;
+			}
+			if (vars == null) if (target == null || target === this.target) {
+				this._lazy = false;
+				return this._enabled(false, false);
+			}
+			target = (typeof(target) !== "string") ? (target || this._targets || this.target) : TweenLite.selector(target) || target;
+			var simultaneousOverwrite = (overwritingTween && this._time && overwritingTween._startTime === this._startTime && this._timeline === overwritingTween._timeline),
+				i, overwrittenProps, p, pt, propLookup, changed, killProps, record, killed;
+			if ((_isArray(target) || _isSelector(target)) && typeof(target[0]) !== "number") {
+				i = target.length;
+				while (--i > -1) {
+					if (this._kill(vars, target[i], overwritingTween)) {
+						changed = true;
+					}
+				}
+			} else {
+				if (this._targets) {
+					i = this._targets.length;
+					while (--i > -1) {
+						if (target === this._targets[i]) {
+							propLookup = this._propLookup[i] || {};
+							this._overwrittenProps = this._overwrittenProps || [];
+							overwrittenProps = this._overwrittenProps[i] = vars ? this._overwrittenProps[i] || {} : "all";
+							break;
+						}
+					}
+				} else if (target !== this.target) {
+					return false;
+				} else {
+					propLookup = this._propLookup;
+					overwrittenProps = this._overwrittenProps = vars ? this._overwrittenProps || {} : "all";
+				}
+
+				if (propLookup) {
+					killProps = vars || propLookup;
+					record = (vars !== overwrittenProps && overwrittenProps !== "all" && vars !== propLookup && (typeof(vars) !== "object" || !vars._tempKill)); //_tempKill is a super-secret way to delete a particular tweening property but NOT have it remembered as an official overwritten property (like in BezierPlugin)
+					if (overwritingTween && (TweenLite.onOverwrite || this.vars.onOverwrite)) {
+						for (p in killProps) {
+							if (propLookup[p]) {
+								if (!killed) {
+									killed = [];
+								}
+								killed.push(p);
+							}
+						}
+						if ((killed || !vars) && !_onOverwrite(this, overwritingTween, target, killed)) { //if the onOverwrite returned false, that means the user wants to override the overwriting (cancel it).
+							return false;
+						}
+					}
+
+					for (p in killProps) {
+						if ((pt = propLookup[p])) {
+							if (simultaneousOverwrite) { //if another tween overwrites this one and they both start at exactly the same time, yet this tween has already rendered once (for example, at 0.001) because it's first in the queue, we should revert the values to where they were at 0 so that the starting values aren't contaminated on the overwriting tween.
+								if (pt.f) {
+									pt.t[pt.p](pt.s);
+								} else {
+									pt.t[pt.p] = pt.s;
+								}
+								changed = true;
+							}
+							if (pt.pg && pt.t._kill(killProps)) {
+								changed = true; //some plugins need to be notified so they can perform cleanup tasks first
+							}
+							if (!pt.pg || pt.t._overwriteProps.length === 0) {
+								if (pt._prev) {
+									pt._prev._next = pt._next;
+								} else if (pt === this._firstPT) {
+									this._firstPT = pt._next;
+								}
+								if (pt._next) {
+									pt._next._prev = pt._prev;
+								}
+								pt._next = pt._prev = null;
+							}
+							delete propLookup[p];
+						}
+						if (record) {
+							overwrittenProps[p] = 1;
+						}
+					}
+					if (!this._firstPT && this._initted) { //if all tweening properties are killed, kill the tween. Without this line, if there's a tween with multiple targets and then you killTweensOf() each target individually, the tween would technically still remain active and fire its onComplete even though there aren't any more properties tweening.
+						this._enabled(false, false);
+					}
+				}
+			}
+			return changed;
+		};
+
+		p.invalidate = function() {
+			if (this._notifyPluginsOfEnabled) {
+				TweenLite._onPluginEvent("_onDisable", this);
+			}
+			this._firstPT = this._overwrittenProps = this._startAt = this._onUpdate = null;
+			this._notifyPluginsOfEnabled = this._active = this._lazy = false;
+			this._propLookup = (this._targets) ? {} : [];
+			Animation.prototype.invalidate.call(this);
+			if (this.vars.immediateRender) {
+				this._time = -_tinyNum; //forces a render without having to set the render() "force" parameter to true because we want to allow lazying by default (using the "force" parameter always forces an immediate full render)
+				this.render(Math.min(0, -this._delay)); //in case delay is negative.
+			}
+			return this;
+		};
+
+		p._enabled = function(enabled, ignoreTimeline) {
+			if (!_tickerActive) {
+				_ticker.wake();
+			}
+			if (enabled && this._gc) {
+				var targets = this._targets,
+					i;
+				if (targets) {
+					i = targets.length;
+					while (--i > -1) {
+						this._siblings[i] = _register(targets[i], this, true);
+					}
+				} else {
+					this._siblings = _register(this.target, this, true);
+				}
+			}
+			Animation.prototype._enabled.call(this, enabled, ignoreTimeline);
+			if (this._notifyPluginsOfEnabled) if (this._firstPT) {
+				return TweenLite._onPluginEvent((enabled ? "_onEnable" : "_onDisable"), this);
+			}
+			return false;
+		};
+
+
+//----TweenLite static methods -----------------------------------------------------
+
+		TweenLite.to = function(target, duration, vars) {
+			return new TweenLite(target, duration, vars);
+		};
+
+		TweenLite.from = function(target, duration, vars) {
+			vars.runBackwards = true;
+			vars.immediateRender = (vars.immediateRender != false);
+			return new TweenLite(target, duration, vars);
+		};
+
+		TweenLite.fromTo = function(target, duration, fromVars, toVars) {
+			toVars.startAt = fromVars;
+			toVars.immediateRender = (toVars.immediateRender != false && fromVars.immediateRender != false);
+			return new TweenLite(target, duration, toVars);
+		};
+
+		TweenLite.delayedCall = function(delay, callback, params, scope, useFrames) {
+			return new TweenLite(callback, 0, {delay:delay, onComplete:callback, onCompleteParams:params, callbackScope:scope, onReverseComplete:callback, onReverseCompleteParams:params, immediateRender:false, lazy:false, useFrames:useFrames, overwrite:0});
+		};
+
+		TweenLite.set = function(target, vars) {
+			return new TweenLite(target, 0, vars);
+		};
+
+		TweenLite.getTweensOf = function(target, onlyActive) {
+			if (target == null) { return []; }
+			target = (typeof(target) !== "string") ? target : TweenLite.selector(target) || target;
+			var i, a, j, t;
+			if ((_isArray(target) || _isSelector(target)) && typeof(target[0]) !== "number") {
+				i = target.length;
+				a = [];
+				while (--i > -1) {
+					a = a.concat(TweenLite.getTweensOf(target[i], onlyActive));
+				}
+				i = a.length;
+				//now get rid of any duplicates (tweens of arrays of objects could cause duplicates)
+				while (--i > -1) {
+					t = a[i];
+					j = i;
+					while (--j > -1) {
+						if (t === a[j]) {
+							a.splice(i, 1);
+						}
+					}
+				}
+			} else if (target._gsTweenID) {
+				a = _register(target).concat();
+				i = a.length;
+				while (--i > -1) {
+					if (a[i]._gc || (onlyActive && !a[i].isActive())) {
+						a.splice(i, 1);
+					}
+				}
+			}
+			return a || [];
+		};
+
+		TweenLite.killTweensOf = TweenLite.killDelayedCallsTo = function(target, onlyActive, vars) {
+			if (typeof(onlyActive) === "object") {
+				vars = onlyActive; //for backwards compatibility (before "onlyActive" parameter was inserted)
+				onlyActive = false;
+			}
+			var a = TweenLite.getTweensOf(target, onlyActive),
+				i = a.length;
+			while (--i > -1) {
+				a[i]._kill(vars, target);
+			}
+		};
+
+
+
+/*
+ * ----------------------------------------------------------------
+ * TweenPlugin   (could easily be split out as a separate file/class, but included for ease of use (so that people don't need to include another script call before loading plugins which is easy to forget)
+ * ----------------------------------------------------------------
+ */
+		var TweenPlugin = _class("plugins.TweenPlugin", function(props, priority) {
+					this._overwriteProps = (props || "").split(",");
+					this._propName = this._overwriteProps[0];
+					this._priority = priority || 0;
+					this._super = TweenPlugin.prototype;
+				}, true);
+
+		p = TweenPlugin.prototype;
+		TweenPlugin.version = "1.19.0";
+		TweenPlugin.API = 2;
+		p._firstPT = null;
+		p._addTween = _addPropTween;
+		p.setRatio = _setRatio;
+
+		p._kill = function(lookup) {
+			var a = this._overwriteProps,
+				pt = this._firstPT,
+				i;
+			if (lookup[this._propName] != null) {
+				this._overwriteProps = [];
+			} else {
+				i = a.length;
+				while (--i > -1) {
+					if (lookup[a[i]] != null) {
+						a.splice(i, 1);
+					}
+				}
+			}
+			while (pt) {
+				if (lookup[pt.n] != null) {
+					if (pt._next) {
+						pt._next._prev = pt._prev;
+					}
+					if (pt._prev) {
+						pt._prev._next = pt._next;
+						pt._prev = null;
+					} else if (this._firstPT === pt) {
+						this._firstPT = pt._next;
+					}
+				}
+				pt = pt._next;
+			}
+			return false;
+		};
+
+		p._mod = p._roundProps = function(lookup) {
+			var pt = this._firstPT,
+				val;
+			while (pt) {
+				val = lookup[this._propName] || (pt.n != null && lookup[ pt.n.split(this._propName + "_").join("") ]);
+				if (val && typeof(val) === "function") { //some properties that are very plugin-specific add a prefix named after the _propName plus an underscore, so we need to ignore that extra stuff here.
+					if (pt.f === 2) {
+						pt.t._applyPT.m = val;
+					} else {
+						pt.m = val;
+					}
+				}
+				pt = pt._next;
+			}
+		};
+
+		TweenLite._onPluginEvent = function(type, tween) {
+			var pt = tween._firstPT,
+				changed, pt2, first, last, next;
+			if (type === "_onInitAllProps") {
+				//sorts the PropTween linked list in order of priority because some plugins need to render earlier/later than others, like MotionBlurPlugin applies its effects after all x/y/alpha tweens have rendered on each frame.
+				while (pt) {
+					next = pt._next;
+					pt2 = first;
+					while (pt2 && pt2.pr > pt.pr) {
+						pt2 = pt2._next;
+					}
+					if ((pt._prev = pt2 ? pt2._prev : last)) {
+						pt._prev._next = pt;
+					} else {
+						first = pt;
+					}
+					if ((pt._next = pt2)) {
+						pt2._prev = pt;
+					} else {
+						last = pt;
+					}
+					pt = next;
+				}
+				pt = tween._firstPT = first;
+			}
+			while (pt) {
+				if (pt.pg) if (typeof(pt.t[type]) === "function") if (pt.t[type]()) {
+					changed = true;
+				}
+				pt = pt._next;
+			}
+			return changed;
+		};
+
+		TweenPlugin.activate = function(plugins) {
+			var i = plugins.length;
+			while (--i > -1) {
+				if (plugins[i].API === TweenPlugin.API) {
+					_plugins[(new plugins[i]())._propName] = plugins[i];
+				}
+			}
+			return true;
+		};
+
+		//provides a more concise way to define plugins that have no dependencies besides TweenPlugin and TweenLite, wrapping common boilerplate stuff into one function (added in 1.9.0). You don't NEED to use this to define a plugin - the old way still works and can be useful in certain (rare) situations.
+		_gsDefine.plugin = function(config) {
+			if (!config || !config.propName || !config.init || !config.API) { throw "illegal plugin definition."; }
+			var propName = config.propName,
+				priority = config.priority || 0,
+				overwriteProps = config.overwriteProps,
+				map = {init:"_onInitTween", set:"setRatio", kill:"_kill", round:"_mod", mod:"_mod", initAll:"_onInitAllProps"},
+				Plugin = _class("plugins." + propName.charAt(0).toUpperCase() + propName.substr(1) + "Plugin",
+					function() {
+						TweenPlugin.call(this, propName, priority);
+						this._overwriteProps = overwriteProps || [];
+					}, (config.global === true)),
+				p = Plugin.prototype = new TweenPlugin(propName),
+				prop;
+			p.constructor = Plugin;
+			Plugin.API = config.API;
+			for (prop in map) {
+				if (typeof(config[prop]) === "function") {
+					p[map[prop]] = config[prop];
+				}
+			}
+			Plugin.version = config.version;
+			TweenPlugin.activate([Plugin]);
+			return Plugin;
+		};
+
+
+		//now run through all the dependencies discovered and if any are missing, log that to the console as a warning. This is why it's best to have TweenLite load last - it can check all the dependencies for you.
+		a = window._gsQueue;
+		if (a) {
+			for (i = 0; i < a.length; i++) {
+				a[i]();
+			}
+			for (p in _defLookup) {
+				if (!_defLookup[p].func) {
+					window.console.log("GSAP encountered missing dependency: " + p);
+				}
+			}
+		}
+
+		_tickerActive = false; //ensures that the first official animation forces a ticker.tick() to update the time when it is instantiated
+
+})((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenLite");
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(25);
+module.exports = __webpack_require__(92);
+
+
+/***/ }),
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39574,7 +41523,7 @@ var _vue = __webpack_require__(10);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vueResource = __webpack_require__(27);
+var _vueResource = __webpack_require__(28);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
@@ -39588,7 +41537,7 @@ var _moJs2 = _interopRequireDefault(_moJs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-window.$ = window.jQuery = __webpack_require__(4);
+window.$ = window.jQuery = __webpack_require__(5);
 window.Tether = __webpack_require__(13);
 
 window.Popper = _popper2.default;
@@ -39599,7 +41548,7 @@ _vue2.default.use(_vueRouter2.default);
 
 var router = new _vueRouter2.default({
   mode: 'history',
-  routes: [{ path: '/', component: __webpack_require__(29) }, { path: '/works', component: __webpack_require__(32) }, { path: '/about', component: __webpack_require__(74) }, { path: '/contacts', alias: '/contact', component: __webpack_require__(79) }, { path: '/work/:slug', component: __webpack_require__(84) }]
+  routes: [{ path: '/', component: __webpack_require__(30) }, { path: '/works', component: __webpack_require__(33) }, { path: '/about', component: __webpack_require__(75) }, { path: '/contacts', alias: '/contact', component: __webpack_require__(80) }, { path: '/work/:slug', component: __webpack_require__(87) }]
 });
 
 var app = new _vue2.default({
@@ -39637,9 +41586,9 @@ window.addEventListener('popstate', function () {
 });
 
 /***/ }),
-/* 25 */,
 /* 26 */,
-/* 27 */
+/* 27 */,
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40741,7 +42690,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(28);
+    var client = __webpack_require__(29);
 
     return new PromiseObj(function (resolve) {
 
@@ -41217,21 +43166,21 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(30)
+var __vue_script__ = __webpack_require__(31)
 /* template */
-var __vue_template__ = __webpack_require__(31)
+var __vue_template__ = __webpack_require__(32)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -41271,7 +43220,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41289,7 +43238,7 @@ var _mojsPlayer = __webpack_require__(15);
 
 var _mojsPlayer2 = _interopRequireDefault(_mojsPlayer);
 
-var _jquery = __webpack_require__(4);
+var _jquery = __webpack_require__(5);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -41355,13 +43304,9 @@ exports.default = {
 //
 //
 //
-//
-//
-//
-//
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -41370,159 +43315,6 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("main", [
     _c("div", { staticClass: "action" }, [
-      _c("div", { staticClass: "row pb-5" }, [
-        _c("div", { staticClass: "col justify-content-around" }, [
-          _c(
-            "svg",
-            {
-              ref: "logo",
-              staticClass: "mx-auto d-block",
-              attrs: {
-                viewBox: "0 0 868 868",
-                width: "180",
-                height: "180",
-                version: "1.1",
-                xmlns: "http://www.w3.org/2000/svg",
-                "xmlns:xlink": "http://www.w3.org/1999/xlink"
-              }
-            },
-            [
-              _c(
-                "g",
-                {
-                  attrs: {
-                    stroke: "none",
-                    "stroke-width": "1",
-                    fill: "none",
-                    "fill-rule": "evenodd"
-                  }
-                },
-                [
-                  _c(
-                    "g",
-                    { attrs: { transform: "translate(57.000000, 0.000000)" } },
-                    [
-                      _c("polygon", {
-                        staticClass: "svg-black",
-                        attrs: {
-                          points:
-                            "377.8569 -0.0002 -0.0001 216.9438 -0.0001 652.2708 377.8569 867.7778 754.2779 652.2708 754.2779 216.9438"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M235.8068,250.5967 L235.8068,610.5717",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M282.0891,250.5967 L282.0891,610.3077",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M163.2648,556.7984 L354.7348,556.7984",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M163.2101,602.6655 L354.6801,602.6655",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M163.2326,303.5835 L354.7016,303.5835",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M163.2326,257.7514 L354.7016,257.7514",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M382.9914,250.5967 L382.9914,610.3077",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M429.2219,250.5884 L429.2219,610.3004",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M429.2805,366.9365 L496.7705,366.9365",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M429.2209,412.7354 L496.7319,412.7354",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M387.0246,304.6958 L603.2926,304.6958",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("path", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          d: "M375.4289,257.7514 L603.2919,257.7514",
-                          "stroke-width": "15.296"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("polygon", {
-                        staticClass: "svg-white-stroke",
-                        attrs: {
-                          "stroke-width": "15.222",
-                          points:
-                            "127.743 645.694 637.917 645.694 637.917 215.564 127.743 215.564"
-                        }
-                      })
-                    ]
-                  )
-                ]
-              )
-            ]
-          )
-        ])
-      ]),
-      _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c(
           "div",
@@ -41534,7 +43326,7 @@ var render = function() {
                 staticClass: "btn btn-lg btn-block btn-primary",
                 attrs: { to: "/works" }
               },
-              [_vm._v("Isabella Fornasiero")]
+              [_vm._v("Enter")]
             )
           ],
           1
@@ -41581,19 +43373,19 @@ if (false) {
 }
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(33)
+  __webpack_require__(34)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(36)
+var __vue_script__ = __webpack_require__(37)
 /* template */
-var __vue_template__ = __webpack_require__(73)
+var __vue_template__ = __webpack_require__(74)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -41633,17 +43425,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(34);
+var content = __webpack_require__(35);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("3a677380", content, false);
+var update = __webpack_require__(4)("3a677380", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -41659,10 +43451,10 @@ if(false) {
 }
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
@@ -41673,7 +43465,7 @@ exports.push([module.i, "\n.sr .box { visibility: hidden;\n}\n", ""]);
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 /**
@@ -41706,7 +43498,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41720,7 +43512,7 @@ var _MainLayout = __webpack_require__(6);
 
 var _MainLayout2 = _interopRequireDefault(_MainLayout);
 
-var _grid = __webpack_require__(42);
+var _grid = __webpack_require__(43);
 
 var _grid2 = _interopRequireDefault(_grid);
 
@@ -41732,7 +43524,7 @@ var _mojsPlayer = __webpack_require__(15);
 
 var _mojsPlayer2 = _interopRequireDefault(_mojsPlayer);
 
-var _scrollreveal = __webpack_require__(72);
+var _scrollreveal = __webpack_require__(73);
 
 var _scrollreveal2 = _interopRequireDefault(_scrollreveal);
 
@@ -41776,7 +43568,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41786,7 +43578,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _FooterLayout = __webpack_require__(38);
+var _FooterLayout = __webpack_require__(39);
 
 var _FooterLayout2 = _interopRequireDefault(_FooterLayout);
 
@@ -41819,34 +43611,27 @@ exports.default = {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(100)
+}
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(39)
+var __vue_script__ = __webpack_require__(40)
 /* template */
-var __vue_template__ = __webpack_require__(40)
+var __vue_template__ = __webpack_require__(99)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = null
+var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-3d32eb0e"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -41880,54 +43665,46 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-
-
-/***/ }),
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "footer",
-    { ref: "footer", staticClass: "w-100 bg-light text-center" },
-    [_vm._m(0)]
-  )
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "pt-2" }, [
-      _c("small", [_vm._v("© Isabella Fornasiero 2018. All rights reserved.")])
-    ])
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+  name: "",
+  data: function data() {
+    return {};
   }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-3d32eb0e", module.exports)
-  }
-}
+};
 
 /***/ }),
-/* 41 */
+/* 41 */,
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -41938,84 +43715,11 @@ var render = function() {
     "main",
     [
       _c("nav", { staticClass: "navbar navbar-light bg-light sticky-top" }, [
-        _vm._m(0),
-        _vm._v(" "),
         _c(
           "div",
-          { staticClass: "d-flex justify-content-end" },
+          { staticClass: "d-flex justify-content-end ml-auto" },
           [
-            _c(
-              "a",
-              { staticClass: "nav-link", on: { click: _vm.changeColor } },
-              [
-                _c(
-                  "svg",
-                  {
-                    attrs: {
-                      width: "30px",
-                      height: "30px",
-                      viewBox: "0 0 798 798",
-                      version: "1.1",
-                      xmlns: "http://www.w3.org/2000/svg",
-                      "xmlns:xlink": "http://www.w3.org/1999/xlink"
-                    }
-                  },
-                  [
-                    _c(
-                      "g",
-                      {
-                        attrs: {
-                          id: "Page-1",
-                          stroke: "none",
-                          "stroke-width": "1",
-                          fill: "none",
-                          "fill-rule": "evenodd"
-                        }
-                      },
-                      [
-                        _c(
-                          "g",
-                          {
-                            attrs: {
-                              transform: "translate(23.000000, 14.000000)"
-                            }
-                          },
-                          [
-                            _c("polygon", {
-                              attrs: {
-                                id: "Stroke-1",
-                                stroke: "#252121",
-                                "stroke-width": "19.705",
-                                points:
-                                  "370.149 0.1504 751.187 388.8854 370.149 769.9234 0.658 385.0374"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("path", {
-                              attrs: {
-                                d:
-                                  "M454.0928,464.7578 C470.8218,445.7358 481.0028,420.8128 481.0028,393.5498 C481.0028,366.3198 470.8458,341.4348 454.1628,322.4208 C503.1908,344.2848 538.7388,379.6798 551.4718,393.5598 C538.7488,407.4718 503.2048,442.9078 454.0928,464.7578 L454.0928,464.7578 Z M194.5868,393.5498 C207.3108,379.6478 242.8498,344.1968 291.9758,322.3418 C275.2418,341.3648 265.0568,366.2828 265.0568,393.5498 C265.0568,420.7888 275.2138,445.6798 291.9208,464.6978 C242.8778,442.8388 207.3208,407.4348 194.5868,393.5498 L194.5868,393.5498 Z M222.7548,318.5308 C237.7438,307.5528 257.2128,295.2978 280.1158,285.2338 L286.3178,304.3128 C266.6498,312.8168 249.0838,323.3448 234.0208,334.0348 L222.7548,318.5308 Z M363.7408,264.9028 L363.7408,285.8328 C342.3558,286.8258 322.2188,291.1668 303.6508,297.5768 L297.4028,278.3448 C317.5718,271.1228 339.8668,265.9748 363.7408,264.9028 L363.7408,264.9028 Z M448.6388,278.3828 L442.4088,297.5768 C423.8408,291.1708 403.6988,286.8308 382.3188,285.8328 L382.3188,264.9028 C406.1638,265.9838 428.4598,271.1408 448.6388,278.3828 L448.6388,278.3828 Z M523.2628,318.5638 L512.0198,334.0308 C496.9618,323.3408 479.4098,312.8168 459.7378,304.3178 L465.9208,285.2798 C488.8008,295.3488 508.2558,307.5938 523.2628,318.5638 L523.2628,318.5638 Z M571.0428,387.7158 C569.5898,385.9098 553.6638,366.5668 526.8608,345.1948 L537.9408,329.9498 C550.0198,339.9028 556.8158,347.0288 557.0378,347.2648 L570.6068,334.5878 C569.6228,333.5338 562.0098,325.5358 548.9748,314.7658 L563.9728,294.1238 L548.9518,283.2058 L534.3158,303.3468 C518.0598,291.3938 496.8738,278.0948 471.7648,267.3018 L478.2918,247.2068 L460.6288,241.4688 L454.4358,260.5248 C432.6328,252.8238 408.4158,247.3788 382.3038,246.3208 L382.3038,229.0708 L363.7368,229.0708 L363.7368,246.3208 C337.6298,247.3828 313.4128,252.8188 291.6048,260.5248 L285.4168,241.4838 L267.7588,247.2208 L274.2848,267.2978 C249.1728,278.0898 227.9768,291.3938 211.7208,303.3518 L197.0938,283.2288 L182.0768,294.1468 L197.0658,314.7658 C184.0268,325.5308 176.4278,333.5288 175.4388,334.5878 L189.0118,347.2598 C189.2348,347.0188 196.0218,339.8838 208.0818,329.9268 L219.1798,345.1988 C192.3918,366.5708 176.4688,385.9138 175.0118,387.7158 L170.2858,393.5548 L175.0118,399.3948 C178.3308,403.4978 256.3438,498.2128 367.3708,501.3788 C369.1118,501.4718 370.8618,501.5038 372.6258,501.5188 C372.7598,501.5188 372.8908,501.5278 373.0208,501.5278 L373.0298,501.5278 L373.0388,501.5278 C374.9468,501.5278 376.8408,501.4668 378.7258,501.3788 C489.7198,498.1858 567.7188,403.4978 571.0378,399.3998 L575.7728,393.5548 L571.0428,387.7158 Z",
-                                id: "Fill-3",
-                                fill: "#252121"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("path", {
-                              attrs: {
-                                d:
-                                  "M373.0206,522.4345 C267.6056,522.4345 189.7826,440.6705 189.0076,439.8445 L175.4436,452.5265 C178.8186,456.1335 259.3796,541.0025 373.0206,541.0025 C486.6566,541.0025 567.2226,456.1375 570.6026,452.5175 L557.0336,439.8445 C556.2676,440.6705 478.4356,522.4345 373.0206,522.4345",
-                                id: "Fill-5",
-                                fill: "#252121"
-                              }
-                            })
-                          ]
-                        )
-                      ]
-                    )
-                  ]
-                )
-              ]
-            ),
+            _vm._m(0),
             _vm._v(" "),
             _c(
               "router-link",
@@ -42051,15 +43755,19 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "navbar-brand", attrs: { href: "/" } }, [
-      _c("img", {
-        attrs: {
-          src: "/themes/default/img/logo.svg",
-          width: "30",
-          height: "30"
-        }
-      })
-    ])
+    return _c(
+      "a",
+      { staticClass: "navbar-brand justify-content-end", attrs: { href: "/" } },
+      [
+        _c("img", {
+          attrs: {
+            src: "/themes/default/img/logo.svg",
+            width: "40",
+            height: "40"
+          }
+        })
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -42072,19 +43780,19 @@ if (false) {
 }
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(43)
+  __webpack_require__(44)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(45)
+var __vue_script__ = __webpack_require__(46)
 /* template */
-var __vue_template__ = __webpack_require__(71)
+var __vue_template__ = __webpack_require__(72)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -42124,17 +43832,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(44);
+var content = __webpack_require__(45);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("23fdce96", content, false);
+var update = __webpack_require__(4)("23fdce96", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -42150,10 +43858,10 @@ if(false) {
 }
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
@@ -42164,7 +43872,7 @@ exports.push([module.i, "", ""]);
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42181,7 +43889,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 
-var _GridEl = __webpack_require__(46);
+var _GridEl = __webpack_require__(47);
 
 var _GridEl2 = _interopRequireDefault(_GridEl);
 
@@ -42237,19 +43945,19 @@ exports.default = {
 };
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(47)
+  __webpack_require__(48)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(49)
+var __vue_script__ = __webpack_require__(50)
 /* template */
-var __vue_template__ = __webpack_require__(52)
+var __vue_template__ = __webpack_require__(53)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -42289,17 +43997,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(48);
+var content = __webpack_require__(49);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("3bd3c3b8", content, false);
+var update = __webpack_require__(4)("3bd3c3b8", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -42315,10 +44023,10 @@ if(false) {
 }
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
@@ -42329,7 +44037,7 @@ exports.push([module.i, "\n.img_grid[data-v-23a36f70] {\n  overflow: hidden;\n  
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42343,7 +44051,7 @@ var _lodash = __webpack_require__(16);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _mojsCurveEditor = __webpack_require__(51);
+var _mojsCurveEditor = __webpack_require__(52);
 
 var _mojsCurveEditor2 = _interopRequireDefault(_mojsCurveEditor);
 
@@ -42527,10 +44235,10 @@ exports.default = {
   }
 
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -42558,7 +44266,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -54846,7 +56554,7 @@ return /******/ (function(modules) { // webpackBootstrap
 ;
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -54898,7 +56606,7 @@ if (false) {
 }
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54906,7 +56614,7 @@ if (false) {
 
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(18);
-var Axios = __webpack_require__(55);
+var Axios = __webpack_require__(56);
 var defaults = __webpack_require__(8);
 
 /**
@@ -54941,14 +56649,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(22);
-axios.CancelToken = __webpack_require__(69);
+axios.CancelToken = __webpack_require__(70);
 axios.isCancel = __webpack_require__(21);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(70);
+axios.spread = __webpack_require__(71);
 
 module.exports = axios;
 
@@ -54957,7 +56665,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports) {
 
 /*!
@@ -54984,7 +56692,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54992,10 +56700,10 @@ function isSlowBuffer (obj) {
 
 var defaults = __webpack_require__(8);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(64);
-var dispatchRequest = __webpack_require__(65);
-var isAbsoluteURL = __webpack_require__(67);
-var combineURLs = __webpack_require__(68);
+var InterceptorManager = __webpack_require__(65);
+var dispatchRequest = __webpack_require__(66);
+var isAbsoluteURL = __webpack_require__(68);
+var combineURLs = __webpack_require__(69);
 
 /**
  * Create a new instance of Axios
@@ -55077,7 +56785,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55096,7 +56804,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55129,7 +56837,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55157,7 +56865,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55232,7 +56940,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55276,7 +56984,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55351,7 +57059,7 @@ module.exports = (
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55394,7 +57102,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55454,7 +57162,7 @@ module.exports = (
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55513,14 +57221,14 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(66);
+var transformData = __webpack_require__(67);
 var isCancel = __webpack_require__(21);
 var defaults = __webpack_require__(8);
 
@@ -55599,7 +57307,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55626,7 +57334,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55647,7 +57355,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55668,7 +57376,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55732,7 +57440,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55766,7 +57474,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -55803,7 +57511,7 @@ if (false) {
 }
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/////    /////    /////    /////
@@ -56670,7 +58378,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/////    /////    /////    /////
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -56697,19 +58405,19 @@ if (false) {
 }
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(75)
+  __webpack_require__(76)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(77)
+var __vue_script__ = __webpack_require__(78)
 /* template */
-var __vue_template__ = __webpack_require__(78)
+var __vue_template__ = __webpack_require__(79)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -56749,17 +58457,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(76);
+var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("31879924", content, false);
+var update = __webpack_require__(4)("31879924", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -56775,10 +58483,10 @@ if(false) {
 }
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
@@ -56789,7 +58497,7 @@ exports.push([module.i, "\n.container[data-v-1fd3558e] {\n  height: calc(100vh -
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56829,7 +58537,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -56871,19 +58579,19 @@ if (false) {
 }
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(80)
+  __webpack_require__(81)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(82)
+var __vue_script__ = __webpack_require__(83)
 /* template */
-var __vue_template__ = __webpack_require__(83)
+var __vue_template__ = __webpack_require__(86)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -56923,17 +58631,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(81);
+var content = __webpack_require__(82);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("65ff71e0", content, false);
+var update = __webpack_require__(4)("65ff71e0", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -56949,10 +58657,10 @@ if(false) {
 }
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(undefined);
+exports = module.exports = __webpack_require__(3)(undefined);
 // imports
 
 
@@ -56963,7 +58671,7 @@ exports.push([module.i, "\n.container[data-v-7ad0fe61] {\n  height: calc(100vh -
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56977,9 +58685,9 @@ var _MainLayout = __webpack_require__(6);
 
 var _MainLayout2 = _interopRequireDefault(_MainLayout);
 
-var _gsap = __webpack_require__(94);
+var _gsap = __webpack_require__(84);
 
-var _CustomEase = __webpack_require__(96);
+var _CustomEase = __webpack_require__(85);
 
 var _CustomEase2 = _interopRequireDefault(_CustomEase);
 
@@ -57111,428 +58819,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 83 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("main-layout", [
-    _c("div", { staticClass: "container " }, [
-      _c("div", { staticClass: "row h-100 align-items-center" }, [
-        _c("div", { staticClass: "col " }, [
-          _c(
-            "div",
-            {
-              staticClass: "row justify-content-center",
-              attrs: { id: "address" }
-            },
-            [
-              _c("div", { staticClass: "col-12 text-center p-5" }, [
-                _c("p", [_vm._v("info (at) isabellafornasiero.com")]),
-                _vm._v(" "),
-                _c("p", [_vm._v("Milan, Italy")])
-              ])
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "row justify-content-center",
-              attrs: { id: "show-contact" }
-            },
-            [
-              _c("div", { staticClass: "col-12 pb-5" }, [
-                _c("div", { staticClass: "d-flex justify-content-around" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { href: "#" },
-                      on: { click: _vm.showContact }
-                    },
-                    [_vm._v("Send a message")]
-                  )
-                ])
-              ])
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "form",
-            { attrs: { id: "contact-form", action: "", method: "" } },
-            [
-              _c("div", { staticClass: "row justify-content-center" }, [
-                _c("div", { staticClass: "col-md-6" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "close",
-                      attrs: { id: "close", href: "#" },
-                      on: { click: _vm.closeContact }
-                    },
-                    [
-                      _c("span", { attrs: { "aria-hidden": "true" } }, [
-                        _vm._v("×")
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "form-group pb-3", attrs: { id: "name" } },
-                    [
-                      _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        staticClass: "form-control",
-                        attrs: { type: "text", name: "name", value: "" }
-                      })
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "form-group pb-3", attrs: { id: "email" } },
-                    [
-                      _c("label", { attrs: { for: "email" } }, [
-                        _vm._v("E-mail")
-                      ]),
-                      _vm._v(" "),
-                      _c("input", {
-                        staticClass: "form-control",
-                        attrs: { type: "text", name: "email", value: "" }
-                      })
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "form-group pb-3",
-                      attrs: { id: "message" }
-                    },
-                    [
-                      _c("label", { attrs: { for: "message" } }, [
-                        _vm._v("Message")
-                      ]),
-                      _vm._v(" "),
-                      _c("textarea", {
-                        staticClass: "form-control",
-                        attrs: { name: "message" }
-                      })
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "form-group d-flex justify-content-around",
-                      attrs: { id: "send-btn" }
-                    },
-                    [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary",
-                          attrs: { type: "submit", name: "button" }
-                        },
-                        [_vm._v("Send")]
-                      )
-                    ]
-                  )
-                ])
-              ])
-            ]
-          )
-        ])
-      ])
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-7ad0fe61", module.exports)
-  }
-}
-
-/***/ }),
 /* 84 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(85)
-}
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(87)
-/* template */
-var __vue_template__ = __webpack_require__(88)
-/* template functional */
-  var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = "data-v-416a9e79"
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/views/single/Work.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-416a9e79", Component.options)
-  } else {
-    hotAPI.reload("data-v-416a9e79", Component.options)
-' + '  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 85 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(86);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(3)("0a34c9c7", content, false);
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-416a9e79\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./Work.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-416a9e79\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./Work.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(2)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.hero_img[data-v-416a9e79] {\n  overflow: hidden;\n  min-height: 100px;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 87 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _MainLayout = __webpack_require__(6);
-
-var _MainLayout2 = _interopRequireDefault(_MainLayout);
-
-var _axios = __webpack_require__(17);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _lodash = __webpack_require__(16);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  props: [''],
-  data: function data() {
-    return {
-      article: [],
-      window: {}
-    };
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    var vue = this;
-    var slug = this.$route.params.slug;
-    this.getPost(slug);
-    window.addEventListener('resize', _lodash2.default.debounce(function () {
-      // this.resizeImg();
-      _this.resizeFeatured();
-    }, 250));
-  },
-
-  methods: {
-    getPost: function getPost(slug) {
-      var _this2 = this;
-
-      _axios2.default.get('/api/search-post/' + slug).then(function (response) {
-        _this2.article = response.data.data;
-        // var regex = /<img(.*?)>/g;
-        // this.article.html = this.article.html.replace(regex, '<img $1 class="mx-auto d-block pt-5">');
-        _lodash2.default.delay(function () {
-          // this.resizeImg();
-          _this2.resizeFeatured();
-        }, 50);
-      });
-    },
-    resizeImg: function resizeImg() {
-      var imgs = this.$refs['html'].querySelectorAll('img');
-      var nav = document.querySelector('nav').offsetHeight;
-      var h_max = window.innerHeight - nav * 2;
-      var w_max = window.innerWidth - nav;
-
-      var style = window.getComputedStyle(this.$refs['container'], null);
-      var test = style.getPropertyValue('width');
-      var title_w = this.$refs['title'].getBoundingClientRect().width;
-
-      if (w_max > title_w) {
-        w_max = title_w;
-      }
-
-      _lodash2.default.each(imgs, function (img) {
-        var h = img.offsetHeight;
-        var w = img.offsetWidth;
-        var k = h / w;
-        if (h_max / k < w_max) {
-          img.style.height = h_max + 'px';
-          img.style.width = h_max / k + 'px';
-        } else {
-          img.style.width = w_max + 'px';
-          img.style.height = w_max * k + 'px';
-        }
-      });
-    },
-    resizeFeatured: function resizeFeatured() {
-      var el_divider = '',
-          divider = '';
-      if (document.all) {
-        // IE
-        el_divider = this.$refs['divider'].offsetHeight;
-        divider = parseInt(this.$refs['divider'].currentStyle.marginTop, 10) + parseInt(this.$refs['divider'].currentStyle.marginBottom, 10) + el_divider;
-      } else {
-        divider = parseInt(document.defaultView.getComputedStyle(this.$refs['divider'], '').getPropertyValue('margin-top')) + parseInt(document.defaultView.getComputedStyle(this.$refs['divider'], '').getPropertyValue('margin-bottom'));
-      }
-      console.log('immagine');
-      console.log(this.$refs['featured_img'].offsetHeight);
-      var featured_img = this.$refs['featured_img'].offsetHeight;
-      var title_height = this.$refs['title'].offsetHeight + divider;
-      var nav = document.querySelector('nav').offsetHeight;
-      var h_max = window.innerHeight - nav * 2 - title_height;
-
-      if (featured_img <= h_max) {
-        h_max = featured_img - nav * 2 - title_height;
-        this.$refs['hero_img'].style.height = h_max + 'px';
-      } else {
-        this.$refs['hero_img'].style.height = h_max + 'px';
-      }
-      console.log(h_max);
-    }
-  },
-  components: {
-    MainLayout: _MainLayout2.default
-  }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/***/ }),
-/* 88 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("main-layout", [
-    _c("div", { ref: "hero_img", staticClass: "w-100 hero_img" }, [
-      _c("img", {
-        ref: "featured_img",
-        staticClass: "w-100",
-        attrs: { src: _vm.article.featured_img }
-      })
-    ]),
-    _vm._v(" "),
-    _c("article", { ref: "container", staticClass: "container pt-5" }, [
-      _c("h1", { ref: "title" }, [_vm._v(_vm._s(_vm.article.title))]),
-      _vm._v(" "),
-      _c("hr", { ref: "divider", staticClass: "pb-3" }),
-      _vm._v(" "),
-      _c("p", {
-        ref: "html",
-        domProps: { innerHTML: _vm._s(_vm.article.html) }
-      })
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-416a9e79", module.exports)
-  }
-}
-
-/***/ }),
-/* 89 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 90 */,
-/* 91 */,
-/* 92 */,
-/* 93 */,
-/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -65498,1959 +66785,10 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 		_tickerActive = false; //ensures that the first official animation forces a ticker.tick() to update the time when it is instantiated
 
 })((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenMax");
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 95 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * VERSION: 1.20.3
- * DATE: 2017-10-02
- * UPDATES AND DOCS AT: http://greensock.com
- *
- * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
- * This work is subject to the terms at http://greensock.com/standard-license or for
- * Club GreenSock members, the software agreement that was issued with your membership.
- * 
- * @author: Jack Doyle, jack@greensock.com
- */
-(function(window, moduleName) {
-
-		"use strict";
-		var _exports = {},
-			_doc = window.document,
-			_globals = window.GreenSockGlobals = window.GreenSockGlobals || window;
-		if (_globals.TweenLite) {
-			return; //in case the core set of classes is already loaded, don't instantiate twice.
-		}
-		var _namespace = function(ns) {
-				var a = ns.split("."),
-					p = _globals, i;
-				for (i = 0; i < a.length; i++) {
-					p[a[i]] = p = p[a[i]] || {};
-				}
-				return p;
-			},
-			gs = _namespace("com.greensock"),
-			_tinyNum = 0.0000000001,
-			_slice = function(a) { //don't use Array.prototype.slice.call(target, 0) because that doesn't work in IE8 with a NodeList that's returned by querySelectorAll()
-				var b = [],
-					l = a.length,
-					i;
-				for (i = 0; i !== l; b.push(a[i++])) {}
-				return b;
-			},
-			_emptyFunc = function() {},
-			_isArray = (function() { //works around issues in iframe environments where the Array global isn't shared, thus if the object originates in a different window/iframe, "(obj instanceof Array)" will evaluate false. We added some speed optimizations to avoid Object.prototype.toString.call() unless it's absolutely necessary because it's VERY slow (like 20x slower)
-				var toString = Object.prototype.toString,
-					array = toString.call([]);
-				return function(obj) {
-					return obj != null && (obj instanceof Array || (typeof(obj) === "object" && !!obj.push && toString.call(obj) === array));
-				};
-			}()),
-			a, i, p, _ticker, _tickerActive,
-			_defLookup = {},
-
-			/**
-			 * @constructor
-			 * Defines a GreenSock class, optionally with an array of dependencies that must be instantiated first and passed into the definition.
-			 * This allows users to load GreenSock JS files in any order even if they have interdependencies (like CSSPlugin extends TweenPlugin which is
-			 * inside TweenLite.js, but if CSSPlugin is loaded first, it should wait to run its code until TweenLite.js loads and instantiates TweenPlugin
-			 * and then pass TweenPlugin to CSSPlugin's definition). This is all done automatically and internally.
-			 *
-			 * Every definition will be added to a "com.greensock" global object (typically window, but if a window.GreenSockGlobals object is found,
-			 * it will go there as of v1.7). For example, TweenLite will be found at window.com.greensock.TweenLite and since it's a global class that should be available anywhere,
-			 * it is ALSO referenced at window.TweenLite. However some classes aren't considered global, like the base com.greensock.core.Animation class, so
-			 * those will only be at the package like window.com.greensock.core.Animation. Again, if you define a GreenSockGlobals object on the window, everything
-			 * gets tucked neatly inside there instead of on the window directly. This allows you to do advanced things like load multiple versions of GreenSock
-			 * files and put them into distinct objects (imagine a banner ad uses a newer version but the main site uses an older one). In that case, you could
-			 * sandbox the banner one like:
-			 *
-			 * <script>
-			 *     var gs = window.GreenSockGlobals = {}; //the newer version we're about to load could now be referenced in a "gs" object, like gs.TweenLite.to(...). Use whatever alias you want as long as it's unique, "gs" or "banner" or whatever.
-			 * </script>
-			 * <script src="js/greensock/v1.7/TweenMax.js"></script>
-			 * <script>
-			 *     window.GreenSockGlobals = window._gsQueue = window._gsDefine = null; //reset it back to null (along with the special _gsQueue variable) so that the next load of TweenMax affects the window and we can reference things directly like TweenLite.to(...)
-			 * </script>
-			 * <script src="js/greensock/v1.6/TweenMax.js"></script>
-			 * <script>
-			 *     gs.TweenLite.to(...); //would use v1.7
-			 *     TweenLite.to(...); //would use v1.6
-			 * </script>
-			 *
-			 * @param {!string} ns The namespace of the class definition, leaving off "com.greensock." as that's assumed. For example, "TweenLite" or "plugins.CSSPlugin" or "easing.Back".
-			 * @param {!Array.<string>} dependencies An array of dependencies (described as their namespaces minus "com.greensock." prefix). For example ["TweenLite","plugins.TweenPlugin","core.Animation"]
-			 * @param {!function():Object} func The function that should be called and passed the resolved dependencies which will return the actual class for this definition.
-			 * @param {boolean=} global If true, the class will be added to the global scope (typically window unless you define a window.GreenSockGlobals object)
-			 */
-			Definition = function(ns, dependencies, func, global) {
-				this.sc = (_defLookup[ns]) ? _defLookup[ns].sc : []; //subclasses
-				_defLookup[ns] = this;
-				this.gsClass = null;
-				this.func = func;
-				var _classes = [];
-				this.check = function(init) {
-					var i = dependencies.length,
-						missing = i,
-						cur, a, n, cl;
-					while (--i > -1) {
-						if ((cur = _defLookup[dependencies[i]] || new Definition(dependencies[i], [])).gsClass) {
-							_classes[i] = cur.gsClass;
-							missing--;
-						} else if (init) {
-							cur.sc.push(this);
-						}
-					}
-					if (missing === 0 && func) {
-						a = ("com.greensock." + ns).split(".");
-						n = a.pop();
-						cl = _namespace(a.join("."))[n] = this.gsClass = func.apply(func, _classes);
-
-						//exports to multiple environments
-						if (global) {
-							_globals[n] = _exports[n] = cl; //provides a way to avoid global namespace pollution. By default, the main classes like TweenLite, Power1, Strong, etc. are added to window unless a GreenSockGlobals is defined. So if you want to have things added to a custom object instead, just do something like window.GreenSockGlobals = {} before loading any GreenSock files. You can even set up an alias like window.GreenSockGlobals = windows.gs = {} so that you can access everything like gs.TweenLite. Also remember that ALL classes are added to the window.com.greensock object (in their respective packages, like com.greensock.easing.Power1, com.greensock.TweenLite, etc.)
-							if (typeof(module) !== "undefined" && module.exports) { //node
-								if (ns === moduleName) {
-									module.exports = _exports[moduleName] = cl;
-									for (i in _exports) {
-										cl[i] = _exports[i];
-									}
-								} else if (_exports[moduleName]) {
-									_exports[moduleName][n] = cl;
-								}
-							} else if (true){ //AMD
-								!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() { return cl; }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-							}
-						}
-						for (i = 0; i < this.sc.length; i++) {
-							this.sc[i].check();
-						}
-					}
-				};
-				this.check(true);
-			},
-
-			//used to create Definition instances (which basically registers a class that has dependencies).
-			_gsDefine = window._gsDefine = function(ns, dependencies, func, global) {
-				return new Definition(ns, dependencies, func, global);
-			},
-
-			//a quick way to create a class that doesn't have any dependencies. Returns the class, but first registers it in the GreenSock namespace so that other classes can grab it (other classes might be dependent on the class).
-			_class = gs._class = function(ns, func, global) {
-				func = func || function() {};
-				_gsDefine(ns, [], function(){ return func; }, global);
-				return func;
-			};
-
-		_gsDefine.globals = _globals;
-
-
-
-/*
- * ----------------------------------------------------------------
- * Ease
- * ----------------------------------------------------------------
- */
-		var _baseParams = [0, 0, 1, 1],
-			Ease = _class("easing.Ease", function(func, extraParams, type, power) {
-				this._func = func;
-				this._type = type || 0;
-				this._power = power || 0;
-				this._params = extraParams ? _baseParams.concat(extraParams) : _baseParams;
-			}, true),
-			_easeMap = Ease.map = {},
-			_easeReg = Ease.register = function(ease, names, types, create) {
-				var na = names.split(","),
-					i = na.length,
-					ta = (types || "easeIn,easeOut,easeInOut").split(","),
-					e, name, j, type;
-				while (--i > -1) {
-					name = na[i];
-					e = create ? _class("easing."+name, null, true) : gs.easing[name] || {};
-					j = ta.length;
-					while (--j > -1) {
-						type = ta[j];
-						_easeMap[name + "." + type] = _easeMap[type + name] = e[type] = ease.getRatio ? ease : ease[type] || new ease();
-					}
-				}
-			};
-
-		p = Ease.prototype;
-		p._calcEnd = false;
-		p.getRatio = function(p) {
-			if (this._func) {
-				this._params[0] = p;
-				return this._func.apply(null, this._params);
-			}
-			var t = this._type,
-				pw = this._power,
-				r = (t === 1) ? 1 - p : (t === 2) ? p : (p < 0.5) ? p * 2 : (1 - p) * 2;
-			if (pw === 1) {
-				r *= r;
-			} else if (pw === 2) {
-				r *= r * r;
-			} else if (pw === 3) {
-				r *= r * r * r;
-			} else if (pw === 4) {
-				r *= r * r * r * r;
-			}
-			return (t === 1) ? 1 - r : (t === 2) ? r : (p < 0.5) ? r / 2 : 1 - (r / 2);
-		};
-
-		//create all the standard eases like Linear, Quad, Cubic, Quart, Quint, Strong, Power0, Power1, Power2, Power3, and Power4 (each with easeIn, easeOut, and easeInOut)
-		a = ["Linear","Quad","Cubic","Quart","Quint,Strong"];
-		i = a.length;
-		while (--i > -1) {
-			p = a[i]+",Power"+i;
-			_easeReg(new Ease(null,null,1,i), p, "easeOut", true);
-			_easeReg(new Ease(null,null,2,i), p, "easeIn" + ((i === 0) ? ",easeNone" : ""));
-			_easeReg(new Ease(null,null,3,i), p, "easeInOut");
-		}
-		_easeMap.linear = gs.easing.Linear.easeIn;
-		_easeMap.swing = gs.easing.Quad.easeInOut; //for jQuery folks
-
-
-/*
- * ----------------------------------------------------------------
- * EventDispatcher
- * ----------------------------------------------------------------
- */
-		var EventDispatcher = _class("events.EventDispatcher", function(target) {
-			this._listeners = {};
-			this._eventTarget = target || this;
-		});
-		p = EventDispatcher.prototype;
-
-		p.addEventListener = function(type, callback, scope, useParam, priority) {
-			priority = priority || 0;
-			var list = this._listeners[type],
-				index = 0,
-				listener, i;
-			if (this === _ticker && !_tickerActive) {
-				_ticker.wake();
-			}
-			if (list == null) {
-				this._listeners[type] = list = [];
-			}
-			i = list.length;
-			while (--i > -1) {
-				listener = list[i];
-				if (listener.c === callback && listener.s === scope) {
-					list.splice(i, 1);
-				} else if (index === 0 && listener.pr < priority) {
-					index = i + 1;
-				}
-			}
-			list.splice(index, 0, {c:callback, s:scope, up:useParam, pr:priority});
-		};
-
-		p.removeEventListener = function(type, callback) {
-			var list = this._listeners[type], i;
-			if (list) {
-				i = list.length;
-				while (--i > -1) {
-					if (list[i].c === callback) {
-						list.splice(i, 1);
-						return;
-					}
-				}
-			}
-		};
-
-		p.dispatchEvent = function(type) {
-			var list = this._listeners[type],
-				i, t, listener;
-			if (list) {
-				i = list.length;
-				if (i > 1) { 
-					list = list.slice(0); //in case addEventListener() is called from within a listener/callback (otherwise the index could change, resulting in a skip)
-				}
-				t = this._eventTarget;
-				while (--i > -1) {
-					listener = list[i];
-					if (listener) {
-						if (listener.up) {
-							listener.c.call(listener.s || t, {type:type, target:t});
-						} else {
-							listener.c.call(listener.s || t);
-						}
-					}
-				}
-			}
-		};
-
-
-/*
- * ----------------------------------------------------------------
- * Ticker
- * ----------------------------------------------------------------
- */
- 		var _reqAnimFrame = window.requestAnimationFrame,
-			_cancelAnimFrame = window.cancelAnimationFrame,
-			_getTime = Date.now || function() {return new Date().getTime();},
-			_lastUpdate = _getTime();
-
-		//now try to determine the requestAnimationFrame and cancelAnimationFrame functions and if none are found, we'll use a setTimeout()/clearTimeout() polyfill.
-		a = ["ms","moz","webkit","o"];
-		i = a.length;
-		while (--i > -1 && !_reqAnimFrame) {
-			_reqAnimFrame = window[a[i] + "RequestAnimationFrame"];
-			_cancelAnimFrame = window[a[i] + "CancelAnimationFrame"] || window[a[i] + "CancelRequestAnimationFrame"];
-		}
-
-		_class("Ticker", function(fps, useRAF) {
-			var _self = this,
-				_startTime = _getTime(),
-				_useRAF = (useRAF !== false && _reqAnimFrame) ? "auto" : false,
-				_lagThreshold = 500,
-				_adjustedLag = 33,
-				_tickWord = "tick", //helps reduce gc burden
-				_fps, _req, _id, _gap, _nextTime,
-				_tick = function(manual) {
-					var elapsed = _getTime() - _lastUpdate,
-						overlap, dispatch;
-					if (elapsed > _lagThreshold) {
-						_startTime += elapsed - _adjustedLag;
-					}
-					_lastUpdate += elapsed;
-					_self.time = (_lastUpdate - _startTime) / 1000;
-					overlap = _self.time - _nextTime;
-					if (!_fps || overlap > 0 || manual === true) {
-						_self.frame++;
-						_nextTime += overlap + (overlap >= _gap ? 0.004 : _gap - overlap);
-						dispatch = true;
-					}
-					if (manual !== true) { //make sure the request is made before we dispatch the "tick" event so that timing is maintained. Otherwise, if processing the "tick" requires a bunch of time (like 15ms) and we're using a setTimeout() that's based on 16.7ms, it'd technically take 31.7ms between frames otherwise.
-						_id = _req(_tick);
-					}
-					if (dispatch) {
-						_self.dispatchEvent(_tickWord);
-					}
-				};
-
-			EventDispatcher.call(_self);
-			_self.time = _self.frame = 0;
-			_self.tick = function() {
-				_tick(true);
-			};
-
-			_self.lagSmoothing = function(threshold, adjustedLag) {
-				if (!arguments.length) { //if lagSmoothing() is called with no arguments, treat it like a getter that returns a boolean indicating if it's enabled or not. This is purposely undocumented and is for internal use.
-					return (_lagThreshold < 1 / _tinyNum);
-				}
-				_lagThreshold = threshold || (1 / _tinyNum); //zero should be interpreted as basically unlimited
-				_adjustedLag = Math.min(adjustedLag, _lagThreshold, 0);
-			};
-
-			_self.sleep = function() {
-				if (_id == null) {
-					return;
-				}
-				if (!_useRAF || !_cancelAnimFrame) {
-					clearTimeout(_id);
-				} else {
-					_cancelAnimFrame(_id);
-				}
-				_req = _emptyFunc;
-				_id = null;
-				if (_self === _ticker) {
-					_tickerActive = false;
-				}
-			};
-
-			_self.wake = function(seamless) {
-				if (_id !== null) {
-					_self.sleep();
-				} else if (seamless) {
-					_startTime += -_lastUpdate + (_lastUpdate = _getTime());
-				} else if (_self.frame > 10) { //don't trigger lagSmoothing if we're just waking up, and make sure that at least 10 frames have elapsed because of the iOS bug that we work around below with the 1.5-second setTimout().
-					_lastUpdate = _getTime() - _lagThreshold + 5;
-				}
-				_req = (_fps === 0) ? _emptyFunc : (!_useRAF || !_reqAnimFrame) ? function(f) { return setTimeout(f, ((_nextTime - _self.time) * 1000 + 1) | 0); } : _reqAnimFrame;
-				if (_self === _ticker) {
-					_tickerActive = true;
-				}
-				_tick(2);
-			};
-
-			_self.fps = function(value) {
-				if (!arguments.length) {
-					return _fps;
-				}
-				_fps = value;
-				_gap = 1 / (_fps || 60);
-				_nextTime = this.time + _gap;
-				_self.wake();
-			};
-
-			_self.useRAF = function(value) {
-				if (!arguments.length) {
-					return _useRAF;
-				}
-				_self.sleep();
-				_useRAF = value;
-				_self.fps(_fps);
-			};
-			_self.fps(fps);
-
-			//a bug in iOS 6 Safari occasionally prevents the requestAnimationFrame from working initially, so we use a 1.5-second timeout that automatically falls back to setTimeout() if it senses this condition.
-			setTimeout(function() {
-				if (_useRAF === "auto" && _self.frame < 5 && _doc.visibilityState !== "hidden") {
-					_self.useRAF(false);
-				}
-			}, 1500);
-		});
-
-		p = gs.Ticker.prototype = new gs.events.EventDispatcher();
-		p.constructor = gs.Ticker;
-
-
-/*
- * ----------------------------------------------------------------
- * Animation
- * ----------------------------------------------------------------
- */
-		var Animation = _class("core.Animation", function(duration, vars) {
-				this.vars = vars = vars || {};
-				this._duration = this._totalDuration = duration || 0;
-				this._delay = Number(vars.delay) || 0;
-				this._timeScale = 1;
-				this._active = (vars.immediateRender === true);
-				this.data = vars.data;
-				this._reversed = (vars.reversed === true);
-
-				if (!_rootTimeline) {
-					return;
-				}
-				if (!_tickerActive) { //some browsers (like iOS 6 Safari) shut down JavaScript execution when the tab is disabled and they [occasionally] neglect to start up requestAnimationFrame again when returning - this code ensures that the engine starts up again properly.
-					_ticker.wake();
-				}
-
-				var tl = this.vars.useFrames ? _rootFramesTimeline : _rootTimeline;
-				tl.add(this, tl._time);
-
-				if (this.vars.paused) {
-					this.paused(true);
-				}
-			});
-
-		_ticker = Animation.ticker = new gs.Ticker();
-		p = Animation.prototype;
-		p._dirty = p._gc = p._initted = p._paused = false;
-		p._totalTime = p._time = 0;
-		p._rawPrevTime = -1;
-		p._next = p._last = p._onUpdate = p._timeline = p.timeline = null;
-		p._paused = false;
-
-
-		//some browsers (like iOS) occasionally drop the requestAnimationFrame event when the user switches to a different tab and then comes back again, so we use a 2-second setTimeout() to sense if/when that condition occurs and then wake() the ticker.
-		var _checkTimeout = function() {
-				if (_tickerActive && _getTime() - _lastUpdate > 2000 && (_doc.visibilityState !== "hidden" || !_ticker.lagSmoothing())) { //note: if the tab is hidden, we should still wake if lagSmoothing has been disabled.
-					_ticker.wake();
-				}
-				var t = setTimeout(_checkTimeout, 2000);
-				if (t.unref) {
-					// allows a node process to exit even if the timeout’s callback hasn't been invoked. Without it, the node process could hang as this function is called every two seconds.
-					t.unref();
-				}
-			};
-		_checkTimeout();
-
-
-		p.play = function(from, suppressEvents) {
-			if (from != null) {
-				this.seek(from, suppressEvents);
-			}
-			return this.reversed(false).paused(false);
-		};
-
-		p.pause = function(atTime, suppressEvents) {
-			if (atTime != null) {
-				this.seek(atTime, suppressEvents);
-			}
-			return this.paused(true);
-		};
-
-		p.resume = function(from, suppressEvents) {
-			if (from != null) {
-				this.seek(from, suppressEvents);
-			}
-			return this.paused(false);
-		};
-
-		p.seek = function(time, suppressEvents) {
-			return this.totalTime(Number(time), suppressEvents !== false);
-		};
-
-		p.restart = function(includeDelay, suppressEvents) {
-			return this.reversed(false).paused(false).totalTime(includeDelay ? -this._delay : 0, (suppressEvents !== false), true);
-		};
-
-		p.reverse = function(from, suppressEvents) {
-			if (from != null) {
-				this.seek((from || this.totalDuration()), suppressEvents);
-			}
-			return this.reversed(true).paused(false);
-		};
-
-		p.render = function(time, suppressEvents, force) {
-			//stub - we override this method in subclasses.
-		};
-
-		p.invalidate = function() {
-			this._time = this._totalTime = 0;
-			this._initted = this._gc = false;
-			this._rawPrevTime = -1;
-			if (this._gc || !this.timeline) {
-				this._enabled(true);
-			}
-			return this;
-		};
-
-		p.isActive = function() {
-			var tl = this._timeline, //the 2 root timelines won't have a _timeline; they're always active.
-				startTime = this._startTime,
-				rawTime;
-			return (!tl || (!this._gc && !this._paused && tl.isActive() && (rawTime = tl.rawTime(true)) >= startTime && rawTime < startTime + this.totalDuration() / this._timeScale - 0.0000001));
-		};
-
-		p._enabled = function (enabled, ignoreTimeline) {
-			if (!_tickerActive) {
-				_ticker.wake();
-			}
-			this._gc = !enabled;
-			this._active = this.isActive();
-			if (ignoreTimeline !== true) {
-				if (enabled && !this.timeline) {
-					this._timeline.add(this, this._startTime - this._delay);
-				} else if (!enabled && this.timeline) {
-					this._timeline._remove(this, true);
-				}
-			}
-			return false;
-		};
-
-
-		p._kill = function(vars, target) {
-			return this._enabled(false, false);
-		};
-
-		p.kill = function(vars, target) {
-			this._kill(vars, target);
-			return this;
-		};
-
-		p._uncache = function(includeSelf) {
-			var tween = includeSelf ? this : this.timeline;
-			while (tween) {
-				tween._dirty = true;
-				tween = tween.timeline;
-			}
-			return this;
-		};
-
-		p._swapSelfInParams = function(params) {
-			var i = params.length,
-				copy = params.concat();
-			while (--i > -1) {
-				if (params[i] === "{self}") {
-					copy[i] = this;
-				}
-			}
-			return copy;
-		};
-
-		p._callback = function(type) {
-			var v = this.vars,
-				callback = v[type],
-				params = v[type + "Params"],
-				scope = v[type + "Scope"] || v.callbackScope || this,
-				l = params ? params.length : 0;
-			switch (l) { //speed optimization; call() is faster than apply() so use it when there are only a few parameters (which is by far most common). Previously we simply did var v = this.vars; v[type].apply(v[type + "Scope"] || v.callbackScope || this, v[type + "Params"] || _blankArray);
-				case 0: callback.call(scope); break;
-				case 1: callback.call(scope, params[0]); break;
-				case 2: callback.call(scope, params[0], params[1]); break;
-				default: callback.apply(scope, params);
-			}
-		};
-
-//----Animation getters/setters --------------------------------------------------------
-
-		p.eventCallback = function(type, callback, params, scope) {
-			if ((type || "").substr(0,2) === "on") {
-				var v = this.vars;
-				if (arguments.length === 1) {
-					return v[type];
-				}
-				if (callback == null) {
-					delete v[type];
-				} else {
-					v[type] = callback;
-					v[type + "Params"] = (_isArray(params) && params.join("").indexOf("{self}") !== -1) ? this._swapSelfInParams(params) : params;
-					v[type + "Scope"] = scope;
-				}
-				if (type === "onUpdate") {
-					this._onUpdate = callback;
-				}
-			}
-			return this;
-		};
-
-		p.delay = function(value) {
-			if (!arguments.length) {
-				return this._delay;
-			}
-			if (this._timeline.smoothChildTiming) {
-				this.startTime( this._startTime + value - this._delay );
-			}
-			this._delay = value;
-			return this;
-		};
-
-		p.duration = function(value) {
-			if (!arguments.length) {
-				this._dirty = false;
-				return this._duration;
-			}
-			this._duration = this._totalDuration = value;
-			this._uncache(true); //true in case it's a TweenMax or TimelineMax that has a repeat - we'll need to refresh the totalDuration.
-			if (this._timeline.smoothChildTiming) if (this._time > 0) if (this._time < this._duration) if (value !== 0) {
-				this.totalTime(this._totalTime * (value / this._duration), true);
-			}
-			return this;
-		};
-
-		p.totalDuration = function(value) {
-			this._dirty = false;
-			return (!arguments.length) ? this._totalDuration : this.duration(value);
-		};
-
-		p.time = function(value, suppressEvents) {
-			if (!arguments.length) {
-				return this._time;
-			}
-			if (this._dirty) {
-				this.totalDuration();
-			}
-			return this.totalTime((value > this._duration) ? this._duration : value, suppressEvents);
-		};
-
-		p.totalTime = function(time, suppressEvents, uncapped) {
-			if (!_tickerActive) {
-				_ticker.wake();
-			}
-			if (!arguments.length) {
-				return this._totalTime;
-			}
-			if (this._timeline) {
-				if (time < 0 && !uncapped) {
-					time += this.totalDuration();
-				}
-				if (this._timeline.smoothChildTiming) {
-					if (this._dirty) {
-						this.totalDuration();
-					}
-					var totalDuration = this._totalDuration,
-						tl = this._timeline;
-					if (time > totalDuration && !uncapped) {
-						time = totalDuration;
-					}
-					this._startTime = (this._paused ? this._pauseTime : tl._time) - ((!this._reversed ? time : totalDuration - time) / this._timeScale);
-					if (!tl._dirty) { //for performance improvement. If the parent's cache is already dirty, it already took care of marking the ancestors as dirty too, so skip the function call here.
-						this._uncache(false);
-					}
-					//in case any of the ancestor timelines had completed but should now be enabled, we should reset their totalTime() which will also ensure that they're lined up properly and enabled. Skip for animations that are on the root (wasteful). Example: a TimelineLite.exportRoot() is performed when there's a paused tween on the root, the export will not complete until that tween is unpaused, but imagine a child gets restarted later, after all [unpaused] tweens have completed. The startTime of that child would get pushed out, but one of the ancestors may have completed.
-					if (tl._timeline) {
-						while (tl._timeline) {
-							if (tl._timeline._time !== (tl._startTime + tl._totalTime) / tl._timeScale) {
-								tl.totalTime(tl._totalTime, true);
-							}
-							tl = tl._timeline;
-						}
-					}
-				}
-				if (this._gc) {
-					this._enabled(true, false);
-				}
-				if (this._totalTime !== time || this._duration === 0) {
-					if (_lazyTweens.length) {
-						_lazyRender();
-					}
-					this.render(time, suppressEvents, false);
-					if (_lazyTweens.length) { //in case rendering caused any tweens to lazy-init, we should render them because typically when someone calls seek() or time() or progress(), they expect an immediate render.
-						_lazyRender();
-					}
-				}
-			}
-			return this;
-		};
-
-		p.progress = p.totalProgress = function(value, suppressEvents) {
-			var duration = this.duration();
-			return (!arguments.length) ? (duration ? this._time / duration : this.ratio) : this.totalTime(duration * value, suppressEvents);
-		};
-
-		p.startTime = function(value) {
-			if (!arguments.length) {
-				return this._startTime;
-			}
-			if (value !== this._startTime) {
-				this._startTime = value;
-				if (this.timeline) if (this.timeline._sortChildren) {
-					this.timeline.add(this, value - this._delay); //ensures that any necessary re-sequencing of Animations in the timeline occurs to make sure the rendering order is correct.
-				}
-			}
-			return this;
-		};
-
-		p.endTime = function(includeRepeats) {
-			return this._startTime + ((includeRepeats != false) ? this.totalDuration() : this.duration()) / this._timeScale;
-		};
-
-		p.timeScale = function(value) {
-			if (!arguments.length) {
-				return this._timeScale;
-			}
-			var pauseTime, t;
-			value = value || _tinyNum; //can't allow zero because it'll throw the math off
-			if (this._timeline && this._timeline.smoothChildTiming) {
-				pauseTime = this._pauseTime;
-				t = (pauseTime || pauseTime === 0) ? pauseTime : this._timeline.totalTime();
-				this._startTime = t - ((t - this._startTime) * this._timeScale / value);
-			}
-			this._timeScale = value;
-			t = this.timeline;
-			while (t && t.timeline) { //must update the duration/totalDuration of all ancestor timelines immediately in case in the middle of a render loop, one tween alters another tween's timeScale which shoves its startTime before 0, forcing the parent timeline to shift around and shiftChildren() which could affect that next tween's render (startTime). Doesn't matter for the root timeline though.
-				t._dirty = true;
-				t.totalDuration();
-				t = t.timeline;
-			}
-			return this;
-		};
-
-		p.reversed = function(value) {
-			if (!arguments.length) {
-				return this._reversed;
-			}
-			if (value != this._reversed) {
-				this._reversed = value;
-				this.totalTime(((this._timeline && !this._timeline.smoothChildTiming) ? this.totalDuration() - this._totalTime : this._totalTime), true);
-			}
-			return this;
-		};
-
-		p.paused = function(value) {
-			if (!arguments.length) {
-				return this._paused;
-			}
-			var tl = this._timeline,
-				raw, elapsed;
-			if (value != this._paused) if (tl) {
-				if (!_tickerActive && !value) {
-					_ticker.wake();
-				}
-				raw = tl.rawTime();
-				elapsed = raw - this._pauseTime;
-				if (!value && tl.smoothChildTiming) {
-					this._startTime += elapsed;
-					this._uncache(false);
-				}
-				this._pauseTime = value ? raw : null;
-				this._paused = value;
-				this._active = this.isActive();
-				if (!value && elapsed !== 0 && this._initted && this.duration()) {
-					raw = tl.smoothChildTiming ? this._totalTime : (raw - this._startTime) / this._timeScale;
-					this.render(raw, (raw === this._totalTime), true); //in case the target's properties changed via some other tween or manual update by the user, we should force a render.
-				}
-			}
-			if (this._gc && !value) {
-				this._enabled(true, false);
-			}
-			return this;
-		};
-
-
-/*
- * ----------------------------------------------------------------
- * SimpleTimeline
- * ----------------------------------------------------------------
- */
-		var SimpleTimeline = _class("core.SimpleTimeline", function(vars) {
-			Animation.call(this, 0, vars);
-			this.autoRemoveChildren = this.smoothChildTiming = true;
-		});
-
-		p = SimpleTimeline.prototype = new Animation();
-		p.constructor = SimpleTimeline;
-		p.kill()._gc = false;
-		p._first = p._last = p._recent = null;
-		p._sortChildren = false;
-
-		p.add = p.insert = function(child, position, align, stagger) {
-			var prevTween, st;
-			child._startTime = Number(position || 0) + child._delay;
-			if (child._paused) if (this !== child._timeline) { //we only adjust the _pauseTime if it wasn't in this timeline already. Remember, sometimes a tween will be inserted again into the same timeline when its startTime is changed so that the tweens in the TimelineLite/Max are re-ordered properly in the linked list (so everything renders in the proper order).
-				child._pauseTime = child._startTime + ((this.rawTime() - child._startTime) / child._timeScale);
-			}
-			if (child.timeline) {
-				child.timeline._remove(child, true); //removes from existing timeline so that it can be properly added to this one.
-			}
-			child.timeline = child._timeline = this;
-			if (child._gc) {
-				child._enabled(true, true);
-			}
-			prevTween = this._last;
-			if (this._sortChildren) {
-				st = child._startTime;
-				while (prevTween && prevTween._startTime > st) {
-					prevTween = prevTween._prev;
-				}
-			}
-			if (prevTween) {
-				child._next = prevTween._next;
-				prevTween._next = child;
-			} else {
-				child._next = this._first;
-				this._first = child;
-			}
-			if (child._next) {
-				child._next._prev = child;
-			} else {
-				this._last = child;
-			}
-			child._prev = prevTween;
-			this._recent = child;
-			if (this._timeline) {
-				this._uncache(true);
-			}
-			return this;
-		};
-
-		p._remove = function(tween, skipDisable) {
-			if (tween.timeline === this) {
-				if (!skipDisable) {
-					tween._enabled(false, true);
-				}
-
-				if (tween._prev) {
-					tween._prev._next = tween._next;
-				} else if (this._first === tween) {
-					this._first = tween._next;
-				}
-				if (tween._next) {
-					tween._next._prev = tween._prev;
-				} else if (this._last === tween) {
-					this._last = tween._prev;
-				}
-				tween._next = tween._prev = tween.timeline = null;
-				if (tween === this._recent) {
-					this._recent = this._last;
-				}
-
-				if (this._timeline) {
-					this._uncache(true);
-				}
-			}
-			return this;
-		};
-
-		p.render = function(time, suppressEvents, force) {
-			var tween = this._first,
-				next;
-			this._totalTime = this._time = this._rawPrevTime = time;
-			while (tween) {
-				next = tween._next; //record it here because the value could change after rendering...
-				if (tween._active || (time >= tween._startTime && !tween._paused && !tween._gc)) {
-					if (!tween._reversed) {
-						tween.render((time - tween._startTime) * tween._timeScale, suppressEvents, force);
-					} else {
-						tween.render(((!tween._dirty) ? tween._totalDuration : tween.totalDuration()) - ((time - tween._startTime) * tween._timeScale), suppressEvents, force);
-					}
-				}
-				tween = next;
-			}
-		};
-
-		p.rawTime = function() {
-			if (!_tickerActive) {
-				_ticker.wake();
-			}
-			return this._totalTime;
-		};
-
-/*
- * ----------------------------------------------------------------
- * TweenLite
- * ----------------------------------------------------------------
- */
-		var TweenLite = _class("TweenLite", function(target, duration, vars) {
-				Animation.call(this, duration, vars);
-				this.render = TweenLite.prototype.render; //speed optimization (avoid prototype lookup on this "hot" method)
-
-				if (target == null) {
-					throw "Cannot tween a null target.";
-				}
-
-				this.target = target = (typeof(target) !== "string") ? target : TweenLite.selector(target) || target;
-
-				var isSelector = (target.jquery || (target.length && target !== window && target[0] && (target[0] === window || (target[0].nodeType && target[0].style && !target.nodeType)))),
-					overwrite = this.vars.overwrite,
-					i, targ, targets;
-
-				this._overwrite = overwrite = (overwrite == null) ? _overwriteLookup[TweenLite.defaultOverwrite] : (typeof(overwrite) === "number") ? overwrite >> 0 : _overwriteLookup[overwrite];
-
-				if ((isSelector || target instanceof Array || (target.push && _isArray(target))) && typeof(target[0]) !== "number") {
-					this._targets = targets = _slice(target);  //don't use Array.prototype.slice.call(target, 0) because that doesn't work in IE8 with a NodeList that's returned by querySelectorAll()
-					this._propLookup = [];
-					this._siblings = [];
-					for (i = 0; i < targets.length; i++) {
-						targ = targets[i];
-						if (!targ) {
-							targets.splice(i--, 1);
-							continue;
-						} else if (typeof(targ) === "string") {
-							targ = targets[i--] = TweenLite.selector(targ); //in case it's an array of strings
-							if (typeof(targ) === "string") {
-								targets.splice(i+1, 1); //to avoid an endless loop (can't imagine why the selector would return a string, but just in case)
-							}
-							continue;
-						} else if (targ.length && targ !== window && targ[0] && (targ[0] === window || (targ[0].nodeType && targ[0].style && !targ.nodeType))) { //in case the user is passing in an array of selector objects (like jQuery objects), we need to check one more level and pull things out if necessary. Also note that <select> elements pass all the criteria regarding length and the first child having style, so we must also check to ensure the target isn't an HTML node itself.
-							targets.splice(i--, 1);
-							this._targets = targets = targets.concat(_slice(targ));
-							continue;
-						}
-						this._siblings[i] = _register(targ, this, false);
-						if (overwrite === 1) if (this._siblings[i].length > 1) {
-							_applyOverwrite(targ, this, null, 1, this._siblings[i]);
-						}
-					}
-
-				} else {
-					this._propLookup = {};
-					this._siblings = _register(target, this, false);
-					if (overwrite === 1) if (this._siblings.length > 1) {
-						_applyOverwrite(target, this, null, 1, this._siblings);
-					}
-				}
-				if (this.vars.immediateRender || (duration === 0 && this._delay === 0 && this.vars.immediateRender !== false)) {
-					this._time = -_tinyNum; //forces a render without having to set the render() "force" parameter to true because we want to allow lazying by default (using the "force" parameter always forces an immediate full render)
-					this.render(Math.min(0, -this._delay)); //in case delay is negative
-				}
-			}, true),
-			_isSelector = function(v) {
-				return (v && v.length && v !== window && v[0] && (v[0] === window || (v[0].nodeType && v[0].style && !v.nodeType))); //we cannot check "nodeType" if the target is window from within an iframe, otherwise it will trigger a security error in some browsers like Firefox.
-			},
-			_autoCSS = function(vars, target) {
-				var css = {},
-					p;
-				for (p in vars) {
-					if (!_reservedProps[p] && (!(p in target) || p === "transform" || p === "x" || p === "y" || p === "width" || p === "height" || p === "className" || p === "border") && (!_plugins[p] || (_plugins[p] && _plugins[p]._autoCSS))) { //note: <img> elements contain read-only "x" and "y" properties. We should also prioritize editing css width/height rather than the element's properties.
-						css[p] = vars[p];
-						delete vars[p];
-					}
-				}
-				vars.css = css;
-			};
-
-		p = TweenLite.prototype = new Animation();
-		p.constructor = TweenLite;
-		p.kill()._gc = false;
-
-//----TweenLite defaults, overwrite management, and root updates ----------------------------------------------------
-
-		p.ratio = 0;
-		p._firstPT = p._targets = p._overwrittenProps = p._startAt = null;
-		p._notifyPluginsOfEnabled = p._lazy = false;
-
-		TweenLite.version = "1.20.3";
-		TweenLite.defaultEase = p._ease = new Ease(null, null, 1, 1);
-		TweenLite.defaultOverwrite = "auto";
-		TweenLite.ticker = _ticker;
-		TweenLite.autoSleep = 120;
-		TweenLite.lagSmoothing = function(threshold, adjustedLag) {
-			_ticker.lagSmoothing(threshold, adjustedLag);
-		};
-
-		TweenLite.selector = window.$ || window.jQuery || function(e) {
-			var selector = window.$ || window.jQuery;
-			if (selector) {
-				TweenLite.selector = selector;
-				return selector(e);
-			}
-			return (typeof(_doc) === "undefined") ? e : (_doc.querySelectorAll ? _doc.querySelectorAll(e) : _doc.getElementById((e.charAt(0) === "#") ? e.substr(1) : e));
-		};
-
-		var _lazyTweens = [],
-			_lazyLookup = {},
-			_numbersExp = /(?:(-|-=|\+=)?\d*\.?\d*(?:e[\-+]?\d+)?)[0-9]/ig,
-			_relExp = /[\+-]=-?[\.\d]/,
-			//_nonNumbersExp = /(?:([\-+](?!(\d|=)))|[^\d\-+=e]|(e(?![\-+][\d])))+/ig,
-			_setRatio = function(v) {
-				var pt = this._firstPT,
-					min = 0.000001,
-					val;
-				while (pt) {
-					val = !pt.blob ? pt.c * v + pt.s : (v === 1 && this.end != null) ? this.end : v ? this.join("") : this.start;
-					if (pt.m) {
-						val = pt.m(val, this._target || pt.t);
-					} else if (val < min) if (val > -min && !pt.blob) { //prevents issues with converting very small numbers to strings in the browser
-						val = 0;
-					}
-					if (!pt.f) {
-						pt.t[pt.p] = val;
-					} else if (pt.fp) {
-						pt.t[pt.p](pt.fp, val);
-					} else {
-						pt.t[pt.p](val);
-					}
-					pt = pt._next;
-				}
-			},
-			//compares two strings (start/end), finds the numbers that are different and spits back an array representing the whole value but with the changing values isolated as elements. For example, "rgb(0,0,0)" and "rgb(100,50,0)" would become ["rgb(", 0, ",", 50, ",0)"]. Notice it merges the parts that are identical (performance optimization). The array also has a linked list of PropTweens attached starting with _firstPT that contain the tweening data (t, p, s, c, f, etc.). It also stores the starting value as a "start" property so that we can revert to it if/when necessary, like when a tween rewinds fully. If the quantity of numbers differs between the start and end, it will always prioritize the end value(s). The pt parameter is optional - it's for a PropTween that will be appended to the end of the linked list and is typically for actually setting the value after all of the elements have been updated (with array.join("")).
-			_blobDif = function(start, end, filter, pt) {
-				var a = [],
-					charIndex = 0,
-					s = "",
-					color = 0,
-					startNums, endNums, num, i, l, nonNumbers, currentNum;
-				a.start = start;
-				a.end = end;
-				start = a[0] = start + ""; //ensure values are strings
-				end = a[1] = end + "";
-				if (filter) {
-					filter(a); //pass an array with the starting and ending values and let the filter do whatever it needs to the values.
-					start = a[0];
-					end = a[1];
-				}
-				a.length = 0;
-				startNums = start.match(_numbersExp) || [];
-				endNums = end.match(_numbersExp) || [];
-				if (pt) {
-					pt._next = null;
-					pt.blob = 1;
-					a._firstPT = a._applyPT = pt; //apply last in the linked list (which means inserting it first)
-				}
-				l = endNums.length;
-				for (i = 0; i < l; i++) {
-					currentNum = endNums[i];
-					nonNumbers = end.substr(charIndex, end.indexOf(currentNum, charIndex)-charIndex);
-					s += (nonNumbers || !i) ? nonNumbers : ","; //note: SVG spec allows omission of comma/space when a negative sign is wedged between two numbers, like 2.5-5.3 instead of 2.5,-5.3 but when tweening, the negative value may switch to positive, so we insert the comma just in case.
-					charIndex += nonNumbers.length;
-					if (color) { //sense rgba() values and round them.
-						color = (color + 1) % 5;
-					} else if (nonNumbers.substr(-5) === "rgba(") {
-						color = 1;
-					}
-					if (currentNum === startNums[i] || startNums.length <= i) {
-						s += currentNum;
-					} else {
-						if (s) {
-							a.push(s);
-							s = "";
-						}
-						num = parseFloat(startNums[i]);
-						a.push(num);
-						a._firstPT = {_next: a._firstPT, t:a, p: a.length-1, s:num, c:((currentNum.charAt(1) === "=") ? parseInt(currentNum.charAt(0) + "1", 10) * parseFloat(currentNum.substr(2)) : (parseFloat(currentNum) - num)) || 0, f:0, m:(color && color < 4) ? Math.round : 0};
-						//note: we don't set _prev because we'll never need to remove individual PropTweens from this list.
-					}
-					charIndex += currentNum.length;
-				}
-				s += end.substr(charIndex);
-				if (s) {
-					a.push(s);
-				}
-				a.setRatio = _setRatio;
-				if (_relExp.test(end)) { //if the end string contains relative values, delete it so that on the final render (in _setRatio()), we don't actually set it to the string with += or -= characters (forces it to use the calculated value).
-					a.end = null;
-				}
-				return a;
-			},
-			//note: "funcParam" is only necessary for function-based getters/setters that require an extra parameter like getAttribute("width") and setAttribute("width", value). In this example, funcParam would be "width". Used by AttrPlugin for example.
-			_addPropTween = function(target, prop, start, end, overwriteProp, mod, funcParam, stringFilter, index) {
-				if (typeof(end) === "function") {
-					end = end(index || 0, target);
-				}
-				var type = typeof(target[prop]),
-					getterName = (type !== "function") ? "" : ((prop.indexOf("set") || typeof(target["get" + prop.substr(3)]) !== "function") ? prop : "get" + prop.substr(3)),
-					s = (start !== "get") ? start : !getterName ? target[prop] : funcParam ? target[getterName](funcParam) : target[getterName](),
-					isRelative = (typeof(end) === "string" && end.charAt(1) === "="),
-					pt = {t:target, p:prop, s:s, f:(type === "function"), pg:0, n:overwriteProp || prop, m:(!mod ? 0 : (typeof(mod) === "function") ? mod : Math.round), pr:0, c:isRelative ? parseInt(end.charAt(0) + "1", 10) * parseFloat(end.substr(2)) : (parseFloat(end) - s) || 0},
-					blob;
-
-				if (typeof(s) !== "number" || (typeof(end) !== "number" && !isRelative)) {
-					if (funcParam || isNaN(s) || (!isRelative && isNaN(end)) || typeof(s) === "boolean" || typeof(end) === "boolean") {
-						//a blob (string that has multiple numbers in it)
-						pt.fp = funcParam;
-						blob = _blobDif(s, (isRelative ? parseFloat(pt.s) + pt.c : end), stringFilter || TweenLite.defaultStringFilter, pt);
-						pt = {t: blob, p: "setRatio", s: 0, c: 1, f: 2, pg: 0, n: overwriteProp || prop, pr: 0, m: 0}; //"2" indicates it's a Blob property tween. Needed for RoundPropsPlugin for example.
-					} else {
-						pt.s = parseFloat(s);
-						if (!isRelative) {
-							pt.c = (parseFloat(end) - pt.s) || 0;
-						}
-					}
-				}
-				if (pt.c) { //only add it to the linked list if there's a change.
-					if ((pt._next = this._firstPT)) {
-						pt._next._prev = pt;
-					}
-					this._firstPT = pt;
-					return pt;
-				}
-			},
-			_internals = TweenLite._internals = {isArray:_isArray, isSelector:_isSelector, lazyTweens:_lazyTweens, blobDif:_blobDif}, //gives us a way to expose certain private values to other GreenSock classes without contaminating tha main TweenLite object.
-			_plugins = TweenLite._plugins = {},
-			_tweenLookup = _internals.tweenLookup = {},
-			_tweenLookupNum = 0,
-			_reservedProps = _internals.reservedProps = {ease:1, delay:1, overwrite:1, onComplete:1, onCompleteParams:1, onCompleteScope:1, useFrames:1, runBackwards:1, startAt:1, onUpdate:1, onUpdateParams:1, onUpdateScope:1, onStart:1, onStartParams:1, onStartScope:1, onReverseComplete:1, onReverseCompleteParams:1, onReverseCompleteScope:1, onRepeat:1, onRepeatParams:1, onRepeatScope:1, easeParams:1, yoyo:1, immediateRender:1, repeat:1, repeatDelay:1, data:1, paused:1, reversed:1, autoCSS:1, lazy:1, onOverwrite:1, callbackScope:1, stringFilter:1, id:1, yoyoEase:1},
-			_overwriteLookup = {none:0, all:1, auto:2, concurrent:3, allOnStart:4, preexisting:5, "true":1, "false":0},
-			_rootFramesTimeline = Animation._rootFramesTimeline = new SimpleTimeline(),
-			_rootTimeline = Animation._rootTimeline = new SimpleTimeline(),
-			_nextGCFrame = 30,
-			_lazyRender = _internals.lazyRender = function() {
-				var i = _lazyTweens.length,
-					tween;
-				_lazyLookup = {};
-				while (--i > -1) {
-					tween = _lazyTweens[i];
-					if (tween && tween._lazy !== false) {
-						tween.render(tween._lazy[0], tween._lazy[1], true);
-						tween._lazy = false;
-					}
-				}
-				_lazyTweens.length = 0;
-			};
-
-		_rootTimeline._startTime = _ticker.time;
-		_rootFramesTimeline._startTime = _ticker.frame;
-		_rootTimeline._active = _rootFramesTimeline._active = true;
-		setTimeout(_lazyRender, 1); //on some mobile devices, there isn't a "tick" before code runs which means any lazy renders wouldn't run before the next official "tick".
-
-		Animation._updateRoot = TweenLite.render = function() {
-				var i, a, p;
-				if (_lazyTweens.length) { //if code is run outside of the requestAnimationFrame loop, there may be tweens queued AFTER the engine refreshed, so we need to ensure any pending renders occur before we refresh again.
-					_lazyRender();
-				}
-				_rootTimeline.render((_ticker.time - _rootTimeline._startTime) * _rootTimeline._timeScale, false, false);
-				_rootFramesTimeline.render((_ticker.frame - _rootFramesTimeline._startTime) * _rootFramesTimeline._timeScale, false, false);
-				if (_lazyTweens.length) {
-					_lazyRender();
-				}
-				if (_ticker.frame >= _nextGCFrame) { //dump garbage every 120 frames or whatever the user sets TweenLite.autoSleep to
-					_nextGCFrame = _ticker.frame + (parseInt(TweenLite.autoSleep, 10) || 120);
-					for (p in _tweenLookup) {
-						a = _tweenLookup[p].tweens;
-						i = a.length;
-						while (--i > -1) {
-							if (a[i]._gc) {
-								a.splice(i, 1);
-							}
-						}
-						if (a.length === 0) {
-							delete _tweenLookup[p];
-						}
-					}
-					//if there are no more tweens in the root timelines, or if they're all paused, make the _timer sleep to reduce load on the CPU slightly
-					p = _rootTimeline._first;
-					if (!p || p._paused) if (TweenLite.autoSleep && !_rootFramesTimeline._first && _ticker._listeners.tick.length === 1) {
-						while (p && p._paused) {
-							p = p._next;
-						}
-						if (!p) {
-							_ticker.sleep();
-						}
-					}
-				}
-			};
-
-		_ticker.addEventListener("tick", Animation._updateRoot);
-
-		var _register = function(target, tween, scrub) {
-				var id = target._gsTweenID, a, i;
-				if (!_tweenLookup[id || (target._gsTweenID = id = "t" + (_tweenLookupNum++))]) {
-					_tweenLookup[id] = {target:target, tweens:[]};
-				}
-				if (tween) {
-					a = _tweenLookup[id].tweens;
-					a[(i = a.length)] = tween;
-					if (scrub) {
-						while (--i > -1) {
-							if (a[i] === tween) {
-								a.splice(i, 1);
-							}
-						}
-					}
-				}
-				return _tweenLookup[id].tweens;
-			},
-			_onOverwrite = function(overwrittenTween, overwritingTween, target, killedProps) {
-				var func = overwrittenTween.vars.onOverwrite, r1, r2;
-				if (func) {
-					r1 = func(overwrittenTween, overwritingTween, target, killedProps);
-				}
-				func = TweenLite.onOverwrite;
-				if (func) {
-					r2 = func(overwrittenTween, overwritingTween, target, killedProps);
-				}
-				return (r1 !== false && r2 !== false);
-			},
-			_applyOverwrite = function(target, tween, props, mode, siblings) {
-				var i, changed, curTween, l;
-				if (mode === 1 || mode >= 4) {
-					l = siblings.length;
-					for (i = 0; i < l; i++) {
-						if ((curTween = siblings[i]) !== tween) {
-							if (!curTween._gc) {
-								if (curTween._kill(null, target, tween)) {
-									changed = true;
-								}
-							}
-						} else if (mode === 5) {
-							break;
-						}
-					}
-					return changed;
-				}
-				//NOTE: Add 0.0000000001 to overcome floating point errors that can cause the startTime to be VERY slightly off (when a tween's time() is set for example)
-				var startTime = tween._startTime + _tinyNum,
-					overlaps = [],
-					oCount = 0,
-					zeroDur = (tween._duration === 0),
-					globalStart;
-				i = siblings.length;
-				while (--i > -1) {
-					if ((curTween = siblings[i]) === tween || curTween._gc || curTween._paused) {
-						//ignore
-					} else if (curTween._timeline !== tween._timeline) {
-						globalStart = globalStart || _checkOverlap(tween, 0, zeroDur);
-						if (_checkOverlap(curTween, globalStart, zeroDur) === 0) {
-							overlaps[oCount++] = curTween;
-						}
-					} else if (curTween._startTime <= startTime) if (curTween._startTime + curTween.totalDuration() / curTween._timeScale > startTime) if (!((zeroDur || !curTween._initted) && startTime - curTween._startTime <= 0.0000000002)) {
-						overlaps[oCount++] = curTween;
-					}
-				}
-
-				i = oCount;
-				while (--i > -1) {
-					curTween = overlaps[i];
-					if (mode === 2) if (curTween._kill(props, target, tween)) {
-						changed = true;
-					}
-					if (mode !== 2 || (!curTween._firstPT && curTween._initted)) {
-						if (mode !== 2 && !_onOverwrite(curTween, tween)) {
-							continue;
-						}
-						if (curTween._enabled(false, false)) { //if all property tweens have been overwritten, kill the tween.
-							changed = true;
-						}
-					}
-				}
-				return changed;
-			},
-			_checkOverlap = function(tween, reference, zeroDur) {
-				var tl = tween._timeline,
-					ts = tl._timeScale,
-					t = tween._startTime;
-				while (tl._timeline) {
-					t += tl._startTime;
-					ts *= tl._timeScale;
-					if (tl._paused) {
-						return -100;
-					}
-					tl = tl._timeline;
-				}
-				t /= ts;
-				return (t > reference) ? t - reference : ((zeroDur && t === reference) || (!tween._initted && t - reference < 2 * _tinyNum)) ? _tinyNum : ((t += tween.totalDuration() / tween._timeScale / ts) > reference + _tinyNum) ? 0 : t - reference - _tinyNum;
-			};
-
-
-//---- TweenLite instance methods -----------------------------------------------------------------------------
-
-		p._init = function() {
-			var v = this.vars,
-				op = this._overwrittenProps,
-				dur = this._duration,
-				immediate = !!v.immediateRender,
-				ease = v.ease,
-				i, initPlugins, pt, p, startVars, l;
-			if (v.startAt) {
-				if (this._startAt) {
-					this._startAt.render(-1, true); //if we've run a startAt previously (when the tween instantiated), we should revert it so that the values re-instantiate correctly particularly for relative tweens. Without this, a TweenLite.fromTo(obj, 1, {x:"+=100"}, {x:"-=100"}), for example, would actually jump to +=200 because the startAt would run twice, doubling the relative change.
-					this._startAt.kill();
-				}
-				startVars = {};
-				for (p in v.startAt) { //copy the properties/values into a new object to avoid collisions, like var to = {x:0}, from = {x:500}; timeline.fromTo(e, 1, from, to).fromTo(e, 1, to, from);
-					startVars[p] = v.startAt[p];
-				}
-				startVars.data = "isStart";
-				startVars.overwrite = false;
-				startVars.immediateRender = true;
-				startVars.lazy = (immediate && v.lazy !== false);
-				startVars.startAt = startVars.delay = null; //no nesting of startAt objects allowed (otherwise it could cause an infinite loop).
-				startVars.onUpdate = v.onUpdate;
-				startVars.onUpdateParams = v.onUpdateParams;
-				startVars.onUpdateScope = v.onUpdateScope || v.callbackScope || this;
-				this._startAt = TweenLite.to(this.target, 0, startVars);
-				if (immediate) {
-					if (this._time > 0) {
-						this._startAt = null; //tweens that render immediately (like most from() and fromTo() tweens) shouldn't revert when their parent timeline's playhead goes backward past the startTime because the initial render could have happened anytime and it shouldn't be directly correlated to this tween's startTime. Imagine setting up a complex animation where the beginning states of various objects are rendered immediately but the tween doesn't happen for quite some time - if we revert to the starting values as soon as the playhead goes backward past the tween's startTime, it will throw things off visually. Reversion should only happen in TimelineLite/Max instances where immediateRender was false (which is the default in the convenience methods like from()).
-					} else if (dur !== 0) {
-						return; //we skip initialization here so that overwriting doesn't occur until the tween actually begins. Otherwise, if you create several immediateRender:true tweens of the same target/properties to drop into a TimelineLite or TimelineMax, the last one created would overwrite the first ones because they didn't get placed into the timeline yet before the first render occurs and kicks in overwriting.
-					}
-				}
-			} else if (v.runBackwards && dur !== 0) {
-				//from() tweens must be handled uniquely: their beginning values must be rendered but we don't want overwriting to occur yet (when time is still 0). Wait until the tween actually begins before doing all the routines like overwriting. At that time, we should render at the END of the tween to ensure that things initialize correctly (remember, from() tweens go backwards)
-				if (this._startAt) {
-					this._startAt.render(-1, true);
-					this._startAt.kill();
-					this._startAt = null;
-				} else {
-					if (this._time !== 0) { //in rare cases (like if a from() tween runs and then is invalidate()-ed), immediateRender could be true but the initial forced-render gets skipped, so there's no need to force the render in this context when the _time is greater than 0
-						immediate = false;
-					}
-					pt = {};
-					for (p in v) { //copy props into a new object and skip any reserved props, otherwise onComplete or onUpdate or onStart could fire. We should, however, permit autoCSS to go through.
-						if (!_reservedProps[p] || p === "autoCSS") {
-							pt[p] = v[p];
-						}
-					}
-					pt.overwrite = 0;
-					pt.data = "isFromStart"; //we tag the tween with as "isFromStart" so that if [inside a plugin] we need to only do something at the very END of a tween, we have a way of identifying this tween as merely the one that's setting the beginning values for a "from()" tween. For example, clearProps in CSSPlugin should only get applied at the very END of a tween and without this tag, from(...{height:100, clearProps:"height", delay:1}) would wipe the height at the beginning of the tween and after 1 second, it'd kick back in.
-					pt.lazy = (immediate && v.lazy !== false);
-					pt.immediateRender = immediate; //zero-duration tweens render immediately by default, but if we're not specifically instructed to render this tween immediately, we should skip this and merely _init() to record the starting values (rendering them immediately would push them to completion which is wasteful in that case - we'd have to render(-1) immediately after)
-					this._startAt = TweenLite.to(this.target, 0, pt);
-					if (!immediate) {
-						this._startAt._init(); //ensures that the initial values are recorded
-						this._startAt._enabled(false); //no need to have the tween render on the next cycle. Disable it because we'll always manually control the renders of the _startAt tween.
-						if (this.vars.immediateRender) {
-							this._startAt = null;
-						}
-					} else if (this._time === 0) {
-						return;
-					}
-				}
-			}
-			this._ease = ease = (!ease) ? TweenLite.defaultEase : (ease instanceof Ease) ? ease : (typeof(ease) === "function") ? new Ease(ease, v.easeParams) : _easeMap[ease] || TweenLite.defaultEase;
-			if (v.easeParams instanceof Array && ease.config) {
-				this._ease = ease.config.apply(ease, v.easeParams);
-			}
-			this._easeType = this._ease._type;
-			this._easePower = this._ease._power;
-			this._firstPT = null;
-
-			if (this._targets) {
-				l = this._targets.length;
-				for (i = 0; i < l; i++) {
-					if ( this._initProps( this._targets[i], (this._propLookup[i] = {}), this._siblings[i], (op ? op[i] : null), i) ) {
-						initPlugins = true;
-					}
-				}
-			} else {
-				initPlugins = this._initProps(this.target, this._propLookup, this._siblings, op, 0);
-			}
-
-			if (initPlugins) {
-				TweenLite._onPluginEvent("_onInitAllProps", this); //reorders the array in order of priority. Uses a static TweenPlugin method in order to minimize file size in TweenLite
-			}
-			if (op) if (!this._firstPT) if (typeof(this.target) !== "function") { //if all tweening properties have been overwritten, kill the tween. If the target is a function, it's probably a delayedCall so let it live.
-				this._enabled(false, false);
-			}
-			if (v.runBackwards) {
-				pt = this._firstPT;
-				while (pt) {
-					pt.s += pt.c;
-					pt.c = -pt.c;
-					pt = pt._next;
-				}
-			}
-			this._onUpdate = v.onUpdate;
-			this._initted = true;
-		};
-
-		p._initProps = function(target, propLookup, siblings, overwrittenProps, index) {
-			var p, i, initPlugins, plugin, pt, v;
-			if (target == null) {
-				return false;
-			}
-
-			if (_lazyLookup[target._gsTweenID]) {
-				_lazyRender(); //if other tweens of the same target have recently initted but haven't rendered yet, we've got to force the render so that the starting values are correct (imagine populating a timeline with a bunch of sequential tweens and then jumping to the end)
-			}
-
-			if (!this.vars.css) if (target.style) if (target !== window && target.nodeType) if (_plugins.css) if (this.vars.autoCSS !== false) { //it's so common to use TweenLite/Max to animate the css of DOM elements, we assume that if the target is a DOM element, that's what is intended (a convenience so that users don't have to wrap things in css:{}, although we still recommend it for a slight performance boost and better specificity). Note: we cannot check "nodeType" on the window inside an iframe.
-				_autoCSS(this.vars, target);
-			}
-			for (p in this.vars) {
-				v = this.vars[p];
-				if (_reservedProps[p]) {
-					if (v) if ((v instanceof Array) || (v.push && _isArray(v))) if (v.join("").indexOf("{self}") !== -1) {
-						this.vars[p] = v = this._swapSelfInParams(v, this);
-					}
-
-				} else if (_plugins[p] && (plugin = new _plugins[p]())._onInitTween(target, this.vars[p], this, index)) {
-
-					//t - target 		[object]
-					//p - property 		[string]
-					//s - start			[number]
-					//c - change		[number]
-					//f - isFunction	[boolean]
-					//n - name			[string]
-					//pg - isPlugin 	[boolean]
-					//pr - priority		[number]
-					//m - mod           [function | 0]
-					this._firstPT = pt = {_next:this._firstPT, t:plugin, p:"setRatio", s:0, c:1, f:1, n:p, pg:1, pr:plugin._priority, m:0};
-					i = plugin._overwriteProps.length;
-					while (--i > -1) {
-						propLookup[plugin._overwriteProps[i]] = this._firstPT;
-					}
-					if (plugin._priority || plugin._onInitAllProps) {
-						initPlugins = true;
-					}
-					if (plugin._onDisable || plugin._onEnable) {
-						this._notifyPluginsOfEnabled = true;
-					}
-					if (pt._next) {
-						pt._next._prev = pt;
-					}
-
-				} else {
-					propLookup[p] = _addPropTween.call(this, target, p, "get", v, p, 0, null, this.vars.stringFilter, index);
-				}
-			}
-
-			if (overwrittenProps) if (this._kill(overwrittenProps, target)) { //another tween may have tried to overwrite properties of this tween before init() was called (like if two tweens start at the same time, the one created second will run first)
-				return this._initProps(target, propLookup, siblings, overwrittenProps, index);
-			}
-			if (this._overwrite > 1) if (this._firstPT) if (siblings.length > 1) if (_applyOverwrite(target, this, propLookup, this._overwrite, siblings)) {
-				this._kill(propLookup, target);
-				return this._initProps(target, propLookup, siblings, overwrittenProps, index);
-			}
-			if (this._firstPT) if ((this.vars.lazy !== false && this._duration) || (this.vars.lazy && !this._duration)) { //zero duration tweens don't lazy render by default; everything else does.
-				_lazyLookup[target._gsTweenID] = true;
-			}
-			return initPlugins;
-		};
-
-		p.render = function(time, suppressEvents, force) {
-			var prevTime = this._time,
-				duration = this._duration,
-				prevRawPrevTime = this._rawPrevTime,
-				isComplete, callback, pt, rawPrevTime;
-			if (time >= duration - 0.0000001 && time >= 0) { //to work around occasional floating point math artifacts.
-				this._totalTime = this._time = duration;
-				this.ratio = this._ease._calcEnd ? this._ease.getRatio(1) : 1;
-				if (!this._reversed ) {
-					isComplete = true;
-					callback = "onComplete";
-					force = (force || this._timeline.autoRemoveChildren); //otherwise, if the animation is unpaused/activated after it's already finished, it doesn't get removed from the parent timeline.
-				}
-				if (duration === 0) if (this._initted || !this.vars.lazy || force) { //zero-duration tweens are tricky because we must discern the momentum/direction of time in order to determine whether the starting values should be rendered or the ending values. If the "playhead" of its timeline goes past the zero-duration tween in the forward direction or lands directly on it, the end values should be rendered, but if the timeline's "playhead" moves past it in the backward direction (from a postitive time to a negative time), the starting values must be rendered.
-					if (this._startTime === this._timeline._duration) { //if a zero-duration tween is at the VERY end of a timeline and that timeline renders at its end, it will typically add a tiny bit of cushion to the render time to prevent rounding errors from getting in the way of tweens rendering their VERY end. If we then reverse() that timeline, the zero-duration tween will trigger its onReverseComplete even though technically the playhead didn't pass over it again. It's a very specific edge case we must accommodate.
-						time = 0;
-					}
-					if (prevRawPrevTime < 0 || (time <= 0 && time >= -0.0000001) || (prevRawPrevTime === _tinyNum && this.data !== "isPause")) if (prevRawPrevTime !== time) { //note: when this.data is "isPause", it's a callback added by addPause() on a timeline that we should not be triggered when LEAVING its exact start time. In other words, tl.addPause(1).play(1) shouldn't pause.
-						force = true;
-						if (prevRawPrevTime > _tinyNum) {
-							callback = "onReverseComplete";
-						}
-					}
-					this._rawPrevTime = rawPrevTime = (!suppressEvents || time || prevRawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
-				}
-
-			} else if (time < 0.0000001) { //to work around occasional floating point math artifacts, round super small values to 0.
-				this._totalTime = this._time = 0;
-				this.ratio = this._ease._calcEnd ? this._ease.getRatio(0) : 0;
-				if (prevTime !== 0 || (duration === 0 && prevRawPrevTime > 0)) {
-					callback = "onReverseComplete";
-					isComplete = this._reversed;
-				}
-				if (time < 0) {
-					this._active = false;
-					if (duration === 0) if (this._initted || !this.vars.lazy || force) { //zero-duration tweens are tricky because we must discern the momentum/direction of time in order to determine whether the starting values should be rendered or the ending values. If the "playhead" of its timeline goes past the zero-duration tween in the forward direction or lands directly on it, the end values should be rendered, but if the timeline's "playhead" moves past it in the backward direction (from a postitive time to a negative time), the starting values must be rendered.
-						if (prevRawPrevTime >= 0 && !(prevRawPrevTime === _tinyNum && this.data === "isPause")) {
-							force = true;
-						}
-						this._rawPrevTime = rawPrevTime = (!suppressEvents || time || prevRawPrevTime === time) ? time : _tinyNum; //when the playhead arrives at EXACTLY time 0 (right on top) of a zero-duration tween, we need to discern if events are suppressed so that when the playhead moves again (next time), it'll trigger the callback. If events are NOT suppressed, obviously the callback would be triggered in this render. Basically, the callback should fire either when the playhead ARRIVES or LEAVES this exact spot, not both. Imagine doing a timeline.seek(0) and there's a callback that sits at 0. Since events are suppressed on that seek() by default, nothing will fire, but when the playhead moves off of that position, the callback should fire. This behavior is what people intuitively expect. We set the _rawPrevTime to be a precise tiny number to indicate this scenario rather than using another property/variable which would increase memory usage. This technique is less readable, but more efficient.
-					}
-				}
-				if (!this._initted || (this._startAt && this._startAt.progress())) { //if we render the very beginning (time == 0) of a fromTo(), we must force the render (normal tweens wouldn't need to render at a time of 0 when the prevTime was also 0). This is also mandatory to make sure overwriting kicks in immediately. Also, we check progress() because if startAt has already rendered at its end, we should force a render at its beginning. Otherwise, if you put the playhead directly on top of where a fromTo({immediateRender:false}) starts, and then move it backwards, the from() won't revert its values.
-					force = true;
-				}
-			} else {
-				this._totalTime = this._time = time;
-
-				if (this._easeType) {
-					var r = time / duration, type = this._easeType, pow = this._easePower;
-					if (type === 1 || (type === 3 && r >= 0.5)) {
-						r = 1 - r;
-					}
-					if (type === 3) {
-						r *= 2;
-					}
-					if (pow === 1) {
-						r *= r;
-					} else if (pow === 2) {
-						r *= r * r;
-					} else if (pow === 3) {
-						r *= r * r * r;
-					} else if (pow === 4) {
-						r *= r * r * r * r;
-					}
-
-					if (type === 1) {
-						this.ratio = 1 - r;
-					} else if (type === 2) {
-						this.ratio = r;
-					} else if (time / duration < 0.5) {
-						this.ratio = r / 2;
-					} else {
-						this.ratio = 1 - (r / 2);
-					}
-
-				} else {
-					this.ratio = this._ease.getRatio(time / duration);
-				}
-			}
-
-			if (this._time === prevTime && !force) {
-				return;
-			} else if (!this._initted) {
-				this._init();
-				if (!this._initted || this._gc) { //immediateRender tweens typically won't initialize until the playhead advances (_time is greater than 0) in order to ensure that overwriting occurs properly. Also, if all of the tweening properties have been overwritten (which would cause _gc to be true, as set in _init()), we shouldn't continue otherwise an onStart callback could be called for example.
-					return;
-				} else if (!force && this._firstPT && ((this.vars.lazy !== false && this._duration) || (this.vars.lazy && !this._duration))) {
-					this._time = this._totalTime = prevTime;
-					this._rawPrevTime = prevRawPrevTime;
-					_lazyTweens.push(this);
-					this._lazy = [time, suppressEvents];
-					return;
-				}
-				//_ease is initially set to defaultEase, so now that init() has run, _ease is set properly and we need to recalculate the ratio. Overall this is faster than using conditional logic earlier in the method to avoid having to set ratio twice because we only init() once but renderTime() gets called VERY frequently.
-				if (this._time && !isComplete) {
-					this.ratio = this._ease.getRatio(this._time / duration);
-				} else if (isComplete && this._ease._calcEnd) {
-					this.ratio = this._ease.getRatio((this._time === 0) ? 0 : 1);
-				}
-			}
-			if (this._lazy !== false) { //in case a lazy render is pending, we should flush it because the new render is occurring now (imagine a lazy tween instantiating and then immediately the user calls tween.seek(tween.duration()), skipping to the end - the end render would be forced, and then if we didn't flush the lazy render, it'd fire AFTER the seek(), rendering it at the wrong time.
-				this._lazy = false;
-			}
-			if (!this._active) if (!this._paused && this._time !== prevTime && time >= 0) {
-				this._active = true;  //so that if the user renders a tween (as opposed to the timeline rendering it), the timeline is forced to re-render and align it with the proper time/frame on the next rendering cycle. Maybe the tween already finished but the user manually re-renders it as halfway done.
-			}
-			if (prevTime === 0) {
-				if (this._startAt) {
-					if (time >= 0) {
-						this._startAt.render(time, true, force);
-					} else if (!callback) {
-						callback = "_dummyGS"; //if no callback is defined, use a dummy value just so that the condition at the end evaluates as true because _startAt should render AFTER the normal render loop when the time is negative. We could handle this in a more intuitive way, of course, but the render loop is the MOST important thing to optimize, so this technique allows us to avoid adding extra conditional logic in a high-frequency area.
-					}
-				}
-				if (this.vars.onStart) if (this._time !== 0 || duration === 0) if (!suppressEvents) {
-					this._callback("onStart");
-				}
-			}
-			pt = this._firstPT;
-			while (pt) {
-				if (pt.f) {
-					pt.t[pt.p](pt.c * this.ratio + pt.s);
-				} else {
-					pt.t[pt.p] = pt.c * this.ratio + pt.s;
-				}
-				pt = pt._next;
-			}
-
-			if (this._onUpdate) {
-				if (time < 0) if (this._startAt && time !== -0.0001) { //if the tween is positioned at the VERY beginning (_startTime 0) of its parent timeline, it's illegal for the playhead to go back further, so we should not render the recorded startAt values.
-					this._startAt.render(time, true, force); //note: for performance reasons, we tuck this conditional logic inside less traveled areas (most tweens don't have an onUpdate). We'd just have it at the end before the onComplete, but the values should be updated before any onUpdate is called, so we ALSO put it here and then if it's not called, we do so later near the onComplete.
-				}
-				if (!suppressEvents) if (this._time !== prevTime || isComplete || force) {
-					this._callback("onUpdate");
-				}
-			}
-			if (callback) if (!this._gc || force) { //check _gc because there's a chance that kill() could be called in an onUpdate
-				if (time < 0 && this._startAt && !this._onUpdate && time !== -0.0001) { //-0.0001 is a special value that we use when looping back to the beginning of a repeated TimelineMax, in which case we shouldn't render the _startAt values.
-					this._startAt.render(time, true, force);
-				}
-				if (isComplete) {
-					if (this._timeline.autoRemoveChildren) {
-						this._enabled(false, false);
-					}
-					this._active = false;
-				}
-				if (!suppressEvents && this.vars[callback]) {
-					this._callback(callback);
-				}
-				if (duration === 0 && this._rawPrevTime === _tinyNum && rawPrevTime !== _tinyNum) { //the onComplete or onReverseComplete could trigger movement of the playhead and for zero-duration tweens (which must discern direction) that land directly back on their start time, we don't want to fire again on the next render. Think of several addPause()'s in a timeline that forces the playhead to a certain spot, but what if it's already paused and another tween is tweening the "time" of the timeline? Each time it moves [forward] past that spot, it would move back, and since suppressEvents is true, it'd reset _rawPrevTime to _tinyNum so that when it begins again, the callback would fire (so ultimately it could bounce back and forth during that tween). Again, this is a very uncommon scenario, but possible nonetheless.
-					this._rawPrevTime = 0;
-				}
-			}
-		};
-
-		p._kill = function(vars, target, overwritingTween) {
-			if (vars === "all") {
-				vars = null;
-			}
-			if (vars == null) if (target == null || target === this.target) {
-				this._lazy = false;
-				return this._enabled(false, false);
-			}
-			target = (typeof(target) !== "string") ? (target || this._targets || this.target) : TweenLite.selector(target) || target;
-			var simultaneousOverwrite = (overwritingTween && this._time && overwritingTween._startTime === this._startTime && this._timeline === overwritingTween._timeline),
-				i, overwrittenProps, p, pt, propLookup, changed, killProps, record, killed;
-			if ((_isArray(target) || _isSelector(target)) && typeof(target[0]) !== "number") {
-				i = target.length;
-				while (--i > -1) {
-					if (this._kill(vars, target[i], overwritingTween)) {
-						changed = true;
-					}
-				}
-			} else {
-				if (this._targets) {
-					i = this._targets.length;
-					while (--i > -1) {
-						if (target === this._targets[i]) {
-							propLookup = this._propLookup[i] || {};
-							this._overwrittenProps = this._overwrittenProps || [];
-							overwrittenProps = this._overwrittenProps[i] = vars ? this._overwrittenProps[i] || {} : "all";
-							break;
-						}
-					}
-				} else if (target !== this.target) {
-					return false;
-				} else {
-					propLookup = this._propLookup;
-					overwrittenProps = this._overwrittenProps = vars ? this._overwrittenProps || {} : "all";
-				}
-
-				if (propLookup) {
-					killProps = vars || propLookup;
-					record = (vars !== overwrittenProps && overwrittenProps !== "all" && vars !== propLookup && (typeof(vars) !== "object" || !vars._tempKill)); //_tempKill is a super-secret way to delete a particular tweening property but NOT have it remembered as an official overwritten property (like in BezierPlugin)
-					if (overwritingTween && (TweenLite.onOverwrite || this.vars.onOverwrite)) {
-						for (p in killProps) {
-							if (propLookup[p]) {
-								if (!killed) {
-									killed = [];
-								}
-								killed.push(p);
-							}
-						}
-						if ((killed || !vars) && !_onOverwrite(this, overwritingTween, target, killed)) { //if the onOverwrite returned false, that means the user wants to override the overwriting (cancel it).
-							return false;
-						}
-					}
-
-					for (p in killProps) {
-						if ((pt = propLookup[p])) {
-							if (simultaneousOverwrite) { //if another tween overwrites this one and they both start at exactly the same time, yet this tween has already rendered once (for example, at 0.001) because it's first in the queue, we should revert the values to where they were at 0 so that the starting values aren't contaminated on the overwriting tween.
-								if (pt.f) {
-									pt.t[pt.p](pt.s);
-								} else {
-									pt.t[pt.p] = pt.s;
-								}
-								changed = true;
-							}
-							if (pt.pg && pt.t._kill(killProps)) {
-								changed = true; //some plugins need to be notified so they can perform cleanup tasks first
-							}
-							if (!pt.pg || pt.t._overwriteProps.length === 0) {
-								if (pt._prev) {
-									pt._prev._next = pt._next;
-								} else if (pt === this._firstPT) {
-									this._firstPT = pt._next;
-								}
-								if (pt._next) {
-									pt._next._prev = pt._prev;
-								}
-								pt._next = pt._prev = null;
-							}
-							delete propLookup[p];
-						}
-						if (record) {
-							overwrittenProps[p] = 1;
-						}
-					}
-					if (!this._firstPT && this._initted) { //if all tweening properties are killed, kill the tween. Without this line, if there's a tween with multiple targets and then you killTweensOf() each target individually, the tween would technically still remain active and fire its onComplete even though there aren't any more properties tweening.
-						this._enabled(false, false);
-					}
-				}
-			}
-			return changed;
-		};
-
-		p.invalidate = function() {
-			if (this._notifyPluginsOfEnabled) {
-				TweenLite._onPluginEvent("_onDisable", this);
-			}
-			this._firstPT = this._overwrittenProps = this._startAt = this._onUpdate = null;
-			this._notifyPluginsOfEnabled = this._active = this._lazy = false;
-			this._propLookup = (this._targets) ? {} : [];
-			Animation.prototype.invalidate.call(this);
-			if (this.vars.immediateRender) {
-				this._time = -_tinyNum; //forces a render without having to set the render() "force" parameter to true because we want to allow lazying by default (using the "force" parameter always forces an immediate full render)
-				this.render(Math.min(0, -this._delay)); //in case delay is negative.
-			}
-			return this;
-		};
-
-		p._enabled = function(enabled, ignoreTimeline) {
-			if (!_tickerActive) {
-				_ticker.wake();
-			}
-			if (enabled && this._gc) {
-				var targets = this._targets,
-					i;
-				if (targets) {
-					i = targets.length;
-					while (--i > -1) {
-						this._siblings[i] = _register(targets[i], this, true);
-					}
-				} else {
-					this._siblings = _register(this.target, this, true);
-				}
-			}
-			Animation.prototype._enabled.call(this, enabled, ignoreTimeline);
-			if (this._notifyPluginsOfEnabled) if (this._firstPT) {
-				return TweenLite._onPluginEvent((enabled ? "_onEnable" : "_onDisable"), this);
-			}
-			return false;
-		};
-
-
-//----TweenLite static methods -----------------------------------------------------
-
-		TweenLite.to = function(target, duration, vars) {
-			return new TweenLite(target, duration, vars);
-		};
-
-		TweenLite.from = function(target, duration, vars) {
-			vars.runBackwards = true;
-			vars.immediateRender = (vars.immediateRender != false);
-			return new TweenLite(target, duration, vars);
-		};
-
-		TweenLite.fromTo = function(target, duration, fromVars, toVars) {
-			toVars.startAt = fromVars;
-			toVars.immediateRender = (toVars.immediateRender != false && fromVars.immediateRender != false);
-			return new TweenLite(target, duration, toVars);
-		};
-
-		TweenLite.delayedCall = function(delay, callback, params, scope, useFrames) {
-			return new TweenLite(callback, 0, {delay:delay, onComplete:callback, onCompleteParams:params, callbackScope:scope, onReverseComplete:callback, onReverseCompleteParams:params, immediateRender:false, lazy:false, useFrames:useFrames, overwrite:0});
-		};
-
-		TweenLite.set = function(target, vars) {
-			return new TweenLite(target, 0, vars);
-		};
-
-		TweenLite.getTweensOf = function(target, onlyActive) {
-			if (target == null) { return []; }
-			target = (typeof(target) !== "string") ? target : TweenLite.selector(target) || target;
-			var i, a, j, t;
-			if ((_isArray(target) || _isSelector(target)) && typeof(target[0]) !== "number") {
-				i = target.length;
-				a = [];
-				while (--i > -1) {
-					a = a.concat(TweenLite.getTweensOf(target[i], onlyActive));
-				}
-				i = a.length;
-				//now get rid of any duplicates (tweens of arrays of objects could cause duplicates)
-				while (--i > -1) {
-					t = a[i];
-					j = i;
-					while (--j > -1) {
-						if (t === a[j]) {
-							a.splice(i, 1);
-						}
-					}
-				}
-			} else if (target._gsTweenID) {
-				a = _register(target).concat();
-				i = a.length;
-				while (--i > -1) {
-					if (a[i]._gc || (onlyActive && !a[i].isActive())) {
-						a.splice(i, 1);
-					}
-				}
-			}
-			return a || [];
-		};
-
-		TweenLite.killTweensOf = TweenLite.killDelayedCallsTo = function(target, onlyActive, vars) {
-			if (typeof(onlyActive) === "object") {
-				vars = onlyActive; //for backwards compatibility (before "onlyActive" parameter was inserted)
-				onlyActive = false;
-			}
-			var a = TweenLite.getTweensOf(target, onlyActive),
-				i = a.length;
-			while (--i > -1) {
-				a[i]._kill(vars, target);
-			}
-		};
-
-
-
-/*
- * ----------------------------------------------------------------
- * TweenPlugin   (could easily be split out as a separate file/class, but included for ease of use (so that people don't need to include another script call before loading plugins which is easy to forget)
- * ----------------------------------------------------------------
- */
-		var TweenPlugin = _class("plugins.TweenPlugin", function(props, priority) {
-					this._overwriteProps = (props || "").split(",");
-					this._propName = this._overwriteProps[0];
-					this._priority = priority || 0;
-					this._super = TweenPlugin.prototype;
-				}, true);
-
-		p = TweenPlugin.prototype;
-		TweenPlugin.version = "1.19.0";
-		TweenPlugin.API = 2;
-		p._firstPT = null;
-		p._addTween = _addPropTween;
-		p.setRatio = _setRatio;
-
-		p._kill = function(lookup) {
-			var a = this._overwriteProps,
-				pt = this._firstPT,
-				i;
-			if (lookup[this._propName] != null) {
-				this._overwriteProps = [];
-			} else {
-				i = a.length;
-				while (--i > -1) {
-					if (lookup[a[i]] != null) {
-						a.splice(i, 1);
-					}
-				}
-			}
-			while (pt) {
-				if (lookup[pt.n] != null) {
-					if (pt._next) {
-						pt._next._prev = pt._prev;
-					}
-					if (pt._prev) {
-						pt._prev._next = pt._next;
-						pt._prev = null;
-					} else if (this._firstPT === pt) {
-						this._firstPT = pt._next;
-					}
-				}
-				pt = pt._next;
-			}
-			return false;
-		};
-
-		p._mod = p._roundProps = function(lookup) {
-			var pt = this._firstPT,
-				val;
-			while (pt) {
-				val = lookup[this._propName] || (pt.n != null && lookup[ pt.n.split(this._propName + "_").join("") ]);
-				if (val && typeof(val) === "function") { //some properties that are very plugin-specific add a prefix named after the _propName plus an underscore, so we need to ignore that extra stuff here.
-					if (pt.f === 2) {
-						pt.t._applyPT.m = val;
-					} else {
-						pt.m = val;
-					}
-				}
-				pt = pt._next;
-			}
-		};
-
-		TweenLite._onPluginEvent = function(type, tween) {
-			var pt = tween._firstPT,
-				changed, pt2, first, last, next;
-			if (type === "_onInitAllProps") {
-				//sorts the PropTween linked list in order of priority because some plugins need to render earlier/later than others, like MotionBlurPlugin applies its effects after all x/y/alpha tweens have rendered on each frame.
-				while (pt) {
-					next = pt._next;
-					pt2 = first;
-					while (pt2 && pt2.pr > pt.pr) {
-						pt2 = pt2._next;
-					}
-					if ((pt._prev = pt2 ? pt2._prev : last)) {
-						pt._prev._next = pt;
-					} else {
-						first = pt;
-					}
-					if ((pt._next = pt2)) {
-						pt2._prev = pt;
-					} else {
-						last = pt;
-					}
-					pt = next;
-				}
-				pt = tween._firstPT = first;
-			}
-			while (pt) {
-				if (pt.pg) if (typeof(pt.t[type]) === "function") if (pt.t[type]()) {
-					changed = true;
-				}
-				pt = pt._next;
-			}
-			return changed;
-		};
-
-		TweenPlugin.activate = function(plugins) {
-			var i = plugins.length;
-			while (--i > -1) {
-				if (plugins[i].API === TweenPlugin.API) {
-					_plugins[(new plugins[i]())._propName] = plugins[i];
-				}
-			}
-			return true;
-		};
-
-		//provides a more concise way to define plugins that have no dependencies besides TweenPlugin and TweenLite, wrapping common boilerplate stuff into one function (added in 1.9.0). You don't NEED to use this to define a plugin - the old way still works and can be useful in certain (rare) situations.
-		_gsDefine.plugin = function(config) {
-			if (!config || !config.propName || !config.init || !config.API) { throw "illegal plugin definition."; }
-			var propName = config.propName,
-				priority = config.priority || 0,
-				overwriteProps = config.overwriteProps,
-				map = {init:"_onInitTween", set:"setRatio", kill:"_kill", round:"_mod", mod:"_mod", initAll:"_onInitAllProps"},
-				Plugin = _class("plugins." + propName.charAt(0).toUpperCase() + propName.substr(1) + "Plugin",
-					function() {
-						TweenPlugin.call(this, propName, priority);
-						this._overwriteProps = overwriteProps || [];
-					}, (config.global === true)),
-				p = Plugin.prototype = new TweenPlugin(propName),
-				prop;
-			p.constructor = Plugin;
-			Plugin.API = config.API;
-			for (prop in map) {
-				if (typeof(config[prop]) === "function") {
-					p[map[prop]] = config[prop];
-				}
-			}
-			Plugin.version = config.version;
-			TweenPlugin.activate([Plugin]);
-			return Plugin;
-		};
-
-
-		//now run through all the dependencies discovered and if any are missing, log that to the console as a warning. This is why it's best to have TweenLite load last - it can check all the dependencies for you.
-		a = window._gsQueue;
-		if (a) {
-			for (i = 0; i < a.length; i++) {
-				a[i]();
-			}
-			for (p in _defLookup) {
-				if (!_defLookup[p].func) {
-					window.console.log("GSAP encountered missing dependency: " + p);
-				}
-			}
-		}
-
-		_tickerActive = false; //ensures that the first official animation forces a ticker.tick() to update the time when it is instantiated
-
-})((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenLite");
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
-
-/***/ }),
-/* 96 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -67840,16 +67178,581 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
 	if (typeof(module) !== "undefined" && module.exports) { //node
-		__webpack_require__(95);
+		__webpack_require__(23);
 		module.exports = getGlobal();
 	} else if (true) { //AMD
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(95)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(23)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	}
 }("CustomEase"));
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("main-layout", [
+    _c("div", { staticClass: "container " }, [
+      _c("div", { staticClass: "row h-100 align-items-center" }, [
+        _c("div", { staticClass: "col " }, [
+          _c(
+            "div",
+            {
+              staticClass: "row justify-content-center",
+              attrs: { id: "address" }
+            },
+            [
+              _c("div", { staticClass: "col-12 text-center p-5" }, [
+                _c("p", [_vm._v("info (at) isabellafornasiero.com")]),
+                _vm._v(" "),
+                _c("p", [_vm._v("Milan, Italy")])
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "row justify-content-center",
+              attrs: { id: "show-contact" }
+            },
+            [
+              _c("div", { staticClass: "col-12 pb-5" }, [
+                _c("div", { staticClass: "d-flex justify-content-around" }, [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { href: "#" },
+                      on: { click: _vm.showContact }
+                    },
+                    [_vm._v("Send a message")]
+                  )
+                ])
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "form",
+            { attrs: { id: "contact-form", action: "", method: "" } },
+            [
+              _c("div", { staticClass: "row justify-content-center" }, [
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "close",
+                      attrs: { id: "close", href: "#" },
+                      on: { click: _vm.closeContact }
+                    },
+                    [
+                      _c("span", { attrs: { "aria-hidden": "true" } }, [
+                        _vm._v("×")
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "form-group pb-3", attrs: { id: "name" } },
+                    [
+                      _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: { type: "text", name: "name", value: "" }
+                      })
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "form-group pb-3", attrs: { id: "email" } },
+                    [
+                      _c("label", { attrs: { for: "email" } }, [
+                        _vm._v("E-mail")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: { type: "text", name: "email", value: "" }
+                      })
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "form-group pb-3",
+                      attrs: { id: "message" }
+                    },
+                    [
+                      _c("label", { attrs: { for: "message" } }, [
+                        _vm._v("Message")
+                      ]),
+                      _vm._v(" "),
+                      _c("textarea", {
+                        staticClass: "form-control",
+                        attrs: { name: "message" }
+                      })
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "form-group d-flex justify-content-around",
+                      attrs: { id: "send-btn" }
+                    },
+                    [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "submit", name: "button" }
+                        },
+                        [_vm._v("Send")]
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ]
+          )
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-7ad0fe61", module.exports)
+  }
+}
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(88)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(90)
+/* template */
+var __vue_template__ = __webpack_require__(91)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-416a9e79"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/views/single/Work.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-416a9e79", Component.options)
+  } else {
+    hotAPI.reload("data-v-416a9e79", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(89);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("0a34c9c7", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-416a9e79\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./Work.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-416a9e79\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./Work.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.hero_img[data-v-416a9e79] {\n  overflow: hidden;\n  min-height: 100px;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _MainLayout = __webpack_require__(6);
+
+var _MainLayout2 = _interopRequireDefault(_MainLayout);
+
+var _axios = __webpack_require__(17);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _lodash = __webpack_require__(16);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  props: [''],
+  data: function data() {
+    return {
+      article: [],
+      window: {}
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    var vue = this;
+    var slug = this.$route.params.slug;
+    this.getPost(slug);
+    window.addEventListener('resize', _lodash2.default.debounce(function () {
+      // this.resizeImg();
+      _this.resizeFeatured();
+    }, 250));
+  },
+
+  methods: {
+    getPost: function getPost(slug) {
+      var _this2 = this;
+
+      _axios2.default.get('/api/search-post/' + slug).then(function (response) {
+        _this2.article = response.data.data;
+        // var regex = /<img(.*?)>/g;
+        // this.article.html = this.article.html.replace(regex, '<img $1 class="mx-auto d-block pt-5">');
+        _lodash2.default.delay(function () {
+          // this.resizeImg();
+          _this2.resizeFeatured();
+        }, 50);
+      });
+    },
+    resizeImg: function resizeImg() {
+      var imgs = this.$refs['html'].querySelectorAll('img');
+      var nav = document.querySelector('nav').offsetHeight;
+      var h_max = window.innerHeight - nav * 2;
+      var w_max = window.innerWidth - nav;
+
+      var style = window.getComputedStyle(this.$refs['container'], null);
+      var test = style.getPropertyValue('width');
+      var title_w = this.$refs['title'].getBoundingClientRect().width;
+
+      if (w_max > title_w) {
+        w_max = title_w;
+      }
+
+      _lodash2.default.each(imgs, function (img) {
+        var h = img.offsetHeight;
+        var w = img.offsetWidth;
+        var k = h / w;
+        if (h_max / k < w_max) {
+          img.style.height = h_max + 'px';
+          img.style.width = h_max / k + 'px';
+        } else {
+          img.style.width = w_max + 'px';
+          img.style.height = w_max * k + 'px';
+        }
+      });
+    },
+    resizeFeatured: function resizeFeatured() {
+      var el_divider = '',
+          divider = '';
+      if (document.all) {
+        // IE
+        el_divider = this.$refs['divider'].offsetHeight;
+        divider = parseInt(this.$refs['divider'].currentStyle.marginTop, 10) + parseInt(this.$refs['divider'].currentStyle.marginBottom, 10) + el_divider;
+      } else {
+        divider = parseInt(document.defaultView.getComputedStyle(this.$refs['divider'], '').getPropertyValue('margin-top')) + parseInt(document.defaultView.getComputedStyle(this.$refs['divider'], '').getPropertyValue('margin-bottom'));
+      }
+      console.log('immagine');
+      console.log(this.$refs['featured_img'].offsetHeight);
+      var featured_img = this.$refs['featured_img'].offsetHeight;
+      var title_height = this.$refs['title'].offsetHeight + divider;
+      var nav = document.querySelector('nav').offsetHeight;
+      var h_max = window.innerHeight - nav * 2 - title_height;
+
+      if (featured_img <= h_max) {
+        h_max = featured_img - nav * 2 - title_height;
+        this.$refs['hero_img'].style.height = h_max + 'px';
+      } else {
+        this.$refs['hero_img'].style.height = h_max + 'px';
+      }
+      console.log(h_max);
+    }
+  },
+  components: {
+    MainLayout: _MainLayout2.default
+  }
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("main-layout", [
+    _c("div", { ref: "hero_img", staticClass: "w-100 hero_img" }, [
+      _c("img", {
+        ref: "featured_img",
+        staticClass: "w-100",
+        attrs: { src: _vm.article.featured_img }
+      })
+    ]),
+    _vm._v(" "),
+    _c("article", { ref: "container", staticClass: "container pt-5" }, [
+      _c("h1", { ref: "title" }, [_vm._v(_vm._s(_vm.article.title))]),
+      _vm._v(" "),
+      _c("hr", { ref: "divider", staticClass: "pb-3" }),
+      _vm._v(" "),
+      _c("p", {
+        ref: "html",
+        domProps: { innerHTML: _vm._s(_vm.article.html) }
+      })
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-416a9e79", module.exports)
+  }
+}
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "footer",
+    { ref: "footer", staticClass: "w-100 bg-light text-center" },
+    [
+      _c("div", { staticClass: "sticky-bottom", attrs: { id: "eye" } }, [
+        _c("a", { staticClass: "nav-link", on: { click: _vm.changeColor } }, [
+          _c(
+            "svg",
+            {
+              attrs: {
+                width: "50px",
+                height: "50px",
+                viewBox: "0 0 798 798",
+                version: "1.1",
+                xmlns: "http://www.w3.org/2000/svg",
+                "xmlns:xlink": "http://www.w3.org/1999/xlink"
+              }
+            },
+            [
+              _c(
+                "g",
+                {
+                  attrs: {
+                    id: "Page-1",
+                    stroke: "none",
+                    "stroke-width": "1",
+                    fill: "none",
+                    "fill-rule": "evenodd"
+                  }
+                },
+                [
+                  _c(
+                    "g",
+                    { attrs: { transform: "translate(23.000000, 14.000000)" } },
+                    [
+                      _c("polygon", {
+                        attrs: {
+                          id: "Stroke-1",
+                          stroke: "#252121",
+                          "stroke-width": "19.705",
+                          points:
+                            "370.149 0.1504 751.187 388.8854 370.149 769.9234 0.658 385.0374"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("path", {
+                        attrs: {
+                          d:
+                            "M454.0928,464.7578 C470.8218,445.7358 481.0028,420.8128 481.0028,393.5498 C481.0028,366.3198 470.8458,341.4348 454.1628,322.4208 C503.1908,344.2848 538.7388,379.6798 551.4718,393.5598 C538.7488,407.4718 503.2048,442.9078 454.0928,464.7578 L454.0928,464.7578 Z M194.5868,393.5498 C207.3108,379.6478 242.8498,344.1968 291.9758,322.3418 C275.2418,341.3648 265.0568,366.2828 265.0568,393.5498 C265.0568,420.7888 275.2138,445.6798 291.9208,464.6978 C242.8778,442.8388 207.3208,407.4348 194.5868,393.5498 L194.5868,393.5498 Z M222.7548,318.5308 C237.7438,307.5528 257.2128,295.2978 280.1158,285.2338 L286.3178,304.3128 C266.6498,312.8168 249.0838,323.3448 234.0208,334.0348 L222.7548,318.5308 Z M363.7408,264.9028 L363.7408,285.8328 C342.3558,286.8258 322.2188,291.1668 303.6508,297.5768 L297.4028,278.3448 C317.5718,271.1228 339.8668,265.9748 363.7408,264.9028 L363.7408,264.9028 Z M448.6388,278.3828 L442.4088,297.5768 C423.8408,291.1708 403.6988,286.8308 382.3188,285.8328 L382.3188,264.9028 C406.1638,265.9838 428.4598,271.1408 448.6388,278.3828 L448.6388,278.3828 Z M523.2628,318.5638 L512.0198,334.0308 C496.9618,323.3408 479.4098,312.8168 459.7378,304.3178 L465.9208,285.2798 C488.8008,295.3488 508.2558,307.5938 523.2628,318.5638 L523.2628,318.5638 Z M571.0428,387.7158 C569.5898,385.9098 553.6638,366.5668 526.8608,345.1948 L537.9408,329.9498 C550.0198,339.9028 556.8158,347.0288 557.0378,347.2648 L570.6068,334.5878 C569.6228,333.5338 562.0098,325.5358 548.9748,314.7658 L563.9728,294.1238 L548.9518,283.2058 L534.3158,303.3468 C518.0598,291.3938 496.8738,278.0948 471.7648,267.3018 L478.2918,247.2068 L460.6288,241.4688 L454.4358,260.5248 C432.6328,252.8238 408.4158,247.3788 382.3038,246.3208 L382.3038,229.0708 L363.7368,229.0708 L363.7368,246.3208 C337.6298,247.3828 313.4128,252.8188 291.6048,260.5248 L285.4168,241.4838 L267.7588,247.2208 L274.2848,267.2978 C249.1728,278.0898 227.9768,291.3938 211.7208,303.3518 L197.0938,283.2288 L182.0768,294.1468 L197.0658,314.7658 C184.0268,325.5308 176.4278,333.5288 175.4388,334.5878 L189.0118,347.2598 C189.2348,347.0188 196.0218,339.8838 208.0818,329.9268 L219.1798,345.1988 C192.3918,366.5708 176.4688,385.9138 175.0118,387.7158 L170.2858,393.5548 L175.0118,399.3948 C178.3308,403.4978 256.3438,498.2128 367.3708,501.3788 C369.1118,501.4718 370.8618,501.5038 372.6258,501.5188 C372.7598,501.5188 372.8908,501.5278 373.0208,501.5278 L373.0298,501.5278 L373.0388,501.5278 C374.9468,501.5278 376.8408,501.4668 378.7258,501.3788 C489.7198,498.1858 567.7188,403.4978 571.0378,399.3998 L575.7728,393.5548 L571.0428,387.7158 Z",
+                          id: "Fill-3",
+                          fill: "#252121"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("path", {
+                        attrs: {
+                          d:
+                            "M373.0206,522.4345 C267.6056,522.4345 189.7826,440.6705 189.0076,439.8445 L175.4436,452.5265 C178.8186,456.1335 259.3796,541.0025 373.0206,541.0025 C486.6566,541.0025 567.2226,456.1375 570.6026,452.5175 L557.0336,439.8445 C556.2676,440.6705 478.4356,522.4345 373.0206,522.4345",
+                          id: "Fill-5",
+                          fill: "#252121"
+                        }
+                      })
+                    ]
+                  )
+                ]
+              )
+            ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _vm._m(0)
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "pt-2" }, [
+      _c("small", [_vm._v("© Isabella Fornasiero 2018. All rights reserved.")])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-3d32eb0e", module.exports)
+  }
+}
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(101);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("9c6446a6", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3d32eb0e\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./FooterLayout.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3d32eb0e\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./FooterLayout.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n#eye[data-v-3d32eb0e] {\n  position: fixed;\n  bottom: 0;\n  right: 0;\n}\n", ""]);
+
+// exports
+
 
 /***/ })
-],[23]);
+],[24]);

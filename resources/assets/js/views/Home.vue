@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="action">
-      <div class="row pb-5">
+      <!-- <div class="row pb-5">
         <div class="col justify-content-around">
           <svg ref="logo" viewBox="0 0 868 868" width="180" height="180" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="mx-auto d-block">
               <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -24,17 +24,13 @@
               </g>
           </svg>
         </div>
-      </div>
+      </div> -->
       <div class="row">
         <div class="col justify-content-around">
-          <router-link v-bind:to="'/works'" class="btn btn-lg btn-block btn-primary">Isabella Fornasiero</router-link>
+          <router-link v-bind:to="'/works'" class="btn btn-lg btn-block btn-primary">Enter</router-link>
         </div>
       </div>
     </div>
-    <!-- <div id="video-home">
-      <iframe frameborder="0" height="140%" width="140%" src="https://player.vimeo.com/video/240074870?autoplay=1&loop=1">
-      </iframe>
-    </div> -->
     <div class="video-hero">
       <video autoplay loop id="video-background" muted plays-inline>
         <source src="/themes/default/video/video.mp4" type="video/mp4">

@@ -6541,27 +6541,27 @@ a.bg-dark:hover {
 }
 
 .rounded {
-  border-radius: 0 !important;
+  border-radius: 0.15rem !important;
 }
 
 .rounded-top {
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
+  border-top-left-radius: 0.15rem !important;
+  border-top-right-radius: 0.15rem !important;
 }
 
 .rounded-right {
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0.15rem !important;
+  border-bottom-right-radius: 0.15rem !important;
 }
 
 .rounded-bottom {
-  border-bottom-right-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0.15rem !important;
+  border-bottom-left-radius: 0.15rem !important;
 }
 
 .rounded-left {
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
+  border-top-left-radius: 0.15rem !important;
+  border-bottom-left-radius: 0.15rem !important;
 }
 
 .rounded-circle {
