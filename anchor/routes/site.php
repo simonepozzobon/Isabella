@@ -13,6 +13,9 @@ Route::get('api/search-post/(:any)', function($slug) {
     if ($extend = Extend::field('post', 'featured_img', $post->id)) {
       $post->featured_img = Extend::value($extend, '');
     }
+    if ($extend = Extend::field('post', 'grid_img', $post->id)) {
+      $post->grid_img = Extend::value($extend, '');
+    }
     return Response::json($post, 200);
 });
 
@@ -27,6 +30,9 @@ Route::get('api/search-posts', function(){
     foreach ($posts[1] as $key => $post) {
       if ($extend = Extend::field('post', 'featured_img', $post->id)) {
         $post->featured_img = Extend::value($extend, '');
+      }
+      if ($extend = Extend::field('post', 'grid_img', $post->id)) {
+        $post->grid_img = Extend::value($extend, '');
       }
     }
 

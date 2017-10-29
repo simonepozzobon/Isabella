@@ -85,7 +85,9 @@ export default {
     resizeFeatured()
     {
       console.log('resized');
-      document.getElementById('hero-img').style.height = ( window.innerHeight - $('#title').height() - $('nav').height() - $('hr').height() - 48 - 16 - 8 - 33 )+'px';
+      this.$refs['hero-img'].style.height = ( window.innerHeight - this.$refs['title'].offsetHeight - this.$refs['divider'].offsetHeight - 48 - 33 - 66)+'px';
+
+      // document.getElementById('hero-img').style.height = ( window.innerHeight - $('#title').height() - $('nav').height() - $('hr').height() - 48 - 16 - 8 - 33 )+'px';
     }
   },
   components: {
@@ -99,7 +101,7 @@ export default {
     min-height: 140px;
     background-size: cover !important;
     background-position: center center !important;
-    box-shadow: inset 0 0 2rem rgba(0,0,0,.15);
+    box-shadow: inset 0 0 5rem rgba(0,0,0,.015);
   }
 
   .hero_img {

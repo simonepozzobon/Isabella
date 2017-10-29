@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-4 col-lg-4 box mb-4" ref="col">
+  <div class="col-md-3 col-lg-3 box mb-4" ref="col">
     <div class="row pb-4">
       <div @mouseover="mediaHover" @mouseleave="mediaLeave" class="col work">
         <div class="container-fluid img_grid" ref="img_grid" :style="'background: url('+img+') conver center;'">
@@ -8,7 +8,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <router-link v-bind:to="'/work/'+link"><h4 class="title text-center">{{title}}</h4></router-link>
+        <router-link :to="'/work/'+link"><h5 class="title text-center">{{title}}</h5></router-link>
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@ export default {
       var vue = this;
       this.link = this.post.data.slug;
       this.title = this.post.data.title;
-      this.img = this.post.data.featured_img;
+      this.img = this.post.data.grid_img;
       this.resizeCol();
       this.$emit('worksLoaded', true);
       window.addEventListener('resize', _.debounce(() => {

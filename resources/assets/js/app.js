@@ -22,41 +22,47 @@ const router = new VueRouter({
   ]
 })
 
-import mojs from 'mo-js'
+import {TweenMax, Power4, TimelineMax} from "gsap";
 
 const app = new Vue({
+  el: '#app',
   router,
   methods: {
     enter: function(el, done)
     {
       el.style.display = 'auto';
-      var enterTransition = new mojs.Html({
-        el: el,
-        opacity: {0 : 1},
-        duration: 500,
-        easing: 'sin.in',
-        onComplete: function () {
-        }
-      }).play();
+      TweenMax.fromTo(el, .4, {
+        opacity: 0,
+      }, {
+        opacity: 1,
+        ease: Power4.easeInOut
+      })
+      done
     },
 
     beforeLeave: function(el, done)
     {
-      var leaveTransition = new mojs.Html({
-        el: el,
-        opacity: {1 : 0},
-        duration: 250,
-        easing: 'sin.out',
-        onComplete: function ()
-        {
-
+      TweenMax.fromTo(el, .4, {
+        opacity: 1,
+      }, {
+        opacity: 0,
+        ease: Power4.easeInOut,
+        onComplete: function () {
+          var parent = el.parentNode;
+          el.style.display = 'none';
+          parent.removeChild(el);
         }
-      }).play();
+      });
+      done
     },
 
     leave: function(el, done)
     {
-      el.style.display = 'none';
+
+      // var parent = el.parentNode;
+      // el.style.display = 'none';
+      // parent.removeChild(el);
+      // done;
     }
   },
 }).$mount('#app')

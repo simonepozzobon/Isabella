@@ -1,6 +1,6 @@
 <template>
   <footer class="w-100 bg-light text-center" ref="footer">
-      <div id="eye" class="sticky-bottom">
+      <div class="sticky-bottom">
         <a @click="changeColor" class="nav-link">
           <svg width="50px" height="50px" viewBox="0 0 798 798" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -26,14 +26,14 @@ export default {
   }),
   methods: {
     changeColor() {
-      
+
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 
-  #eye {
+  .sticky-bottom {
     position:fixed;
     bottom: 0;
     right: 0;
