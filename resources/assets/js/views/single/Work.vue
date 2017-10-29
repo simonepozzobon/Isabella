@@ -1,10 +1,13 @@
 <template>
   <main-layout>
-    <div class="w-100 hero_img" ref="hero_img">
-      <img :src="article.featured_img" class="w-100" ref="featured_img"/>
+    <div ref="hero-img" id="hero-img" class="w-100" :style="'background: url('+article.featured_img+');'">
+
     </div>
+    <!-- <div class="w-100 hero_img" ref="hero_img">
+      <img :src="" class="w-100" ref="featured_img"/>
+    </div> -->
     <article class="container pt-5" ref="container">
-      <h1 ref="title">{{article.title}}</h1>
+      <h1 id="title" ref="title">{{article.title}}</h1>
       <hr class="pb-3" ref="divider">
       <p v-html="article.html" ref="html"></p>
     </article>
@@ -14,6 +17,7 @@
 import MainLayout from '../../layouts/MainLayout.vue'
 import axios from 'axios'
 import _ from 'lodash'
+import $ from 'jquery';
 
 export default {
   props: [''],
@@ -26,11 +30,13 @@ export default {
   mounted () {
     var vue = this;
     var slug = this.$route.params.slug;
+    this._height = window.innerHeight;
     this.getPost(slug);
     window.addEventListener('resize', _.debounce(() => {
       // this.resizeImg();
       this.resizeFeatured();
     }, 250));
+    this.resizeFeatured();
   },
   methods: {
     getPost(slug)
@@ -78,29 +84,8 @@ export default {
     },
     resizeFeatured()
     {
-      var el_divider = '',
-          divider = '';
-      if (document.all) { // IE
-        el_divider = this.$refs['divider'].offsetHeight;
-        divider = parseInt(this.$refs['divider'].currentStyle.marginTop, 10) + parseInt(this.$refs['divider'].currentStyle.marginBottom, 10) + el_divider;
-      } else {
-        divider = parseInt(document.defaultView.getComputedStyle(this.$refs['divider'], '').getPropertyValue('margin-top')) + parseInt(document.defaultView.getComputedStyle(this.$refs['divider'], '').getPropertyValue('margin-bottom'));
-      }
-      console.log('immagine');
-      console.log(this.$refs['featured_img'].offsetHeight);
-      var featured_img = this.$refs['featured_img'].offsetHeight;
-      var title_height = this.$refs['title'].offsetHeight + divider;
-      var nav = document.querySelector('nav').offsetHeight;
-      var h_max =  window.innerHeight - (nav * 2) - title_height;
-
-      if (featured_img <= h_max)
-      {
-        h_max = featured_img - (nav * 2) - title_height;
-        this.$refs['hero_img'].style.height = h_max+'px';
-      } else {
-        this.$refs['hero_img'].style.height = h_max+'px';
-      }
-      console.log(h_max);
+      console.log('resized');
+      document.getElementById('hero-img').style.height = ( window.innerHeight - $('#title').height() - $('nav').height() - $('hr').height() - 48 - 16 - 8 - 33 )+'px';
     }
   },
   components: {
@@ -109,6 +94,14 @@ export default {
 }
 </script>
 <style scoped>
+
+  #hero-img {
+    min-height: 140px;
+    background-size: cover !important;
+    background-position: center center !important;
+    box-shadow: inset 0 0 2rem rgba(0,0,0,.5);
+  }
+
   .hero_img {
     overflow: hidden;
     min-height: 100px;

@@ -43699,6 +43699,9 @@ exports.default = {
   name: "",
   data: function data() {
     return {};
+  },
+  methods: {
+    changeColor: function changeColor() {}
   }
 };
 
@@ -67428,7 +67431,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "\n.hero_img[data-v-416a9e79] {\n  overflow: hidden;\n  min-height: 100px;\n}\n", ""]);
+exports.push([module.i, "\n#hero-img[data-v-416a9e79] {\n  min-height: 140px;\n  background-size: cover !important;\n  background-position: center center !important;\n  -webkit-box-shadow: inset 0 0 2rem rgba(0,0,0,.5);\n          box-shadow: inset 0 0 2rem rgba(0,0,0,.5);\n}\n.hero_img[data-v-416a9e79] {\n  overflow: hidden;\n  min-height: 100px;\n}\n", ""]);
 
 // exports
 
@@ -67456,7 +67459,27 @@ var _lodash = __webpack_require__(16);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _jquery = __webpack_require__(5);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
   props: [''],
@@ -67471,11 +67494,13 @@ exports.default = {
 
     var vue = this;
     var slug = this.$route.params.slug;
+    this._height = window.innerHeight;
     this.getPost(slug);
     window.addEventListener('resize', _lodash2.default.debounce(function () {
       // this.resizeImg();
       _this.resizeFeatured();
     }, 250));
+    this.resizeFeatured();
   },
 
   methods: {
@@ -67520,46 +67545,14 @@ exports.default = {
       });
     },
     resizeFeatured: function resizeFeatured() {
-      var el_divider = '',
-          divider = '';
-      if (document.all) {
-        // IE
-        el_divider = this.$refs['divider'].offsetHeight;
-        divider = parseInt(this.$refs['divider'].currentStyle.marginTop, 10) + parseInt(this.$refs['divider'].currentStyle.marginBottom, 10) + el_divider;
-      } else {
-        divider = parseInt(document.defaultView.getComputedStyle(this.$refs['divider'], '').getPropertyValue('margin-top')) + parseInt(document.defaultView.getComputedStyle(this.$refs['divider'], '').getPropertyValue('margin-bottom'));
-      }
-      console.log('immagine');
-      console.log(this.$refs['featured_img'].offsetHeight);
-      var featured_img = this.$refs['featured_img'].offsetHeight;
-      var title_height = this.$refs['title'].offsetHeight + divider;
-      var nav = document.querySelector('nav').offsetHeight;
-      var h_max = window.innerHeight - nav * 2 - title_height;
-
-      if (featured_img <= h_max) {
-        h_max = featured_img - nav * 2 - title_height;
-        this.$refs['hero_img'].style.height = h_max + 'px';
-      } else {
-        this.$refs['hero_img'].style.height = h_max + 'px';
-      }
-      console.log(h_max);
+      console.log('resized');
+      document.getElementById('hero-img').style.height = window.innerHeight - (0, _jquery2.default)('#title').height() - (0, _jquery2.default)('nav').height() - (0, _jquery2.default)('hr').height() - 48 - 16 - 8 - 33 + 'px';
     }
   },
   components: {
     MainLayout: _MainLayout2.default
   }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+};
 
 /***/ }),
 /* 91 */
@@ -67570,16 +67563,17 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("main-layout", [
-    _c("div", { ref: "hero_img", staticClass: "w-100 hero_img" }, [
-      _c("img", {
-        ref: "featured_img",
-        staticClass: "w-100",
-        attrs: { src: _vm.article.featured_img }
-      })
-    ]),
+    _c("div", {
+      ref: "hero-img",
+      staticClass: "w-100",
+      style: "background: url(" + _vm.article.featured_img + ");",
+      attrs: { id: "hero-img" }
+    }),
     _vm._v(" "),
     _c("article", { ref: "container", staticClass: "container pt-5" }, [
-      _c("h1", { ref: "title" }, [_vm._v(_vm._s(_vm.article.title))]),
+      _c("h1", { ref: "title", attrs: { id: "title" } }, [
+        _vm._v(_vm._s(_vm.article.title))
+      ]),
       _vm._v(" "),
       _c("hr", { ref: "divider", staticClass: "pb-3" }),
       _vm._v(" "),

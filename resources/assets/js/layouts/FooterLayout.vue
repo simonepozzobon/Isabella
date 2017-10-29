@@ -23,7 +23,12 @@ export default {
   name: "",
   data: () => ({
 
-  })
+  }),
+  methods: {
+    changeColor() {
+      
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
