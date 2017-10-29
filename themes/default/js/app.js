@@ -43727,19 +43727,19 @@ var render = function() {
             _c(
               "router-link",
               { staticClass: "nav-link active", attrs: { to: "/works" } },
-              [_vm._v("Works")]
+              [_c("h4", [_vm._v("Works")])]
             ),
             _vm._v(" "),
             _c(
               "router-link",
               { staticClass: "nav-link", attrs: { to: "/about" } },
-              [_vm._v("About")]
+              [_c("h4", [_vm._v("About")])]
             ),
             _vm._v(" "),
             _c(
               "router-link",
               { staticClass: "nav-link", attrs: { to: "/contacts" } },
-              [_vm._v("Contacts")]
+              [_c("h4", [_vm._v("Contacts")])]
             )
           ],
           1
@@ -67431,7 +67431,7 @@ exports = module.exports = __webpack_require__(3)(undefined);
 
 
 // module
-exports.push([module.i, "\n#hero-img[data-v-416a9e79] {\n  min-height: 140px;\n  background-size: cover !important;\n  background-position: center center !important;\n  -webkit-box-shadow: inset 0 0 2rem rgba(0,0,0,.5);\n          box-shadow: inset 0 0 2rem rgba(0,0,0,.5);\n}\n.hero_img[data-v-416a9e79] {\n  overflow: hidden;\n  min-height: 100px;\n}\n", ""]);
+exports.push([module.i, "\n#hero-img[data-v-416a9e79] {\n  min-height: 140px;\n  background-size: cover !important;\n  background-position: center center !important;\n  -webkit-box-shadow: inset 0 0 2rem rgba(0,0,0,.15);\n          box-shadow: inset 0 0 2rem rgba(0,0,0,.15);\n}\n.hero_img[data-v-416a9e79] {\n  overflow: hidden;\n  min-height: 100px;\n}\n", ""]);
 
 // exports
 
