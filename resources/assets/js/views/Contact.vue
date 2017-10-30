@@ -3,23 +3,23 @@
     <div class="container ">
       <div class="row h-100 align-items-center">
         <div class="col ">
-          <div id="address" class="row justify-content-center">
+          <div id="address" class="row justify-content-center" ref="address">
             <div class="col-12 text-center p-5">
               <p class="text-default">info (at) isabellafornasiero.com</p>
               <p class="text-default">Milan, Italy</p>
             </div>
           </div>
-          <div id="show-contact" class="row justify-content-center">
+          <div id="show-contact" class="row justify-content-center" ref="show_contact_btn">
             <div class="col-12 pb-5">
               <div class="d-flex justify-content-around">
                 <a @click="showContact" href="#" class="btn btn-primary">Send a message</a>
               </div>
             </div>
           </div>
-          <form id="contact-form" action="" method="">
+          <form id="contact-form" action="" method="" ref="contact_form">
             <div class="row justify-content-center">
               <div class="col-md-6">
-                <a id="close" @click="closeContact" href="#" class="close">
+                <a id="close" @click="closeContact" href="#" class="close" ref="close">
                   <span aria-hidden="true">&times;</span>
                 </a>
                 <div id="name" class="form-group pb-3">
@@ -59,15 +59,15 @@ export default {
   }),
   mounted() {
       //do something after mounting vue instance
-      this.address = document.getElementById('address');
-      this.show_contact = document.getElementById('show-contact');
-      this.contactForm = document.getElementById('contact-form');
+      // this.address = document.getElementById('address');
+      // this.show_contact = document.getElementById('show-contact');
+      // this.contactForm = document.getElementById('contact-form');
       this.formGroups = document.getElementsByClassName('form-group');
-      this.close = document.getElementById('close');
-
-      this.hideContacts = new TimelineMax();
-      this.showForm = new TimelineMax();
-      this.hideForm = new TimelineMax();
+      // this.close = document.getElementById('close');
+      //
+      // this.hideContacts = new TimelineMax();
+      // this.showForm = new TimelineMax();
+      // this.hideForm = new TimelineMax();
 
   },
   methods: {
@@ -75,56 +75,80 @@ export default {
           e.preventDefault();
           var vue = this;
 
-          this.hideContacts.to([this.address, this.show_contact], .4, {
+          var hide_contacts = new TimelineMax();
+          hide_contacts.to([this.$refs.address, this.$refs.show_contact_btn], .4, {
               opacity: 0,
               ease: CustomEase.create("custom", "M0,0,C0,0.500,0.500,1,1,1"),
               display: 'none',
               onComplete: function(){
-                  vue.hideForm.pause(0)
-                  vue.contactForm.style.display = 'inherit';
-                  // TweenMax.set(vue.contactForm, {clearProps: 'all'} )
+                  vue.$refs.contact_form.style.display = 'inherit';
               }
-          }).restart();
-
-
-          this.showForm.staggerFromTo(this.formGroups, .6, {
+          })
+          .staggerFromTo(this.formGroups, .6, {
               y: '+=100',
               scale: 0.8,
+              opacity: 0
           }, {
               y: 0,
               scale: 1,
               opacity: 1,
               ease: CustomEase.create("custom", "M0,0,C0,0.500,0.500,1,1,1"),
-          }, .2)
-          .fromTo(this.close, .6, {
-            opacity: 0,
-            scale: 0,
-            x: 100,
-          }, {
-            opacity: 1,
-            scale: 1,
-            x: 0,
-            rotation: -180,
-            ease: CustomEase.create("custom", "M0,0,C0,0.500,0.500,1,1,1"),
-          }).restart();
+          }, .2);
+
+          var master = new TimelineMax();
+          master.add(hide_contacts);
+          master.add(
+            TweenMax.fromTo(this.$refs.close, 1, {
+              opacity: 0,
+              scale: 0,
+              x: 100,
+            }, {
+              opacity: 1,
+              scale: 1,
+              x: 0,
+              rotation: -180,
+              ease: CustomEase.create("custom", "M0,0,C0,0.500,0.500,1,1,1"),
+            }), .4
+          )
       },
       closeContact(e) {
           e.preventDefault();
           var vue = this;
-          this.hideForm.to(this.contactForm, .1, {
+
+          var hide_form = new TimelineMax();
+
+          hide_form
+          .to(this.formGroups, .1, {
             scale: 1.1,
           })
-          .to(this.contactForm, .4, {
-            scale: 0,
+          .to(this.formGroups, .4, {
+            y: 0,
             opacity: 0,
-            y: 100,
-            ease: CustomEase.create("custom", "M0,0,C0,0.500,0.500,1,1,1"),
-            onComplete: function() {
-              vue.contactForm.style.display = 'none';
-              vue.hideContacts.reverse();
-              vue.showForm.pause(0);
-            }
-          }).play();
+            scale: 0.8,
+            ease: Power4.easeInOut
+          });
+
+          var master = new TimelineMax();
+
+          master.add(hide_form);
+          master.add(
+            TweenMax.to(this.$refs.close, .6, {
+              opacity: 0,
+              scale: 0,
+              rotation: 180,
+              ease: Power4.easeInOut,
+              onComplete: function () {
+                vue.$refs.contact_form.style.display = 'none';
+              }
+            }), .1
+          );
+          master.add(
+            TweenMax.to([this.$refs.address, this.$refs.show_contact_btn], .4, {
+              opacity: 1,
+              display: 'inherit',
+              ease: Power4.easeInOut
+            }), .6
+          );
       }
   },
   components: {
