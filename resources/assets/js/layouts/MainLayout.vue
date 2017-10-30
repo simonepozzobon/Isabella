@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="bg-default">
     <nav class="navbar navbar-light bg-light sticky-top">
       <div class="d-flex justify-content-end ml-auto">
         <!-- <a class="navbar-brand justify-content-end" href="/">
