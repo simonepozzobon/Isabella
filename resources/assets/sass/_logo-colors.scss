@@ -9,3 +9,9 @@
 .title {
   text-transform: uppercase;
 }
+
+.sticky-bottom {
+  position:fixed;
+  bottom: -.25rem;
+  right: -1rem;
+}

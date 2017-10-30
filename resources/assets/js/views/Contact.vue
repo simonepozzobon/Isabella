@@ -5,8 +5,8 @@
         <div class="col ">
           <div id="address" class="row justify-content-center">
             <div class="col-12 text-center p-5">
-              <p>info (at) isabellafornasiero.com</p>
-              <p>Milan, Italy</p>
+              <p class="text-default">info (at) isabellafornasiero.com</p>
+              <p class="text-default">Milan, Italy</p>
             </div>
           </div>
           <div id="show-contact" class="row justify-content-center">
@@ -23,15 +23,15 @@
                   <span aria-hidden="true">&times;</span>
                 </a>
                 <div id="name" class="form-group pb-3">
-                  <label for="name">Name</label>
+                  <label for="name" class="text-default">Name</label>
                   <input type="text" name="name" value="" class="form-control" >
                 </div>
                 <div id="email" class="form-group pb-3">
-                  <label for="email">E-mail</label>
+                  <label for="email" class="text-default">E-mail</label>
                   <input type="text" name="email" value="" class="form-control">
                 </div>
                 <div id="message" class="form-group pb-3">
-                  <label for="message">Message</label>
+                  <label for="message" class="text-default">Message</label>
                   <textarea name="message" class="form-control"></textarea>
                 </div>
                 <div id="send-btn" class="form-group d-flex justify-content-around">

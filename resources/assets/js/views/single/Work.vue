@@ -1,15 +1,14 @@
 <template>
   <main-layout>
     <div ref="hero-img" id="hero-img" class="w-100" :style="'background: url('+article.featured_img+');'">
-
     </div>
     <!-- <div class="w-100 hero_img" ref="hero_img">
       <img :src="" class="w-100" ref="featured_img"/>
     </div> -->
     <article class="container pt-5" ref="container">
-      <h1 id="title" ref="title">{{article.title}}</h1>
+      <h1 id="title" ref="title" class="text-default">{{article.title}}</h1>
       <hr class="pb-3" ref="divider">
-      <p v-html="article.html" ref="html"></p>
+      <p v-html="article.html" ref="html" class="text-default"></p>
     </article>
   </main-layout>
 </template>

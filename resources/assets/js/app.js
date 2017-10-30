@@ -18,6 +18,7 @@ const router = new VueRouter({
     { path: '/works', component: require('./views/Works.vue') },
     { path: '/about', component: require('./views/About.vue') },
     { path: '/contacts', alias: '/contact', component: require('./views/Contact.vue') },
+    { path: '/cv', alias: '/curriculum', component: require('./views/Cv.vue') },
     { path: '/work/:slug', component: require('./views/single/Work.vue') }
   ]
 })
@@ -50,7 +51,8 @@ const app = new Vue({
         onComplete: function () {
           var parent = el.parentNode;
           el.style.display = 'none';
-          parent.removeChild(el);
+          console.log(el);
+          // parent.removeChild(el);
         }
       });
       done

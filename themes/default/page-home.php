@@ -8,9 +8,9 @@
   </head>
   <body>
     <div id="app" class="h-100 w-100">
-      <transition :css="false" @enter="enter" @before-leave="beforeLeave" @leave="leave">
+      <!-- <transition :css="false" @enter="enter" @before-leave="beforeLeave" @leave="leave"> -->
         <router-view></router-view>
-      </transition>
+      <!-- </transition> -->
     </div>
     <script src="<?php echo theme_url('/js/manifest.js'); ?>"></script>
     <script src="<?php echo theme_url('/js/vendor.js'); ?>"></script>

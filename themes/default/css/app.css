@@ -9628,12 +9628,18 @@ a.text-dark:hover {
   text-transform: uppercase;
 }
 
+.sticky-bottom {
+  position: fixed;
+  bottom: -.25rem;
+  right: -1rem;
+}
+
 .action {
   position: fixed;
-  top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  bottom: 4rem;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
 }
 
 .video-hero {

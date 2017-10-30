@@ -27,7 +27,13 @@
       </div> -->
       <div class="row">
         <div class="col justify-content-around">
-          <router-link v-bind:to="'/works'" class="btn btn-lg btn-block btn-primary">Enter</router-link>
+          <div ref="loginForm" class="form-group">
+            <input id="login" type="text" class="form-control bg-primary text-white text-center" placeholder="">
+          </div>
+          <div ref="loginBtn" class="form-group d-flex justify-content-center">
+            <a @click="signIn" href="#" class="btn btn-primary">Login</a>
+          </div>
+          <router-link id="enter" ref="enter" v-bind:to="'/works'" class="btn btn-lg btn-block btn-primary">Enter</router-link>
         </div>
       </div>
     </div>
@@ -39,18 +45,24 @@
   </main>
 </template>
 <script>
-  import mojs from 'mo-js'
-  import MojsPlayer from 'mojs-player'
-  import $ from 'jquery'
+import mojs from 'mo-js'
+import $ from 'jquery'
+import {TweenMax, Power4, TimelineMax} from 'gsap';
 
-  export default {
-    data () {
-        return {
-          var: ''
-        }
-    },
+export default {
+    data: () => ({
+      login: ''
+    }),
     mounted () {
       $('.controls-wrapper').remove();
+      this.login = localStorage.getItem('login') || false;
+      console.log(this.login);
+      if (this.login) {
+        this.$refs.loginForm.style.display = 'none';
+        this.$refs.loginBtn.style.cssText = 'display: none !important';
+        this.$refs.enter.$el.style.display = 'inherit';
+        this.$refs.enter.$el.style.opacity = '1';
+      }
 
     },
     methods: {
@@ -62,6 +74,42 @@
             duration: 500,
           }).play();
       },
+
+      signIn(e)
+      {
+          e.preventDefault();
+          var vue = this;
+          if (document.getElementById('login').value === 'IF') {
+              localStorage.setItem('login', true);
+              var t1 = new TimelineMax();
+              t1.to([this.$refs.loginForm, this.$refs.loginBtn], .4, {
+                  opacity: 0,
+                  onComplete: function () {
+                      vue.$refs.loginForm.style.display = 'none';
+                      vue.$refs.loginBtn.style.display = 'none';
+                      vue.$refs.enter.$el.style.display = 'inherit';
+                  }
+              })
+              .to(this.$refs.enter.$el, .1, {
+                  opacity: 1,
+                  scale: 1.1,
+                  ease: Power4.easeInOut
+              })
+              .to(this.$refs.enter.$el, .1, {
+                  scale: 1,
+                  ease: Power4.easeInOut
+              });
+          } else {
+            // wrong password
+          }
+      }
     },
   }
 </script>
+<style lang="scss" scoped>
+    #enter {
+      display: none;
+      opacity: 0;
+    }
+
+</style>
