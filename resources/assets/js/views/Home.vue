@@ -28,7 +28,7 @@
       <div class="row">
         <div class="col justify-content-around">
           <div ref="loginForm" class="form-group">
-            <input id="login" type="text" class="form-control bg-primary text-white text-center" placeholder="">
+            <input @keyup.enter="signIn" id="login" type="text" class="form-control bg-primary text-white text-center" placeholder="">
           </div>
           <div ref="loginBtn" class="form-group d-flex justify-content-center">
             <a @click="signIn" href="#" class="btn btn-primary">Login</a>
@@ -54,7 +54,7 @@ export default {
       login: ''
     }),
     mounted () {
-      $('.controls-wrapper').remove();
+      // $('.controls-wrapper').remove();
       this.login = localStorage.getItem('login') || false;
       console.log(this.login);
       if (this.login) {
@@ -63,7 +63,6 @@ export default {
         this.$refs.enter.$el.style.display = 'inherit';
         this.$refs.enter.$el.style.opacity = '1';
       }
-
     },
     methods: {
       logoFadeIn() {

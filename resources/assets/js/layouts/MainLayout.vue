@@ -20,6 +20,11 @@ import FooterLayout from './FooterLayout.vue'
 
 export default {
   mounted() {
+    //login
+    this.login = localStorage.getItem('login') || false;
+    if (!this.login) {
+      this.$router.push('/')
+    }
   },
   methods: {
     changeColor() {

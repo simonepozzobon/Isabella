@@ -70,7 +70,6 @@ export default {
     changeColor() {
       var vue = this;
 
-      this.$refs.rombo.style.display = 'inherit';
       var width = window.innerWidth;
       var height = window.innerHeight;
       var dimension = width;
@@ -81,13 +80,15 @@ export default {
       t1
       .to(this.$refs.rombo, .2, {
         opacity: 1,
+        display: 'inherit',
         ease: Power4.easingCubicOut
       })
       .to(this.$refs.rombo, .4, {
         height: (dimension * 2) +'px',
         width: (dimension * 2) +'px',
-        transformOrigin: '50% 100%',
+        transformOrigin: '0% 100%',
         ease: Power4.easingCubicOut,
+        display: 'none',
         onComplete: function () {
           // make everything dark
           if (localStorage.getItem('dark_theme', true)) {
@@ -218,7 +219,6 @@ export default {
     },
     checkTheme()
     {
-
     },
     everyThingDark()
     {
@@ -228,6 +228,8 @@ export default {
         $('.bg-default').removeClass('bg-default').addClass('bg-primary');
         $('.bg-light').removeClass('bg-light').addClass('bg-inverse');
         $('.btn-primary').removeClass('btn-primary').addClass('btn-secondary');
+
+        $('#black-square').addClass('bg-light').removeClass('bg-primary');
 
         // Svg
         $('#rombo').addClass('stroke-secondary').removeClass('stroke-black');
@@ -248,6 +250,8 @@ export default {
         $('.bg-primary').removeClass('bg-primary').addClass('bg-default');
         $('.bg-inverse').removeClass('bg-inverse').addClass('bg-light');
         $('.btn-secondary').removeClass('btn-secondary').addClass('btn-primary');
+
+        $('#black-square').addClass('bg-primary').removeClass('bg-light');
 
         // Svg
         $('#rombo').addClass('stroke-black').removeClass('stroke-secondary');
@@ -272,7 +276,6 @@ export default {
     position: fixed;
     bottom: 1.4rem;
     right: .65rem;
-    background-color: #1E1E1C;
     transform: rotate(45deg);
     opacity: 0;
     z-index: 0

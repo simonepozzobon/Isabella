@@ -58,17 +58,8 @@ export default {
 
   }),
   mounted() {
-      //do something after mounting vue instance
-      // this.address = document.getElementById('address');
-      // this.show_contact = document.getElementById('show-contact');
-      // this.contactForm = document.getElementById('contact-form');
-      this.formGroups = document.getElementsByClassName('form-group');
-      // this.close = document.getElementById('close');
-      //
-      // this.hideContacts = new TimelineMax();
-      // this.showForm = new TimelineMax();
-      // this.hideForm = new TimelineMax();
 
+      this.formGroups = document.getElementsByClassName('form-group');
   },
   methods: {
       showContact(e) {
