@@ -1,11 +1,11 @@
 <template>
-  <main-layout>
+<main-layout>
     <div class="container pt-5">
-      <transition>
-        <grid @loadComplete="ready"></grid>
-      </transition>
+        <transition>
+            <grid @loadComplete="ready"></grid>
+        </transition>
     </div>
-  </main-layout>
+</main-layout>
 </template>
 <script>
 import MainLayout from '../layouts/MainLayout.vue'
@@ -15,35 +15,36 @@ import MojsPlayer from 'mojs-player'
 import ScrollReveal from 'scrollreveal'
 
 export default {
-  props: [''],
-  data () {
-      return {
-        posts: [],
-      }
-  },
-  mounted () {
-  },
-  methods: {
-    ready()
-    {
-      window.sr = ScrollReveal();
-      sr.reveal('.box', {
-          distance: '80vh',
-          scale: 0.9,
-          duration: 400,
-          delay: 60,
-          viewFactor: 0.5,
-          easing: 'cubic-bezier(.25, 1, .25, 1)',
-          viewOffset: {top: 50}
-      }, 20);
+    data: function() {
+        return {
+            posts: [],
+        }
     },
-  },
-  components: {
-    MainLayout,
-    Grid
-  },
+    mounted() {},
+    methods: {
+        ready: function() {
+            window.sr = ScrollReveal();
+            sr.reveal('.box', {
+                distance: '80vh',
+                scale: 0.9,
+                duration: 400,
+                delay: 60,
+                viewFactor: 0.5,
+                easing: 'cubic-bezier(.25, 1, .25, 1)',
+                viewOffset: {
+                    top: 50
+                }
+            }, 20);
+        },
+    },
+    components: {
+        MainLayout,
+        Grid
+    },
 }
 </script>
 <style>
-.sr .box { visibility: hidden; }
+.sr .box {
+    visibility: hidden;
+}
 </style>
