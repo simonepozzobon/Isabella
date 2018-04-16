@@ -12,6 +12,7 @@
 <script>
 import axios from 'axios'
 import _ from 'lodash'
+import getSize from 'get-size'
 
 export default {
     data: function() {
@@ -26,7 +27,11 @@ export default {
                 var gold = 1.618
                 var imgHeight = (height / gold) - 64
                 this.$refs.heroImg.style.height = `${imgHeight}px`
-                this.$refs.article.style.marginTop = `${imgHeight}px`
+                this.$refs.article.style.marginTop = `${imgHeight - 32}px`
+
+                var spaceLeft = height - imgHeight
+                var titleHeight = (spaceLeft / gold) - 64
+                this.$refs.title.style.lineHeight = `${titleHeight}px`
             }
         }
     },
@@ -45,31 +50,32 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.main-container {
-    width: 100%;
+@import '~styles/custom-variables';
 
-    #hero-img {
-        min-height: 140px;
-        background-size: cover !important;
-        background-position: center center !important;
-        box-shadow: inset 0 0 5rem rgba(0, 0, 0, .05);
-        position: absolute;
-        left: 0;
-        top: 72px;
-    }
+    .main-container {
+        width: 100%;
 
-    .hero_img {
-        overflow: hidden;
-        min-height: 100px;
-    }
+        #hero-img {
+            min-height: 140px;
+            background-size: cover !important;
+            background-position: center center !important;
+            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .05);
+            position: absolute;
+            left: 0;
+            top: 72px;
+        }
 
-    > article {
-        > #title {
-            font-size: 3.75rem;
-            line-height: 3;
-            margin-bottom: 0;
+        .hero_img {
+            overflow: hidden;
+            min-height: 100px;
+        }
+
+        > article {
+
+            > #title {
+                font-size: 3.75rem;
+                margin-bottom: 0;
+            }
         }
     }
-}
-
 </style>
