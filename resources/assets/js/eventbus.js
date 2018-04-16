@@ -1,7 +1,6 @@
 import Vue from 'vue'
 
 const EventBus = new Vue({
-    el: '#eventbus',
     data: function() {
         return {
             current: 0,

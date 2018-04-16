@@ -8,12 +8,9 @@
     <link rel="stylesheet" href="<?php echo theme_url('/css/app.css'); ?>">
   </head>
   <body>
-    <div id="eventbus"></div>
-    <div id="app" class="h-100 w-100">
+    <div id="app">
       <main-template></main-template>
     </div>
-    <script src="<?php echo theme_url('/js/manifest.js'); ?>"></script>
-    <script src="<?php echo theme_url('/js/vendor.js'); ?>"></script>
-    <script src="<?php echo theme_url('/js/app.js'); ?>"></script>
+    <script src="<?php echo theme_url('/js/isabella.js'); ?>"></script>
   </body>
 </html>

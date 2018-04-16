@@ -1,8 +1,13 @@
 <template>
-    <footer class="w-100 bg-light text-center" ref="footer">
-        <div class="sticky-bottom">
-            <a @click="changeColor" class="nav-link">
-                <svg width="77.9px" height="79.9px" viewBox="0 0 779 799" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <footer class="w-100 bg-danger" ref="footer">
+        <div class="copyright">
+            <span class="pt-2 text-default">
+                <small>© Isabella Fornasiero 2018. All rights reserved.</small>
+            </span>
+        </div>
+        <div class="eye-animation">
+            <a @click="changeColor">
+                <svg width="47px" height="48px" viewBox="0 0 779 799" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <title>eye</title>
                     <defs>
                         <!-- Maschera -->
@@ -60,9 +65,6 @@
             </a>
             <div ref="rombo" id="black-square"></div>
         </div>
-        <span class="pt-2 text-default">
-            <small>© Isabella Fornasiero 2018. All rights reserved.</small>
-          </span>
     </footer>
 </template>
 <script>
@@ -350,8 +352,26 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-footer svg {
-    cursor: pointer;
+footer {
+    position: fixed;
+    bottom: 0;
+    min-height: 72px;
+    height: 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    > .copyright {
+    }
+
+    > .eye-animation {
+    }
+
+    svg {
+        cursor: pointer;
+        display: block;
+    }
 }
 
 #black-square {
