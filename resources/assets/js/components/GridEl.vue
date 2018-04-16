@@ -7,7 +7,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <router-link :to="'/work/'+link">
+            <router-link :to="'/work/'+link" :class="isDark">
                 <h5 class="title text-center text-default">{{ title }}</h5>
             </router-link>
         </div>
@@ -35,6 +35,12 @@ export default {
         MediaHover,
     },
     computed: {
+        isDark: function() {
+            if (localStorage.getItem('dark_theme')) {
+                return 'link-light'
+            }
+            return 'link-default'
+        },
         routeIsOpen: function() {
             if (this.$route.name == 'Works') {
                 return true

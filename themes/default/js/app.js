@@ -39443,7 +39443,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n#black-square[data-v-68922f86] {\n  display: none;\n  width: 54px;\n  height: 54px;\n  position: fixed;\n  bottom: 1.4rem;\n  right: 0.65rem;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  opacity: 0;\n  z-index: 0;\n}\n.fill-black[data-v-68922f86] {\n  fill: #1e1f1c;\n}\n.stroke-black[data-v-68922f86] {\n  stroke: #1e1f1c;\n}\n.fill-secondary[data-v-68922f86] {\n  fill: #fffdf4;\n}\n.stroke-secondary[data-v-68922f86] {\n  stroke: #fffdf4;\n}\n", ""]);
+exports.push([module.i, "\nfooter svg[data-v-68922f86] {\n  cursor: pointer;\n}\n#black-square[data-v-68922f86] {\n  display: none;\n  width: 54px;\n  height: 56px;\n  position: absolute;\n  bottom: 1.4rem;\n  right: 0.75rem;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  opacity: 0;\n  z-index: 0;\n}\n.fill-black[data-v-68922f86] {\n  fill: #1e1f1c;\n}\n.stroke-black[data-v-68922f86] {\n  stroke: #1e1f1c;\n}\n.fill-secondary[data-v-68922f86] {\n  fill: #fffdf4;\n}\n.stroke-secondary[data-v-68922f86] {\n  stroke: #fffdf4;\n}\n", ""]);
 
 // exports
 
@@ -39540,19 +39540,28 @@ exports.default = {
     data: function data() {
         return {};
     },
-    mounted: function mounted() {
-        this.dark_theme = localStorage.getItem('dark_theme') || false;
-        console.log(this.dark_theme);
-        if (this.dark_theme) {
-            this.everyThingDark();
-        } else {
-            this.everyThingBright();
-            localStorage.removeItem('dark_theme');
+    watch: {
+        $route: function $route() {
+            this.toggleTheme();
         }
-        this.animateEye();
     },
-
+    computed: {
+        dark_theme: function dark_theme() {
+            if (localStorage.getItem('dark_theme')) {
+                return true;
+            }
+            return false;
+        }
+    },
     methods: {
+        toggleTheme: function toggleTheme() {
+            if (this.dark_theme) {
+                this.everyThingDark();
+            } else {
+                this.everyThingBright();
+                localStorage.removeItem('dark_theme');
+            }
+        },
         changeColor: function changeColor() {
             var vue = this;
 
@@ -39563,13 +39572,16 @@ exports.default = {
                 dimension = height;
             }
             var t1 = new _gsap.TimelineMax();
-            t1.to(this.$refs.rombo, .2, {
+            t1.set(this.$refs.rombo, {
+                zIndex: 99999999,
+                position: 'fixed'
+            }).to(this.$refs.rombo, .2, {
                 opacity: 1,
                 display: 'inherit',
                 ease: _gsap.Power4.easingCubicOut
             }).to(this.$refs.rombo, .4, {
-                height: dimension * 2 + 'px',
-                width: dimension * 2 + 'px',
+                height: dimension * 2.5 + 'px',
+                width: dimension * 2.5 + 'px',
                 transformOrigin: '0% 100%',
                 ease: _gsap.Power4.easingCubicOut,
                 display: 'none',
@@ -39703,11 +39715,11 @@ exports.default = {
                 master.restart();
             });
         },
-        checkTheme: function checkTheme() {},
         everyThingDark: function everyThingDark() {
             console.log('dark');
             $('body').addClass('bg-primary');
             $('.text-default').removeClass('text-default').addClass('text-light');
+            $('.link-default').removeClass('link-default').addClass('link-light');
             $('.bg-default').removeClass('bg-default').addClass('bg-primary');
             $('.bg-light').removeClass('bg-light').addClass('bg-inverse');
             $('.btn-primary').removeClass('btn-primary').addClass('btn-secondary');
@@ -39715,20 +39727,31 @@ exports.default = {
             $('#black-square').addClass('bg-light').removeClass('bg-primary');
 
             // Svg
-            $('#rombo').addClass('stroke-secondary').removeClass('stroke-black');
-            $('#palpebra_inf').addClass('fill-secondary').removeClass('fill-black');
-            $('#palpebra_sup').addClass('fill-secondary').removeClass('fill-black');
-            $('#occhio-statico').addClass('fill-secondary').removeClass('fill-black');
+            $('#rombo').addClass('fill-secondary').removeClass('fill-black');
+            $('#ciglia-inf').addClass('fill-secondary').removeClass('fill-black');
+            $('#ciglia-sup').addClass('fill-secondary').removeClass('fill-black');
+            $('#occhio').addClass('fill-secondary').removeClass('fill-black');
+
+            $('#palpebra-inf-open').addClass('fill-secondary').removeClass('fill-black');
+            $('#palpebra-inf').addClass('fill-secondary').removeClass('fill-black');
+            $('#palpebra-inf-closed').addClass('fill-secondary').removeClass('fill-black');
+
+            $('#palpebra-sup-open').addClass('fill-secondary').removeClass('fill-black');
+            $('#palpebra-sup-closed').addClass('fill-secondary').removeClass('fill-black');
+
             $('#pupilla').addClass('fill-secondary').removeClass('fill-black');
-            $('palpebra_sup_open').addClass('fill-secondary').removeClass('fill-black');
-            $('palpebra_sup_close').addClass('fill-secondary').removeClass('fill-black');
-            $('#palpebra_inf_anim').addClass('fill-secondary').removeClass('fill-black');
-            $('#letters text tspan').addClass('fill-black').removeClass('fill-secondary');
+
+            $('#P-letter').addClass('fill-black').removeClass('fill-secondary');
+            $('#R-letter').addClass('fill-black').removeClass('fill-secondary');
+            $('#E-letter').addClass('fill-black').removeClass('fill-secondary');
+            $('#S-letter-1').addClass('fill-black').removeClass('fill-secondary');
+            $('#S-letter-2').addClass('fill-black').removeClass('fill-secondary');
         },
         everyThingBright: function everyThingBright() {
             console.log('bright');
             $('body').removeClass('bg-primary');
             $('.text-light').removeClass('text-light').addClass('text-default');
+            $('.link-light').removeClass('link-light').addClass('link-default');
             $('.bg-primary').removeClass('bg-primary').addClass('bg-default');
             $('.bg-inverse').removeClass('bg-inverse').addClass('bg-light');
             $('.btn-secondary').removeClass('btn-secondary').addClass('btn-primary');
@@ -39736,16 +39759,30 @@ exports.default = {
             $('#black-square').addClass('bg-primary').removeClass('bg-light');
 
             // Svg
-            $('#rombo').addClass('stroke-black').removeClass('stroke-secondary');
-            $('#palpebra_inf').addClass('fill-black').removeClass('fill-secondary');
-            $('#palpebra_sup').addClass('fill-black').removeClass('fill-secondary');
-            $('#occhio-statico').addClass('fill-black').removeClass('fill-secondary');
+            $('#rombo').addClass('fill-black').removeClass('fill-secondary');
+            $('#ciglia-inf').addClass('fill-black').removeClass('fill-secondary');
+            $('#ciglia-sup').addClass('fill-black').removeClass('fill-secondary');
+            $('#occhio').addClass('fill-black').removeClass('fill-secondary');
+
+            $('#palpebra-inf-open').addClass('fill-black').removeClass('fill-secondary');
+            $('#palpebra-inf').addClass('fill-black').removeClass('fill-secondary');
+            $('#palpebra-inf-closed').addClass('fill-black').removeClass('fill-secondary');
+
+            $('#palpebra-sup-open').addClass('fill-black').removeClass('fill-secondary');
+            $('#palpebra-sup-closed').addClass('fill-black').removeClass('fill-secondary');
+
             $('#pupilla').addClass('fill-black').removeClass('fill-secondary');
-            $('palpebra_sup_open').addClass('fill-black').removeClass('fill-secondary');
-            $('palpebra_sup_close').addClass('fill-black').removeClass('fill-secondary');
-            $('#palpebra_inf_anim').addClass('fill-black').removeClass('fill-secondary');
-            $('#letters text tspan').addClass('fill-secondary').removeClass('fill-black');
+
+            $('#P-letter').addClass('fill-secondary').removeClass('fill-black');
+            $('#R-letter').addClass('fill-secondary').removeClass('fill-black');
+            $('#E-letter').addClass('fill-secondary').removeClass('fill-black');
+            $('#S-letter-1').addClass('fill-secondary').removeClass('fill-black');
+            $('#S-letter-2').addClass('fill-secondary').removeClass('fill-black');
         }
+    },
+    mounted: function mounted() {
+        this.toggleTheme();
+        this.animateEye();
     }
 };
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
@@ -39830,7 +39867,7 @@ var render = function() {
                     attrs: {
                       d:
                         "M186.1492,399.4836 L186.0002,399.4836 L186.0752,399.3916 L186.0002,399.2986 L186.1492,399.2986 L190.7252,393.6436 C192.1832,391.8426 208.1052,372.5006 234.8942,351.1286 L197.7902,300.0766 L212.8072,289.1586 L249.7352,339.9636 C264.7972,329.2736 282.3632,318.7466 302.0312,310.2426 L283.4722,253.1496 L301.1302,247.4136 L319.3642,303.5056 C337.9322,297.0956 358.0692,292.7546 379.4552,291.7616 L379.4502,234.9996 L398.0182,234.9996 L398.0312,291.7616 C419.4132,292.7596 439.5552,297.1006 458.1222,303.5056 L476.3412,247.3986 L494.0042,253.1356 L475.4512,310.2476 C495.1242,318.7466 512.6742,329.2686 527.7342,339.9606 L564.6652,289.1346 L579.6872,300.0526 L542.5742,351.1246 C569.3772,372.4966 585.3042,391.8386 586.7562,393.6436 L591.3332,399.2956 C591.4332,399.2976 591.4862,399.2986 591.4862,399.2986 L591.4112,399.3916 L591.4862,399.4836 C591.4862,399.4836 591.4332,399.4856 591.3332,399.4886 L586.7562,405.1386 C585.3042,406.9456 569.3772,426.2876 542.5742,447.6606 L527.7342,458.8246 C512.6742,469.5136 495.1242,480.0376 475.4512,488.5366 L458.1222,495.2766 C439.5552,501.6826 419.4132,506.0226 398.0312,507.0206 L379.4552,507.0206 C358.0692,506.0276 337.9322,501.6876 319.3642,495.2766 L302.0312,488.5416 C282.3632,480.0376 264.7972,469.5086 249.7352,458.8186 L234.8942,447.6556 C208.1052,426.2846 192.1832,406.9396 190.7252,405.1386 L186.1492,399.4836 Z M210.3802,399.3916 C223.1742,413.3546 258.6682,448.7046 307.6902,470.5116 C370.1362,497.3166 426.1362,491.8166 469.8762,470.4326 C518.7902,448.6216 554.2872,413.3386 567.0962,399.3916 C554.2872,385.4436 518.7902,350.1636 469.8762,328.3496 C426.1362,306.9656 370.1362,301.4656 307.6902,328.2706 C258.6682,350.0806 223.1742,385.4276 210.3802,399.3916 Z",
-                      id: "Fill-1"
+                      id: "occhio"
                     }
                   }),
                   _vm._v(" "),
@@ -40288,6 +40325,12 @@ exports.default = {
         MediaHover: _MediaHover2.default
     },
     computed: {
+        isDark: function isDark() {
+            if (localStorage.getItem('dark_theme')) {
+                return 'link-light';
+            }
+            return 'link-default';
+        },
         routeIsOpen: function routeIsOpen() {
             if (this.$route.name == 'Works') {
                 return true;
@@ -47144,11 +47187,15 @@ var render = function() {
           "div",
           { staticClass: "col" },
           [
-            _c("router-link", { attrs: { to: "/work/" + _vm.link } }, [
-              _c("h5", { staticClass: "title text-center text-default" }, [
-                _vm._v(_vm._s(_vm.title))
-              ])
-            ])
+            _c(
+              "router-link",
+              { class: _vm.isDark, attrs: { to: "/work/" + _vm.link } },
+              [
+                _c("h5", { staticClass: "title text-center text-default" }, [
+                  _vm._v(_vm._s(_vm.title))
+                ])
+              ]
+            )
           ],
           1
         )
@@ -49447,19 +49494,19 @@ if (false) {
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(118)
+  __webpack_require__(136)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
 var __vue_script__ = __webpack_require__(120)
 /* template */
-var __vue_template__ = __webpack_require__(121)
+var __vue_template__ = __webpack_require__(138)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-5f763125"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -49492,46 +49539,8 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 118 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(119);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(5)("72ea6bd4", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-5f763125\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainTemplate.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-5f763125\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainTemplate.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
-
-// exports
-
-
-/***/ }),
+/* 118 */,
+/* 119 */,
 /* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -49552,12 +49561,33 @@ var _MainMenu = __webpack_require__(122);
 
 var _MainMenu2 = _interopRequireDefault(_MainMenu);
 
+var _eventbus = __webpack_require__(67);
+
+var _eventbus2 = _interopRequireDefault(_eventbus);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
     components: {
         FooterLayout: _FooterLayout2.default,
         MainMenu: _MainMenu2.default
+    },
+    data: function data() {
+        return {
+            mousePos: {}
+        };
     },
     computed: {
         notHome: function notHome() {
@@ -49601,55 +49631,17 @@ exports.default = {
     },
     mounted: function mounted() {
         this.loggedIn;
+
+        // EventBus.$on('mouseDown', event => {
+        //     this.mousePos = event
+        //     console.log(event)
+        //     this.paperInit()
+        // })
     }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
+};
 
 /***/ }),
-/* 121 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "main-container" },
-    [
-      _vm.notHome ? _c("main-menu") : _vm._e(),
-      _vm._v(" "),
-      _c(
-        "transition",
-        { attrs: { css: false }, on: { enter: _vm.enter, leave: _vm.leave } },
-        [_c("router-view")],
-        1
-      ),
-      _vm._v(" "),
-      _vm.notHome ? _c("footer-layout") : _vm._e()
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-5f763125", module.exports)
-  }
-}
-
-/***/ }),
+/* 121 */,
 /* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -49735,7 +49727,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -49750,26 +49742,36 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+var _eventbus = __webpack_require__(67);
+
+var _eventbus2 = _interopRequireDefault(_eventbus);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-    name: 'MainMenu'
-};
+    name: 'MainMenu',
+    methods: {
+        clicked: function clicked(event) {
+            _eventbus2.default.$emit('mouseDown', event);
+        }
+    }
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /***/ }),
 /* 126 */
@@ -49788,20 +49790,41 @@ var render = function() {
           "router-link",
           {
             staticClass: "nav-link active text-default",
-            attrs: { to: "/works" }
+            attrs: { to: "/works" },
+            nativeOn: {
+              click: function($event) {
+                return _vm.clicked($event)
+              }
+            }
           },
           [_c("h5", [_vm._v("Works")])]
         ),
         _vm._v(" "),
         _c(
           "router-link",
-          { staticClass: "nav-link text-default", attrs: { to: "/about" } },
+          {
+            staticClass: "nav-link text-default",
+            attrs: { to: "/about" },
+            nativeOn: {
+              click: function($event) {
+                return _vm.clicked($event)
+              }
+            }
+          },
           [_c("h5", [_vm._v("About")])]
         ),
         _vm._v(" "),
         _c(
           "router-link",
-          { staticClass: "nav-link text-default", attrs: { to: "/contacts" } },
+          {
+            staticClass: "nav-link text-default",
+            attrs: { to: "/contacts" },
+            nativeOn: {
+              click: function($event) {
+                return _vm.clicked($event)
+              }
+            }
+          },
           [_c("h5", [_vm._v("Contacts")])]
         )
       ],
@@ -49816,6 +49839,96 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-1c969660", module.exports)
+  }
+}
+
+/***/ }),
+/* 127 */,
+/* 128 */,
+/* 129 */,
+/* 130 */,
+/* 131 */,
+/* 132 */,
+/* 133 */,
+/* 134 */,
+/* 135 */,
+/* 136 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(137);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(5)("35b6ed8b", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-5f763125\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainTemplate.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-5f763125\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainTemplate.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(4)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n#animationPage[data-v-5f763125] {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "main-container" },
+    [
+      _c("canvas", {
+        ref: "animationPage",
+        attrs: { id: "animationPage", resize: "" }
+      }),
+      _vm._v(" "),
+      _vm.notHome ? _c("main-menu") : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "transition",
+        { attrs: { css: false }, on: { enter: _vm.enter, leave: _vm.leave } },
+        [_c("router-view")],
+        1
+      ),
+      _vm._v(" "),
+      _vm.notHome ? _c("footer-layout") : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5f763125", module.exports)
   }
 }
 

@@ -10,3 +10,14 @@
 
 @import 'logo-colors';
 @import 'hero-video';
+
+
+a {
+  &.link-light {
+    color: $white;
+    
+    &:hover, &:active, &:visited {
+      color: $white;
+    }
+  }
+}

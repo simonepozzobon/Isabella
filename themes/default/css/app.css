@@ -10852,3 +10852,13 @@ a.text-dark:focus {
   height: 100%;
 }
 
+a.link-light {
+  color: #fffdf4;
+}
+
+a.link-light:hover,
+a.link-light:active,
+a.link-light:visited {
+  color: #fffdf4;
+}
+

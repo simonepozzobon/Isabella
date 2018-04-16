@@ -19,7 +19,7 @@
                         <path d="M388.577,531.591 C283.162,531.591 205.339,449.826 204.564,449 L191,461.682 C194.375,465.289 274.936,550.158 388.577,550.158 C502.213,550.158 582.779,465.294 586.159,461.673 L572.59,449 C571.824,449.826 493.992,531.591 388.577,531.591" id="ciglia-inf" class="fill-black"></path>
 
                         <!-- Occhio -->
-                        <path d="M186.1492,399.4836 L186.0002,399.4836 L186.0752,399.3916 L186.0002,399.2986 L186.1492,399.2986 L190.7252,393.6436 C192.1832,391.8426 208.1052,372.5006 234.8942,351.1286 L197.7902,300.0766 L212.8072,289.1586 L249.7352,339.9636 C264.7972,329.2736 282.3632,318.7466 302.0312,310.2426 L283.4722,253.1496 L301.1302,247.4136 L319.3642,303.5056 C337.9322,297.0956 358.0692,292.7546 379.4552,291.7616 L379.4502,234.9996 L398.0182,234.9996 L398.0312,291.7616 C419.4132,292.7596 439.5552,297.1006 458.1222,303.5056 L476.3412,247.3986 L494.0042,253.1356 L475.4512,310.2476 C495.1242,318.7466 512.6742,329.2686 527.7342,339.9606 L564.6652,289.1346 L579.6872,300.0526 L542.5742,351.1246 C569.3772,372.4966 585.3042,391.8386 586.7562,393.6436 L591.3332,399.2956 C591.4332,399.2976 591.4862,399.2986 591.4862,399.2986 L591.4112,399.3916 L591.4862,399.4836 C591.4862,399.4836 591.4332,399.4856 591.3332,399.4886 L586.7562,405.1386 C585.3042,406.9456 569.3772,426.2876 542.5742,447.6606 L527.7342,458.8246 C512.6742,469.5136 495.1242,480.0376 475.4512,488.5366 L458.1222,495.2766 C439.5552,501.6826 419.4132,506.0226 398.0312,507.0206 L379.4552,507.0206 C358.0692,506.0276 337.9322,501.6876 319.3642,495.2766 L302.0312,488.5416 C282.3632,480.0376 264.7972,469.5086 249.7352,458.8186 L234.8942,447.6556 C208.1052,426.2846 192.1832,406.9396 190.7252,405.1386 L186.1492,399.4836 Z M210.3802,399.3916 C223.1742,413.3546 258.6682,448.7046 307.6902,470.5116 C370.1362,497.3166 426.1362,491.8166 469.8762,470.4326 C518.7902,448.6216 554.2872,413.3386 567.0962,399.3916 C554.2872,385.4436 518.7902,350.1636 469.8762,328.3496 C426.1362,306.9656 370.1362,301.4656 307.6902,328.2706 C258.6682,350.0806 223.1742,385.4276 210.3802,399.3916 Z" id="Fill-1" class="fill-black"></path>
+                        <path d="M186.1492,399.4836 L186.0002,399.4836 L186.0752,399.3916 L186.0002,399.2986 L186.1492,399.2986 L190.7252,393.6436 C192.1832,391.8426 208.1052,372.5006 234.8942,351.1286 L197.7902,300.0766 L212.8072,289.1586 L249.7352,339.9636 C264.7972,329.2736 282.3632,318.7466 302.0312,310.2426 L283.4722,253.1496 L301.1302,247.4136 L319.3642,303.5056 C337.9322,297.0956 358.0692,292.7546 379.4552,291.7616 L379.4502,234.9996 L398.0182,234.9996 L398.0312,291.7616 C419.4132,292.7596 439.5552,297.1006 458.1222,303.5056 L476.3412,247.3986 L494.0042,253.1356 L475.4512,310.2476 C495.1242,318.7466 512.6742,329.2686 527.7342,339.9606 L564.6652,289.1346 L579.6872,300.0526 L542.5742,351.1246 C569.3772,372.4966 585.3042,391.8386 586.7562,393.6436 L591.3332,399.2956 C591.4332,399.2976 591.4862,399.2986 591.4862,399.2986 L591.4112,399.3916 L591.4862,399.4836 C591.4862,399.4836 591.4332,399.4856 591.3332,399.4886 L586.7562,405.1386 C585.3042,406.9456 569.3772,426.2876 542.5742,447.6606 L527.7342,458.8246 C512.6742,469.5136 495.1242,480.0376 475.4512,488.5366 L458.1222,495.2766 C439.5552,501.6826 419.4132,506.0226 398.0312,507.0206 L379.4552,507.0206 C358.0692,506.0276 337.9322,501.6876 319.3642,495.2766 L302.0312,488.5416 C282.3632,480.0376 264.7972,469.5086 249.7352,458.8186 L234.8942,447.6556 C208.1052,426.2846 192.1832,406.9396 190.7252,405.1386 L186.1492,399.4836 Z M210.3802,399.3916 C223.1742,413.3546 258.6682,448.7046 307.6902,470.5116 C370.1362,497.3166 426.1362,491.8166 469.8762,470.4326 C518.7902,448.6216 554.2872,413.3386 567.0962,399.3916 C554.2872,385.4436 518.7902,350.1636 469.8762,328.3496 C426.1362,306.9656 370.1362,301.4656 307.6902,328.2706 C258.6682,350.0806 223.1742,385.4276 210.3802,399.3916 Z" id="occhio" class="fill-black"></path>
 
                         <!-- Ciglia superiore -->
                         <path d="M388.577,267.568 C283.162,267.568 205.339,349.332 204.564,350.158 L191,337.477 C194.375,333.87 274.936,249 388.577,249 C502.213,249 582.779,333.865 586.159,337.486 L572.59,350.158 C571.824,349.332 493.992,267.568 388.577,267.568" id="ciglia-sup" class="fill-black"></path>
@@ -74,19 +74,29 @@ export default {
     data: () => ({
 
     }),
-    mounted() {
-        this.dark_theme = localStorage.getItem('dark_theme') || false
-        console.log(this.dark_theme)
-        if (this.dark_theme) {
-            this.everyThingDark()
-        } else {
-            this.everyThingBright()
-            localStorage.removeItem('dark_theme')
+    watch: {
+        $route: function() {
+            this.toggleTheme()
         }
-        this.animateEye()
+    },
+    computed: {
+        dark_theme: function() {
+            if (localStorage.getItem('dark_theme')) {
+                return true
+            }
+            return  false
+        }
     },
     methods: {
-        changeColor() {
+        toggleTheme: function() {
+            if (this.dark_theme) {
+                this.everyThingDark()
+            } else {
+                this.everyThingBright()
+                localStorage.removeItem('dark_theme')
+            }
+        },
+        changeColor: function() {
             var vue = this
 
             var width = window.innerWidth
@@ -96,14 +106,18 @@ export default {
                 dimension = height
             }
             var t1 = new TimelineMax()
-            t1.to(this.$refs.rombo, .2, {
+            t1.set(this.$refs.rombo, {
+                    zIndex: 99999999,
+                    position: 'fixed',
+                })
+                .to(this.$refs.rombo, .2, {
                     opacity: 1,
                     display: 'inherit',
                     ease: Power4.easingCubicOut
                 })
                 .to(this.$refs.rombo, .4, {
-                    height: (dimension * 2) + 'px',
-                    width: (dimension * 2) + 'px',
+                    height: (dimension * 2.5) + 'px',
+                    width: (dimension * 2.5) + 'px',
                     transformOrigin: '0% 100%',
                     ease: Power4.easingCubicOut,
                     display: 'none',
@@ -127,7 +141,7 @@ export default {
                     ease: Power4.easeInOut
                 })
         },
-        animateEye() {
+        animateEye: function() {
             var palpebraInf = document.getElementById('palpebra-inf-open')
             var palpebraSup = document.getElementById('palpebra-sup-open')
 
@@ -261,11 +275,11 @@ export default {
                 master.restart()
             })
         },
-        checkTheme() {},
-        everyThingDark() {
+        everyThingDark: function() {
             console.log('dark')
             $('body').addClass('bg-primary')
             $('.text-default').removeClass('text-default').addClass('text-light')
+            $('.link-default').removeClass('link-default').addClass('link-light')
             $('.bg-default').removeClass('bg-default').addClass('bg-primary')
             $('.bg-light').removeClass('bg-light').addClass('bg-inverse')
             $('.btn-primary').removeClass('btn-primary').addClass('btn-secondary')
@@ -273,20 +287,33 @@ export default {
             $('#black-square').addClass('bg-light').removeClass('bg-primary')
 
             // Svg
-            $('#rombo').addClass('stroke-secondary').removeClass('stroke-black')
-            $('#palpebra_inf').addClass('fill-secondary').removeClass('fill-black')
-            $('#palpebra_sup').addClass('fill-secondary').removeClass('fill-black')
-            $('#occhio-statico').addClass('fill-secondary').removeClass('fill-black')
+            $('#rombo').addClass('fill-secondary').removeClass('fill-black')
+            $('#ciglia-inf').addClass('fill-secondary').removeClass('fill-black')
+            $('#ciglia-sup').addClass('fill-secondary').removeClass('fill-black')
+            $('#occhio').addClass('fill-secondary').removeClass('fill-black')
+
+            $('#palpebra-inf-open').addClass('fill-secondary').removeClass('fill-black')
+            $('#palpebra-inf').addClass('fill-secondary').removeClass('fill-black')
+            $('#palpebra-inf-closed').addClass('fill-secondary').removeClass('fill-black')
+
+            $('#palpebra-sup-open').addClass('fill-secondary').removeClass('fill-black')
+            $('#palpebra-sup-closed').addClass('fill-secondary').removeClass('fill-black')
+
             $('#pupilla').addClass('fill-secondary').removeClass('fill-black')
-            $('palpebra_sup_open').addClass('fill-secondary').removeClass('fill-black')
-            $('palpebra_sup_close').addClass('fill-secondary').removeClass('fill-black')
-            $('#palpebra_inf_anim').addClass('fill-secondary').removeClass('fill-black')
-            $('#letters text tspan').addClass('fill-black').removeClass('fill-secondary')
+
+            $('#P-letter').addClass('fill-black').removeClass('fill-secondary')
+            $('#R-letter').addClass('fill-black').removeClass('fill-secondary')
+            $('#E-letter').addClass('fill-black').removeClass('fill-secondary')
+            $('#S-letter-1').addClass('fill-black').removeClass('fill-secondary')
+            $('#S-letter-2').addClass('fill-black').removeClass('fill-secondary')
+
+
         },
-        everyThingBright() {
+        everyThingBright: function() {
             console.log('bright')
             $('body').removeClass('bg-primary')
             $('.text-light').removeClass('text-light').addClass('text-default')
+            $('.link-light').removeClass('link-light').addClass('link-default')
             $('.bg-primary').removeClass('bg-primary').addClass('bg-default')
             $('.bg-inverse').removeClass('bg-inverse').addClass('bg-light')
             $('.btn-secondary').removeClass('btn-secondary').addClass('btn-primary')
@@ -294,27 +321,46 @@ export default {
             $('#black-square').addClass('bg-primary').removeClass('bg-light')
 
             // Svg
-            $('#rombo').addClass('stroke-black').removeClass('stroke-secondary')
-            $('#palpebra_inf').addClass('fill-black').removeClass('fill-secondary')
-            $('#palpebra_sup').addClass('fill-black').removeClass('fill-secondary')
-            $('#occhio-statico').addClass('fill-black').removeClass('fill-secondary')
+            $('#rombo').addClass('fill-black').removeClass('fill-secondary')
+            $('#ciglia-inf').addClass('fill-black').removeClass('fill-secondary')
+            $('#ciglia-sup').addClass('fill-black').removeClass('fill-secondary')
+            $('#occhio').addClass('fill-black').removeClass('fill-secondary')
+
+            $('#palpebra-inf-open').addClass('fill-black').removeClass('fill-secondary')
+            $('#palpebra-inf').addClass('fill-black').removeClass('fill-secondary')
+            $('#palpebra-inf-closed').addClass('fill-black').removeClass('fill-secondary')
+
+            $('#palpebra-sup-open').addClass('fill-black').removeClass('fill-secondary')
+            $('#palpebra-sup-closed').addClass('fill-black').removeClass('fill-secondary')
+
             $('#pupilla').addClass('fill-black').removeClass('fill-secondary')
-            $('palpebra_sup_open').addClass('fill-black').removeClass('fill-secondary')
-            $('palpebra_sup_close').addClass('fill-black').removeClass('fill-secondary')
-            $('#palpebra_inf_anim').addClass('fill-black').removeClass('fill-secondary')
-            $('#letters text tspan').addClass('fill-secondary').removeClass('fill-black')
+
+            $('#P-letter').addClass('fill-secondary').removeClass('fill-black')
+            $('#R-letter').addClass('fill-secondary').removeClass('fill-black')
+            $('#E-letter').addClass('fill-secondary').removeClass('fill-black')
+            $('#S-letter-1').addClass('fill-secondary').removeClass('fill-black')
+            $('#S-letter-2').addClass('fill-secondary').removeClass('fill-black')
+
         }
-    }
+    },
+    mounted() {
+        this.toggleTheme()
+        this.animateEye()
+    },
 }
 </script>
 <style lang="scss" scoped>
+footer svg {
+    cursor: pointer;
+}
+
 #black-square {
     display: none;
     width: 54px;
-    height: 54px;
-    position: fixed;
+    height: 56px;
+    position: absolute;
     bottom: 1.4rem;
-    right: 0.65rem;
+    right: 0.75rem;
     transform: rotate(45deg);
     opacity: 0;
     z-index: 0;
