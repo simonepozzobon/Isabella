@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="main-container">
-        <canvas id="animationPage" ref="animationPage" resize></canvas>
+        <!-- <canvas id="animationPage" ref="animationPage" resize></canvas> -->
         <main-menu v-if="notHome"/>
         <transition :css="false" @enter="enter" @leave="leave">
             <router-view></router-view>

@@ -5,7 +5,6 @@ Thumbs.db
 *.esproj
 *.log
 *.gz
-*.json
 *.txt
 .phpintel/
 
@@ -16,10 +15,6 @@ Thumbs.db
 
 # user mod_rewrite
 /.htaccess
-
-# debug and custom themes
-/themes/*
-!/themes/default
 
 # uploaded content
 /content/*
