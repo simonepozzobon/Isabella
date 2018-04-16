@@ -15,12 +15,15 @@ import MojsPlayer from 'mojs-player'
 import ScrollReveal from 'scrollreveal'
 
 export default {
+    components: {
+        MainLayout,
+        Grid
+    },
     data: function() {
         return {
             posts: [],
         }
     },
-    mounted() {},
     methods: {
         ready: function() {
             window.sr = ScrollReveal();
@@ -37,9 +40,10 @@ export default {
             }, 20);
         },
     },
-    components: {
-        MainLayout,
-        Grid
+    mounted() {
+        this.$on('animateIn', id => {
+            console.log('evento ricevuto')
+        })
     },
 }
 </script>

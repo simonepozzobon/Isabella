@@ -1,7 +1,10 @@
 <template>
     <div class="row">
-        <grid-el v-for="(post, key) in posts" :key="key" :post="post" v-for-callback="{key: key, array: posts, callback: loadComplete}">
-        </grid-el>
+        <grid-el
+            v-for="(post, key) in posts"
+            :key="key"
+            :post="post"
+            v-for-callback="{key: key, array: posts, callback: loadComplete}" />
     </div>
 </template>
 <script>
@@ -21,7 +24,7 @@ export default {
             })
     },
     methods: {
-        loadComplete() {
+        loadComplete: function() {
             this.$emit('loadComplete')
         },
     },
