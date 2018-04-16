@@ -52745,6 +52745,29 @@ var _eventbus2 = _interopRequireDefault(_eventbus);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var masterIn, masterOut; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 exports.default = {
     name: 'MediaHover',
     props: {
@@ -52763,16 +52786,40 @@ exports.default = {
     },
     data: function data() {
         return {
-            ready: false,
-            masterOpen: null,
-            masterClose: null
+            canAnimateIn: true,
+            canAnimateOut: false,
+            current: 0,
+            isOpen: 0,
+            trigger: false
         };
+    },
+    watch: {
+        current: function current(newCurrent, oldCurrent) {
+            if (newCurrent != oldCurrent) {
+                this.trigger = !this.trigger;
+            }
+        },
+        canAnimateOut: function canAnimateOut(status) {
+            if (status && this.current != this.id) {
+                this.animateOut();
+            }
+        },
+        canAnimateIn: function canAnimateIn(status) {
+            if (status && this.current == this.id) {
+                this.animateIn();
+            }
+        },
+        trigger: function trigger(newtrigger) {
+            if (this.current == this.id && this.canAnimateIn) {
+                this.animateIn();
+            } else if (this.current != this.id && this.canAnimateOut) {
+                this.animateOut();
+            }
+        }
     },
     methods: {
         animateIn: function animateIn() {
             var _this = this;
-
-            this.ready = false;
 
             var t1 = new _gsap.TimelineMax();
             t1.to(this.$refs.ovalStart, .1, {
@@ -52811,22 +52858,20 @@ exports.default = {
                 ease: Elastic.easeOut.config(1, 0.5)
             });
 
-            this.masterOpen = new _gsap.TimelineMax({ id: 'mediaHover' });
-            this.masterOpen.add(t1, 0.01);
-            this.masterOpen.add(t2, 0.01);
-            this.masterOpen.add(t3, 0.3);
-            this.masterOpen.add(t4, 0.3);
-            this.masterOpen.play();
+            masterIn = new _gsap.TimelineMax({ id: 'mediaHover' });
+            masterIn.add(t1, 0.01);
+            masterIn.add(t2, 0.01);
+            masterIn.add(t3, 0.3);
+            masterIn.add(t4, 0.3);
+            masterIn.play();
 
-            this.masterOpen.eventCallback('onComplete', function () {
-                _this.ready = true;
-                _eventbus2.default.$emit('animationInComplete', _this.id);
+            masterIn.eventCallback('onComplete', function () {
+                _this.canAnimateOut = true;
+                _this.canAnimateIn = false;
             });
         },
         animateOut: function animateOut() {
             var _this2 = this;
-
-            this.ready = false;
 
             var t1 = new _gsap.TimelineMax();
             t1.fromTo(this.$refs.plusStart, .8, {
@@ -52862,56 +52907,27 @@ exports.default = {
                 ease: _gsap.Power0.easeNone
             });
 
-            this.masterClose = new _gsap.TimelineMax({ id: 'mediaLeave' });
-            this.masterClose.add(t1, 0.01);
-            this.masterClose.add(t2, 0.01);
-            this.masterClose.add(t3, 0.2);
-            this.masterClose.add(t4, 0.2);
-            this.masterClose.play();
+            masterOut = new _gsap.TimelineMax({ id: 'mediaLeave' });
+            masterOut.add(t1, 0.01);
+            masterOut.add(t2, 0.01);
+            masterOut.add(t3, 0.2);
+            masterOut.add(t4, 0.2);
+            masterOut.play();
 
-            this.masterClose.eventCallback('onComplete', function () {
-                _this2.ready = true;
-                _eventbus2.default.$emit('animationOutComplete', _this2.id);
+            masterOut.eventCallback('onComplete', function () {
+                _this2.canAnimateOut = false;
+                _this2.canAnimateIn = true;
             });
         }
     },
     mounted: function mounted() {
         var _this3 = this;
 
-        _eventbus2.default.$on('animateIn', function (id) {
-            if (id == _this3.id) {
-                _this3.animateIn();
-            }
-        });
-
-        _eventbus2.default.$on('animateOut', function (id) {
-            if (id == _this3.id) {
-                _this3.animateOut();
-            }
+        _eventbus2.default.$on('mediaHoverCurrent', function (id) {
+            _this3.current = id;
         });
     }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+};
 
 /***/ }),
 /* 64 */
@@ -59311,56 +59327,22 @@ var EventBus = new _vue2.default({
         };
     },
     watch: {
-        toOpen: function toOpen(newC, old) {}
+        current: function current(newCurrent) {
+            this.$emit('mediaHoverCurrent', newCurrent);
+        }
     },
     created: function created() {
         var _this = this;
 
         this.$on('mouseOver', function (id) {
-            if (id != _this.current) {
-                _this.current = id;
-
-                if (!_this.toOpen.includes(id)) {
-                    _this.toOpen.push(id);
-                    _this.$emit('animateIn', id);
-                }
-            }
+            _this.current = id;
         });
 
         this.$on('mouseLeave', function (id) {
-            if (!_this.toClose.includes(id)) {
-                _this.toClose.push(id);
-            }
-
-            if (_this.toClose.length == 1) {
-                _this.$emit('animateOut', _this.toClose[0]);
-                _this.current = 0;
-            }
+            _this.current = 0;
         });
 
-        this.$on('animationInComplete', function (id) {
-            if (_this.toOpen.includes(id)) {
-                var index = _this.toOpen.indexOf(id);
-                if (index > -1) {
-                    _this.toOpen.splice(index, 1);
-                }
-
-                for (var i = 0; i < _this.toClose.length; i++) {
-                    if (_this.toClose[i] != _this.current) {
-                        _this.$emit('animateOut', _this.toClose[i]);
-                    }
-                }
-            }
-        });
-
-        this.$on('animationOutComplete', function (id) {
-            if (_this.toClose.includes(id)) {
-                var index = _this.toClose.indexOf(id);
-                if (index > -1) {
-                    _this.toClose.splice(index, 1);
-                }
-            }
-        });
+        this.$on('animationOutComplete', function (id) {});
     }
 });
 

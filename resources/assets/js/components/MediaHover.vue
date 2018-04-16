@@ -27,6 +27,8 @@ import Draggable from 'gsap/Draggable'
 import GSDevTools from 'gsap/GSDevTools'
 import EventBus from '../eventbus'
 
+var masterIn, masterOut
+
 export default {
     name: 'MediaHover',
     props: {
@@ -45,15 +47,39 @@ export default {
     },
     data: function() {
         return {
-            ready: false,
-            masterOpen: null,
-            masterClose: null,
+            canAnimateIn: true,
+            canAnimateOut: false,
+            current: 0,
+            isOpen: 0,
+            trigger: false,
         }
+    },
+    watch: {
+        current: function(newCurrent, oldCurrent) {
+            if (newCurrent != oldCurrent) {
+                this.trigger = !this.trigger
+            }
+        },
+        canAnimateOut: function(status) {
+            if (status && this.current != this.id) {
+                this.animateOut()
+            }
+        },
+        canAnimateIn: function(status) {
+            if (status && this.current == this.id) {
+                this.animateIn()
+            }
+        },
+        trigger: function(newtrigger) {
+            if (this.current == this.id && this.canAnimateIn) {
+                this.animateIn()
+            } else if (this.current != this.id && this.canAnimateOut){
+                this.animateOut()
+            }
+        },
     },
     methods: {
         animateIn: function() {
-            this.ready = false
-
             var t1 = new TimelineMax()
             t1.to(this.$refs.ovalStart, .1, {
                     morphSVG: this.$refs.ovalMid,
@@ -92,21 +118,19 @@ export default {
                 ease: Elastic.easeOut.config(1, 0.5)
             })
 
-            this.masterOpen = new TimelineMax({id: 'mediaHover'})
-            this.masterOpen.add(t1, 0.01)
-            this.masterOpen.add(t2, 0.01)
-            this.masterOpen.add(t3, 0.3)
-            this.masterOpen.add(t4, 0.3)
-            this.masterOpen.play()
+            masterIn = new TimelineMax({id: 'mediaHover'})
+            masterIn.add(t1, 0.01)
+            masterIn.add(t2, 0.01)
+            masterIn.add(t3, 0.3)
+            masterIn.add(t4, 0.3)
+            masterIn.play()
 
-            this.masterOpen.eventCallback('onComplete', () => {
-                this.ready = true
-                EventBus.$emit('animationInComplete', this.id)
+            masterIn.eventCallback('onComplete', () => {
+                this.canAnimateOut = true
+                this.canAnimateIn = false
             })
         },
         animateOut: function() {
-            this.ready = false
-
             var t1 = new TimelineMax()
             t1.fromTo(this.$refs.plusStart, .8, {
                 scale: 1,
@@ -142,30 +166,22 @@ export default {
                 ease: Power0.easeNone
             })
 
-            this.masterClose = new TimelineMax({id: 'mediaLeave'})
-            this.masterClose.add(t1, 0.01)
-            this.masterClose.add(t2, 0.01)
-            this.masterClose.add(t3, 0.2)
-            this.masterClose.add(t4, 0.2)
-            this.masterClose.play()
+            masterOut = new TimelineMax({id: 'mediaLeave'})
+            masterOut.add(t1, 0.01)
+            masterOut.add(t2, 0.01)
+            masterOut.add(t3, 0.2)
+            masterOut.add(t4, 0.2)
+            masterOut.play()
 
-            this.masterClose.eventCallback('onComplete', () => {
-                this.ready = true
-                EventBus.$emit('animationOutComplete', this.id)
+            masterOut.eventCallback('onComplete', () => {
+                this.canAnimateOut = false
+                this.canAnimateIn = true
             })
         }
     },
     mounted() {
-        EventBus.$on('animateIn', id => {
-            if (id == this.id) {
-                this.animateIn()
-            }
-        })
-
-        EventBus.$on('animateOut', id => {
-            if (id == this.id) {
-                this.animateOut()
-            }
+        EventBus.$on('mediaHoverCurrent', id => {
+            this.current = id
         })
     }
 }
