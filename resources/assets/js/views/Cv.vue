@@ -1,5 +1,4 @@
 <template>
-  <main-layout>
     <div class="container">
       <div class="row">
         <div class="col py-5">
@@ -7,19 +6,10 @@
         </div>
       </div>
     </div>
-  </main-layout>
 </template>
 <script>
-import MainLayout from '../layouts/MainLayout.vue'
 
 export default {
-  name: "",
-  data: () => ({
-
-  }),
-  components: {
-    MainLayout
-  }
 }
 </script>
 <style lang="scss" scoped>

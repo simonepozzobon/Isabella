@@ -1,5 +1,4 @@
 <template>
-<main-layout>
     <div class="container">
         <div class="row h-100 justify-content-center align-items-center">
             <div class="col text-center p-5">
@@ -11,15 +10,9 @@
             </div>
         </div>
     </div>
-</main-layout>
 </template>
 <script>
-import MainLayout from '../layouts/MainLayout.vue'
-
 export default {
-    components: {
-        MainLayout
-    }
 }
 </script>
 <style lang="scss" scoped>

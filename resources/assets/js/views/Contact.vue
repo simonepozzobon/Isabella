@@ -1,5 +1,4 @@
 <template>
-  <main-layout>
     <div class="container ">
       <div class="row h-100 align-items-center">
         <div class="col ">
@@ -42,21 +41,14 @@
           </form>
         </div>
       </div>
-
-
     </div>
-  </main-layout>
 </template>
 <script>
-import MainLayout from '../layouts/MainLayout.vue';
 import {TweenMax, TimelineLite} from 'gsap'
 import CustomEase from 'gsap/CustomEase'
 
 export default {
   name: "",
-  data: () => ({
-
-  }),
   mounted() {
 
       this.formGroups = document.getElementsByClassName('form-group');
@@ -142,9 +134,6 @@ export default {
           );
       }
   },
-  components: {
-    MainLayout
-  }
 }
 </script>
 <style lang="scss" scoped>

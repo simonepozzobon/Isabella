@@ -1,5 +1,5 @@
 <template>
-<div class="col-md-4 col-lg-4 box mb-4" ref="col" @mouseover="animateIn(id)" @mouseleave="animateOut(id)">
+<div :id="'work-'+this.id" class="col-md-4 col-lg-4 box mb-4" ref="col" @mouseover="animateIn(id)" @mouseleave="animateOut(id)" >
     <div class="row pb-4">
         <div class="col work">
             <media-hover :id="id" :src="img" :link="link" ref="img_grid" class="img_grid"/>
@@ -18,18 +18,21 @@
 import _ from 'lodash'
 import MediaHover from './MediaHover'
 import EventBus from '../eventbus'
+import {TimelineMax} from 'gsap'
 
 export default {
-    props: ['post'],
+    props: {
+        counter: {
+            type: Number,
+            default: 0,
+        },
+        post: {
+            type: Object,
+            default: function() {},
+        }
+    },
     components: {
         MediaHover,
-    },
-    data: function() {
-        return {
-            opened: [],
-            circles: [],
-            crosses: [],
-        }
     },
     computed: {
         id: function() {
@@ -44,6 +47,9 @@ export default {
         title: function() {
             return this.post.data.title
         },
+        delay: function() {
+            return (this.counter + 1) / 10
+        }
     },
     methods: {
         animateIn: function(id) {
@@ -51,6 +57,16 @@ export default {
         },
         animateOut: function(id) {
             EventBus.$emit('mouseLeave', id)
+        },
+        loadAnimation: function() {
+            var vue = this
+            var t1 = new TimelineMax()
+            t1.from('#work-'+this.id, .4, {
+                delay: vue.delay,
+                opacity: 0,
+                scale: 0.9,
+                y: '+=100',
+            })
         },
         resizeCol: function() {
             var col = this.$refs.col.offsetWidth
@@ -60,9 +76,8 @@ export default {
         },
     },
     mounted() {
-        var vue = this
         this.resizeCol()
-        this.$emit('worksLoaded', true)
+        this.loadAnimation()
         window.addEventListener('resize', _.debounce(() => {
             this.resizeCol()
         }, 250))

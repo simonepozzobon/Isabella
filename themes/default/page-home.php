@@ -10,9 +10,7 @@
   <body>
     <div id="eventbus"></div>
     <div id="app" class="h-100 w-100">
-      <!-- <transition :css="false" @enter="enter" @before-leave="beforeLeave" @leave="leave"> -->
-        <router-view></router-view>
-      <!-- </transition> -->
+      <main-template></main-template>
     </div>
     <script src="<?php echo theme_url('/js/manifest.js'); ?>"></script>
     <script src="<?php echo theme_url('/js/vendor.js'); ?>"></script>

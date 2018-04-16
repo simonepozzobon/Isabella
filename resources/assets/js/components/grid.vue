@@ -4,7 +4,9 @@
             v-for="(post, key) in posts"
             :key="key"
             :post="post"
-            v-for-callback="{key: key, array: posts, callback: loadComplete}" />
+            :counter="key"
+            />
+            <!-- v-for-callback="{key: key, array: posts, callback: loadComplete}" /> -->
     </div>
 </template>
 <script>
@@ -22,32 +24,6 @@ export default {
             .then(response => {
                 vue.posts = response.data[1]
             })
-    },
-    methods: {
-        loadComplete: function() {
-            this.$emit('loadComplete')
-        },
-    },
-    directives: {
-        forCallback(el, binding) {
-            let element = binding.value
-            var key = element.key
-            var len = 0
-
-            if (Array.isArray(element.array)) {
-                len = element.array.length
-            } else if (typeof element.array === 'object') {
-                var keys = Object.keys(element.array)
-                key = keys.indexOf(key)
-                len = keys.length
-            }
-
-            if (key == len - 1) {
-                if (typeof element.callback === 'function') {
-                    element.callback()
-                }
-            }
-        }
     },
     components: {
         GridEl
