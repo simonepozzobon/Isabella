@@ -1,7 +1,6 @@
 <template>
-<div class="container ">
-    <div class="row h-100 align-items-center">
-        <div class="col ">
+    <div class="row">
+        <div class="col">
             <div id="address" class="row justify-content-center" ref="address">
                 <div class="col-12 text-center p-5">
                     <p class="text-default">info (at) isabellafornasiero.com</p>
@@ -41,7 +40,6 @@
             </form>
         </div>
     </div>
-</div>
 </template>
 <script>
 import {
@@ -139,9 +137,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.container {
-    height: calc(100vh - 92px);
-}
 
 input,
 textarea {

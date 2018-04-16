@@ -1,425 +1,6 @@
 webpackJsonp([0],[
 /* 0 */,
 /* 1 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-  MIT License http://www.opensource.org/licenses/mit-license.php
-  Author Tobias Koppers @sokra
-  Modified by Evan You @yyx990803
-*/
-
-var hasDocument = typeof document !== 'undefined'
-
-if (typeof DEBUG !== 'undefined' && DEBUG) {
-  if (!hasDocument) {
-    throw new Error(
-    'vue-style-loader cannot be used in a non-browser environment. ' +
-    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
-  ) }
-}
-
-var listToStyles = __webpack_require__(34)
-
-/*
-type StyleObject = {
-  id: number;
-  parts: Array<StyleObjectPart>
-}
-
-type StyleObjectPart = {
-  css: string;
-  media: string;
-  sourceMap: ?string
-}
-*/
-
-var stylesInDom = {/*
-  [id: number]: {
-    id: number,
-    refs: number,
-    parts: Array<(obj?: StyleObjectPart) => void>
-  }
-*/}
-
-var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
-var singletonElement = null
-var singletonCounter = 0
-var isProduction = false
-var noop = function () {}
-var options = null
-var ssrIdKey = 'data-vue-ssr-id'
-
-// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-// tags it will allow on a page
-var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
-
-module.exports = function (parentId, list, _isProduction, _options) {
-  isProduction = _isProduction
-
-  options = _options || {}
-
-  var styles = listToStyles(parentId, list)
-  addStylesToDom(styles)
-
-  return function update (newList) {
-    var mayRemove = []
-    for (var i = 0; i < styles.length; i++) {
-      var item = styles[i]
-      var domStyle = stylesInDom[item.id]
-      domStyle.refs--
-      mayRemove.push(domStyle)
-    }
-    if (newList) {
-      styles = listToStyles(parentId, newList)
-      addStylesToDom(styles)
-    } else {
-      styles = []
-    }
-    for (var i = 0; i < mayRemove.length; i++) {
-      var domStyle = mayRemove[i]
-      if (domStyle.refs === 0) {
-        for (var j = 0; j < domStyle.parts.length; j++) {
-          domStyle.parts[j]()
-        }
-        delete stylesInDom[domStyle.id]
-      }
-    }
-  }
-}
-
-function addStylesToDom (styles /* Array<StyleObject> */) {
-  for (var i = 0; i < styles.length; i++) {
-    var item = styles[i]
-    var domStyle = stylesInDom[item.id]
-    if (domStyle) {
-      domStyle.refs++
-      for (var j = 0; j < domStyle.parts.length; j++) {
-        domStyle.parts[j](item.parts[j])
-      }
-      for (; j < item.parts.length; j++) {
-        domStyle.parts.push(addStyle(item.parts[j]))
-      }
-      if (domStyle.parts.length > item.parts.length) {
-        domStyle.parts.length = item.parts.length
-      }
-    } else {
-      var parts = []
-      for (var j = 0; j < item.parts.length; j++) {
-        parts.push(addStyle(item.parts[j]))
-      }
-      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
-    }
-  }
-}
-
-function createStyleElement () {
-  var styleElement = document.createElement('style')
-  styleElement.type = 'text/css'
-  head.appendChild(styleElement)
-  return styleElement
-}
-
-function addStyle (obj /* StyleObjectPart */) {
-  var update, remove
-  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
-
-  if (styleElement) {
-    if (isProduction) {
-      // has SSR styles and in production mode.
-      // simply do nothing.
-      return noop
-    } else {
-      // has SSR styles but in dev mode.
-      // for some reason Chrome can't handle source map in server-rendered
-      // style tags - source maps in <style> only works if the style tag is
-      // created and inserted dynamically. So we remove the server rendered
-      // styles and inject new ones.
-      styleElement.parentNode.removeChild(styleElement)
-    }
-  }
-
-  if (isOldIE) {
-    // use singleton mode for IE9.
-    var styleIndex = singletonCounter++
-    styleElement = singletonElement || (singletonElement = createStyleElement())
-    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
-    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
-  } else {
-    // use multi-style-tag mode in all other cases
-    styleElement = createStyleElement()
-    update = applyToTag.bind(null, styleElement)
-    remove = function () {
-      styleElement.parentNode.removeChild(styleElement)
-    }
-  }
-
-  update(obj)
-
-  return function updateStyle (newObj /* StyleObjectPart */) {
-    if (newObj) {
-      if (newObj.css === obj.css &&
-          newObj.media === obj.media &&
-          newObj.sourceMap === obj.sourceMap) {
-        return
-      }
-      update(obj = newObj)
-    } else {
-      remove()
-    }
-  }
-}
-
-var replaceText = (function () {
-  var textStore = []
-
-  return function (index, replacement) {
-    textStore[index] = replacement
-    return textStore.filter(Boolean).join('\n')
-  }
-})()
-
-function applyToSingletonTag (styleElement, index, remove, obj) {
-  var css = remove ? '' : obj.css
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = replaceText(index, css)
-  } else {
-    var cssNode = document.createTextNode(css)
-    var childNodes = styleElement.childNodes
-    if (childNodes[index]) styleElement.removeChild(childNodes[index])
-    if (childNodes.length) {
-      styleElement.insertBefore(cssNode, childNodes[index])
-    } else {
-      styleElement.appendChild(cssNode)
-    }
-  }
-}
-
-function applyToTag (styleElement, obj) {
-  var css = obj.css
-  var media = obj.media
-  var sourceMap = obj.sourceMap
-
-  if (media) {
-    styleElement.setAttribute('media', media)
-  }
-  if (options.ssrId) {
-    styleElement.setAttribute(ssrIdKey, obj.id)
-  }
-
-  if (sourceMap) {
-    // https://developer.chrome.com/devtools/docs/javascript-debugging
-    // this makes source maps inside style tags work properly in Chrome
-    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
-    // http://stackoverflow.com/a/26603875
-    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
-  }
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = css
-  } else {
-    while (styleElement.firstChild) {
-      styleElement.removeChild(styleElement.firstChild)
-    }
-    styleElement.appendChild(document.createTextNode(css))
-  }
-}
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -2368,14 +1949,14 @@ module.exports = function normalizeComponent (
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 5 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bind = __webpack_require__(19);
-var isBuffer = __webpack_require__(76);
+var bind = __webpack_require__(22);
+var isBuffer = __webpack_require__(80);
 
 /*global toString:true*/
 
@@ -2675,6 +2256,425 @@ module.exports = {
   extend: extend,
   trim: trim
 };
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(36)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction, _options) {
+  isProduction = _isProduction
+
+  options = _options || {}
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
 
 
 /***/ }),
@@ -13619,10 +13619,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
 	if (typeof(module) !== "undefined" && module.exports) { //node
-		__webpack_require__(4);
+		__webpack_require__(1);
 		module.exports = getGlobal();
 	} else if (true) { //AMD
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -13634,13 +13634,118 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 /***/ }),
 /* 10 */,
 /* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (immutable) */ __webpack_exports__["a"] = getMethodName;
+/* harmony export (immutable) */ __webpack_exports__["c"] = isDomElement;
+/* unused harmony export isInteger */
+/* harmony export (immutable) */ __webpack_exports__["e"] = isVimeoUrl;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getVimeoUrl;
+/**
+ * @module lib/functions
+ */
+
+/**
+ * Check to see this is a node environment.
+ * @type {Boolean}
+ */
+/* global global */
+const isNode = typeof global !== 'undefined' &&
+  ({}).toString.call(global) === '[object global]';
+/* harmony export (immutable) */ __webpack_exports__["d"] = isNode;
+
+
+/**
+ * Get the name of the method for a given getter or setter.
+ *
+ * @param {string} prop The name of the property.
+ * @param {string} type Either “get” or “set”.
+ * @return {string}
+ */
+function getMethodName(prop, type) {
+    if (prop.indexOf(type.toLowerCase()) === 0) {
+        return prop;
+    }
+
+    return `${type.toLowerCase()}${prop.substr(0, 1).toUpperCase()}${prop.substr(1)}`;
+}
+
+/**
+ * Check to see if the object is a DOM Element.
+ *
+ * @param {*} element The object to check.
+ * @return {boolean}
+ */
+function isDomElement(element) {
+    return element instanceof window.HTMLElement;
+}
+
+/**
+ * Check to see whether the value is a number.
+ *
+ * @see http://dl.dropboxusercontent.com/u/35146/js/tests/isNumber.html
+ * @param {*} value The value to check.
+ * @param {boolean} integer Check if the value is an integer.
+ * @return {boolean}
+ */
+function isInteger(value) {
+    // eslint-disable-next-line eqeqeq
+    return !isNaN(parseFloat(value)) && isFinite(value) && Math.floor(value) == value;
+}
+
+/**
+ * Check to see if the URL is a Vimeo url.
+ *
+ * @param {string} url The url string.
+ * @return {boolean}
+ */
+function isVimeoUrl(url) {
+    return (/^(https?:)?\/\/((player|www).)?vimeo.com(?=$|\/)/).test(url);
+}
+
+/**
+ * Get the Vimeo URL from an element.
+ * The element must have either a data-vimeo-id or data-vimeo-url attribute.
+ *
+ * @param {object} oEmbedParameters The oEmbed parameters.
+ * @return {string}
+ */
+function getVimeoUrl(oEmbedParameters = {}) {
+    const id = oEmbedParameters.id;
+    const url = oEmbedParameters.url;
+    const idOrUrl = id || url;
+
+    if (!idOrUrl) {
+        throw new Error('An id or url must be passed, either in an options object or as a data-vimeo-id or data-vimeo-url attribute.');
+    }
+
+    if (isInteger(idOrUrl)) {
+        return `https://vimeo.com/${idOrUrl}`;
+    }
+
+    if (isVimeoUrl(idOrUrl)) {
+        return idOrUrl.replace('http:', 'https:');
+    }
+
+    if (id) {
+        throw new TypeError(`“${id}” is not a valid video id.`);
+    }
+
+    throw new TypeError(`“${idOrUrl}” is not a vimeo.com url.`);
+}
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(5);
-var normalizeHeaderName = __webpack_require__(78);
+var utils = __webpack_require__(2);
+var normalizeHeaderName = __webpack_require__(82);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -13656,10 +13761,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(20);
+    adapter = __webpack_require__(23);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(20);
+    adapter = __webpack_require__(23);
   }
   return adapter;
 }
@@ -13730,12 +13835,13 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 12 */,
 /* 13 */,
-/* 14 */
+/* 14 */,
+/* 15 */,
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -14747,10 +14853,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
 	if (typeof(module) !== "undefined" && module.exports) { //node
-		__webpack_require__(4);
+		__webpack_require__(1);
 		module.exports = getGlobal();
 	} else if (true) { //AMD
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -14759,8 +14865,125 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */,
-/* 16 */
+/* 17 */,
+/* 18 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["d"] = storeCallback;
+/* harmony export (immutable) */ __webpack_exports__["a"] = getCallbacks;
+/* harmony export (immutable) */ __webpack_exports__["b"] = removeCallback;
+/* harmony export (immutable) */ __webpack_exports__["c"] = shiftCallbacks;
+/* harmony export (immutable) */ __webpack_exports__["e"] = swapCallbacks;
+/**
+ * @module lib/callbacks
+ */
+
+const callbackMap = new WeakMap();
+/* unused harmony export callbackMap */
+
+
+/**
+ * Store a callback for a method or event for a player.
+ *
+ * @param {Player} player The player object.
+ * @param {string} name The method or event name.
+ * @param {(function(this:Player, *): void|{resolve: function, reject: function})} callback
+ *        The callback to call or an object with resolve and reject functions for a promise.
+ * @return {void}
+ */
+function storeCallback(player, name, callback) {
+    const playerCallbacks = callbackMap.get(player.element) || {};
+
+    if (!(name in playerCallbacks)) {
+        playerCallbacks[name] = [];
+    }
+
+    playerCallbacks[name].push(callback);
+    callbackMap.set(player.element, playerCallbacks);
+}
+
+/**
+ * Get the callbacks for a player and event or method.
+ *
+ * @param {Player} player The player object.
+ * @param {string} name The method or event name
+ * @return {function[]}
+ */
+function getCallbacks(player, name) {
+    const playerCallbacks = callbackMap.get(player.element) || {};
+    return playerCallbacks[name] || [];
+}
+
+/**
+ * Remove a stored callback for a method or event for a player.
+ *
+ * @param {Player} player The player object.
+ * @param {string} name The method or event name
+ * @param {function} [callback] The specific callback to remove.
+ * @return {boolean} Was this the last callback?
+ */
+function removeCallback(player, name, callback) {
+    const playerCallbacks = callbackMap.get(player.element) || {};
+
+    if (!playerCallbacks[name]) {
+        return true;
+    }
+
+    // If no callback is passed, remove all callbacks for the event
+    if (!callback) {
+        playerCallbacks[name] = [];
+        callbackMap.set(player.element, playerCallbacks);
+
+        return true;
+    }
+
+    const index = playerCallbacks[name].indexOf(callback);
+
+    if (index !== -1) {
+        playerCallbacks[name].splice(index, 1);
+    }
+
+    callbackMap.set(player.element, playerCallbacks);
+    return playerCallbacks[name] && playerCallbacks[name].length === 0;
+}
+
+/**
+ * Return the first stored callback for a player and event or method.
+ *
+ * @param {Player} player The player object.
+ * @param {string} name The method or event name.
+ * @return {function} The callback, or false if there were none
+ */
+function shiftCallbacks(player, name) {
+    const playerCallbacks = getCallbacks(player, name);
+
+    if (playerCallbacks.length < 1) {
+        return false;
+    }
+
+    const callback = playerCallbacks.shift();
+    removeCallback(player, name, callback);
+    return callback;
+}
+
+/**
+ * Move callbacks associated with an element to another element.
+ *
+ * @param {HTMLElement} oldElement The old element.
+ * @param {HTMLElement} newElement The new element.
+ * @return {void}
+ */
+function swapCallbacks(oldElement, newElement) {
+    const playerCallbacks = callbackMap.get(oldElement);
+
+    callbackMap.set(newElement, playerCallbacks);
+    callbackMap.delete(oldElement);
+}
+
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -31862,10 +32085,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(66)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(70)(module)))
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -32663,10 +32886,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
 	if (typeof(module) !== "undefined" && module.exports) { //node
-		__webpack_require__(4); //dependency
+		__webpack_require__(1); //dependency
 		module.exports = getGlobal();
 	} else if (true) { //AMD
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -32676,13 +32899,13 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(75);
+module.exports = __webpack_require__(79);
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32700,19 +32923,19 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
-var settle = __webpack_require__(79);
-var buildURL = __webpack_require__(81);
-var parseHeaders = __webpack_require__(82);
-var isURLSameOrigin = __webpack_require__(83);
-var createError = __webpack_require__(21);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(84);
+var utils = __webpack_require__(2);
+var settle = __webpack_require__(83);
+var buildURL = __webpack_require__(85);
+var parseHeaders = __webpack_require__(86);
+var isURLSameOrigin = __webpack_require__(87);
+var createError = __webpack_require__(24);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(88);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -32809,7 +33032,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(85);
+      var cookies = __webpack_require__(89);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -32887,13 +33110,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(80);
+var enhanceError = __webpack_require__(84);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -32912,7 +33135,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32924,7 +33147,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32950,21 +33173,21 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(25);
-module.exports = __webpack_require__(116);
+__webpack_require__(28);
+module.exports = __webpack_require__(119);
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {
 
-var _popper = __webpack_require__(26);
+var _popper = __webpack_require__(29);
 
 var _popper2 = _interopRequireDefault(_popper);
 
@@ -32972,15 +33195,15 @@ var _vue = __webpack_require__(10);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vueResource = __webpack_require__(29);
+var _vueResource = __webpack_require__(31);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _vueRouter = __webpack_require__(13);
+var _vueRouter = __webpack_require__(15);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _MainTemplate = __webpack_require__(31);
+var _MainTemplate = __webpack_require__(33);
 
 var _MainTemplate2 = _interopRequireDefault(_MainTemplate);
 
@@ -32989,10 +33212,10 @@ var _gsap = __webpack_require__(6);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.$ = window.jQuery = __webpack_require__(7);
-window.Tether = __webpack_require__(47);
+window.Tether = __webpack_require__(49);
 
 window.Popper = _popper2.default;
-__webpack_require__(15);
+__webpack_require__(17);
 
 _vue2.default.use(_vueResource2.default);
 _vue2.default.use(_vueRouter2.default);
@@ -33007,29 +33230,29 @@ var router = new _vueRouter2.default({
     routes: [{
         path: '/',
         name: 'Home',
-        component: __webpack_require__(49)
+        component: __webpack_require__(51)
     }, {
         path: '/works',
         name: 'Works',
-        component: __webpack_require__(54)
+        component: __webpack_require__(62)
     }, {
         path: '/about',
         name: 'About',
-        component: __webpack_require__(95)
+        component: __webpack_require__(98)
     }, {
         path: '/contacts',
         alias: '/contact',
         name: 'Contact',
-        component: __webpack_require__(100)
+        component: __webpack_require__(103)
     }, {
         path: '/cv',
         alias: '/curriculum',
         name: 'Cv',
-        component: __webpack_require__(106)
+        component: __webpack_require__(109)
     }, {
         path: '/work/:slug',
         name: 'Single-Work',
-        component: __webpack_require__(111)
+        component: __webpack_require__(114)
     }]
 });
 
@@ -33047,7 +33270,7 @@ window.addEventListener('popstate', function () {
 /* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**!
@@ -35582,9 +35805,8 @@ return Popper;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 27 */,
-/* 28 */,
-/* 29 */
+/* 30 */,
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -36683,7 +36905,7 @@ function xhrClient (request) {
 
 function nodeClient (request) {
 
-    var client = __webpack_require__(30);
+    var client = __webpack_require__(32);
 
     return new PromiseObj(function (resolve) {
 
@@ -37151,25 +37373,25 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(32)
+  __webpack_require__(34)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(35)
+var __vue_script__ = __webpack_require__(37)
 /* template */
-var __vue_template__ = __webpack_require__(46)
+var __vue_template__ = __webpack_require__(48)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -37208,17 +37430,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(33);
+var content = __webpack_require__(35);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("35b6ed8b", content, false, {});
+var update = __webpack_require__(4)("35b6ed8b", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -37234,21 +37456,21 @@ if(false) {
 }
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\n#animationPage[data-v-5f763125] {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n}\n", ""]);
+exports.push([module.i, "\n#content[data-v-5f763125] {\n  padding-top: 32px;\n  margin: 72px auto;\n  min-height: calc(100vh - 144px);\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  width: 100%;\n}\n#animationPage[data-v-5f763125] {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports) {
 
 /**
@@ -37281,7 +37503,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37293,11 +37515,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _gsap = __webpack_require__(6);
 
-var _FooterLayout = __webpack_require__(36);
+var _FooterLayout = __webpack_require__(38);
 
 var _FooterLayout2 = _interopRequireDefault(_FooterLayout);
 
-var _MainMenu = __webpack_require__(41);
+var _MainMenu = __webpack_require__(43);
 
 var _MainMenu2 = _interopRequireDefault(_MainMenu);
 
@@ -37307,6 +37529,11 @@ var _eventbus2 = _interopRequireDefault(_eventbus);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
+//
+//
+//
+//
 //
 //
 //
@@ -37381,19 +37608,19 @@ exports.default = {
 };
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(37)
+  __webpack_require__(39)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(39)
+var __vue_script__ = __webpack_require__(41)
 /* template */
-var __vue_template__ = __webpack_require__(40)
+var __vue_template__ = __webpack_require__(42)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -37432,17 +37659,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(38);
+var content = __webpack_require__(40);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("d71b47be", content, false, {});
+var update = __webpack_require__(4)("d71b47be", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -37458,21 +37685,21 @@ if(false) {
 }
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\nfooter[data-v-68922f86] {\n  position: fixed;\n  bottom: 0;\n  min-height: 72px;\n  height: 72px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  width: 100%;\n}\nfooter svg[data-v-68922f86] {\n    cursor: pointer;\n    display: block;\n}\n#black-square[data-v-68922f86] {\n  display: none;\n  width: 54px;\n  height: 56px;\n  position: absolute;\n  bottom: 1.4rem;\n  right: 0.75rem;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  opacity: 0;\n  z-index: 0;\n}\n.fill-black[data-v-68922f86] {\n  fill: #1e1f1c;\n}\n.stroke-black[data-v-68922f86] {\n  stroke: #1e1f1c;\n}\n.fill-secondary[data-v-68922f86] {\n  fill: #fffdf4;\n}\n.stroke-secondary[data-v-68922f86] {\n  stroke: #fffdf4;\n}\n", ""]);
+exports.push([module.i, "\nfooter[data-v-68922f86] {\n  position: fixed;\n  bottom: 0;\n  height: 4rem;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  width: 100%;\n  padding: 0 1rem;\n}\nfooter > .spacer[data-v-68922f86] {\n    width: 47px;\n    display: block;\n}\nfooter svg[data-v-68922f86] {\n    cursor: pointer;\n    display: block;\n}\n#black-square[data-v-68922f86] {\n  display: none;\n  width: 54px;\n  height: 56px;\n  position: absolute;\n  bottom: 1.4rem;\n  right: 0.75rem;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  opacity: 0;\n  z-index: 0;\n}\n.fill-black[data-v-68922f86] {\n  fill: #1e1f1c;\n}\n.stroke-black[data-v-68922f86] {\n  stroke: #1e1f1c;\n}\n.fill-secondary[data-v-68922f86] {\n  fill: #fffdf4;\n}\n.stroke-secondary[data-v-68922f86] {\n  stroke: #fffdf4;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37484,12 +37711,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _gsap = __webpack_require__(6);
 
-var _MorphSVGPlugin = __webpack_require__(14);
+var _MorphSVGPlugin = __webpack_require__(16);
 
 var _MorphSVGPlugin2 = _interopRequireDefault(_MorphSVGPlugin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
 //
 //
 //
@@ -37813,14 +38041,16 @@ exports.default = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("footer", { ref: "footer", staticClass: "w-100 bg-danger" }, [
+  return _c("footer", { ref: "footer", staticClass: "bg-light" }, [
+    _c("div", { staticClass: "spacer" }),
+    _vm._v(" "),
     _vm._m(0),
     _vm._v(" "),
     _c("div", { staticClass: "eye-animation" }, [
@@ -38057,19 +38287,19 @@ if (false) {
 }
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(131)
+  __webpack_require__(44)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(44)
+var __vue_script__ = __webpack_require__(46)
 /* template */
-var __vue_template__ = __webpack_require__(133)
+var __vue_template__ = __webpack_require__(47)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -38108,9 +38338,47 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 42 */,
-/* 43 */,
 /* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(45);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("0bde6028", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1c969660\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainMenu.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1c969660\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainMenu.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n#main-menu > nav[data-v-1c969660] {\n  position: fixed;\n  top: 0;\n  width: 100%;\n  height: 4rem;\n  padding: 0;\n  z-index: 9;\n}\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    width: 100%;\n    -webkit-box-pack: end;\n        -ms-flex-pack: end;\n            justify-content: flex-end;\n    padding-right: 1rem;\n}\n#main-menu > nav > .navbar-nav > .nav-link[data-v-1c969660] {\n      padding: 0 1rem 0 1rem;\n}\n#main-menu > nav > .navbar-nav > .nav-link > h5[data-v-1c969660] {\n        margin-bottom: 0;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38153,31 +38421,113 @@ exports.default = {
 //
 
 /***/ }),
-/* 45 */,
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "main-container" },
-    [
-      _vm.notHome ? _c("main-menu") : _vm._e(),
-      _vm._v(" "),
+  return _c("div", { attrs: { id: "main-menu" } }, [
+    _c("nav", { staticClass: "navbar navbar-light bg-light" }, [
       _c(
-        "transition",
-        { attrs: { css: false }, on: { enter: _vm.enter, leave: _vm.leave } },
-        [_c("router-view")],
+        "div",
+        { staticClass: "navbar-nav d-flex" },
+        [
+          _c(
+            "router-link",
+            {
+              staticClass: "nav-link active text-default",
+              attrs: { to: "/works" },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.clicked($event)
+                }
+              }
+            },
+            [_c("h5", [_vm._v("Works")])]
+          ),
+          _vm._v(" "),
+          _c(
+            "router-link",
+            {
+              staticClass: "nav-link text-default",
+              attrs: { to: "/about" },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.clicked($event)
+                }
+              }
+            },
+            [_c("h5", [_vm._v("About")])]
+          ),
+          _vm._v(" "),
+          _c(
+            "router-link",
+            {
+              staticClass: "nav-link text-default",
+              attrs: { to: "/contacts" },
+              nativeOn: {
+                click: function($event) {
+                  return _vm.clicked($event)
+                }
+              }
+            },
+            [_c("h5", [_vm._v("Contacts")])]
+          )
+        ],
         1
-      ),
-      _vm._v(" "),
-      _vm.notHome ? _c("footer-layout") : _vm._e()
-    ],
-    1
-  )
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1c969660", module.exports)
+  }
+}
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "main-container" }, [
+    _c(
+      "div",
+      { attrs: { id: "main-navigation" } },
+      [_vm.notHome ? _c("main-menu") : _vm._e()],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "container", attrs: { id: "content" } },
+      [
+        _c(
+          "transition",
+          { attrs: { css: false }, on: { enter: _vm.enter, leave: _vm.leave } },
+          [_c("router-view")],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { attrs: { id: "footer" } },
+      [_vm.notHome ? _c("footer-layout") : _vm._e()],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -38190,7 +38540,7 @@ if (false) {
 }
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! tether 1.4.4 */
@@ -40012,20 +40362,20 @@ return Tether;
 
 
 /***/ }),
-/* 48 */,
-/* 49 */
+/* 50 */,
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(50)
+  __webpack_require__(52)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(52)
+var __vue_script__ = __webpack_require__(54)
 /* template */
-var __vue_template__ = __webpack_require__(53)
+var __vue_template__ = __webpack_require__(61)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -40064,17 +40414,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(51);
+var content = __webpack_require__(53);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("140775fb", content, false, {});
+var update = __webpack_require__(4)("140775fb", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -40090,21 +40440,21 @@ if(false) {
 }
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\n#enter[data-v-6c0a33b2] {\n  display: none;\n  opacity: 0;\n}\n#video-hero-container[data-v-6c0a33b2] {\n  position: relative;\n  overflow: hidden;\n  z-index: -100;\n}\n#video-hero-container #video-hero[data-v-6c0a33b2] {\n    padding: 0;\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    -webkit-transform: translate(-50%, -50%);\n            transform: translate(-50%, -50%);\n}\n", ""]);
+exports.push([module.i, "\n#hero-wrapper[data-v-6c0a33b2] {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n}\n#enter[data-v-6c0a33b2] {\n  display: none;\n  opacity: 0;\n}\n#video-hero-container[data-v-6c0a33b2] {\n  position: relative;\n  overflow: hidden;\n  z-index: -100;\n}\n#video-hero-container #video-hero[data-v-6c0a33b2] {\n    padding: 0;\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    -webkit-transform: translate(-50%, -50%);\n            transform: translate(-50%, -50%);\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40116,13 +40466,32 @@ Object.defineProperty(exports, "__esModule", {
 
 var _gsap = __webpack_require__(6);
 
-var _player = __webpack_require__(126);
+var _player = __webpack_require__(55);
 
 var _player2 = _interopRequireDefault(_player);
 
-var _embed = __webpack_require__(122);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
     data: function data() {
@@ -40220,36 +40589,1879 @@ exports.default = {
             }
         });
     }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+};
 
 /***/ }),
-/* 53 */
+/* 55 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* WEBPACK VAR INJECTION */(function(jQuery) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_compatibility_check__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_es6_collections__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_es6_collections___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_es6_collections__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_native_promise_only__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_native_promise_only__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_callbacks__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_functions__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__lib_embed__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__lib_postmessage__ = __webpack_require__(60);
+
+
+
+
+
+
+
+
+
+
+const playerMap = new WeakMap();
+const readyMap = new WeakMap();
+
+class Player {
+     /**
+     * Create a Player.
+     *
+     * @param {(HTMLIFrameElement|HTMLElement|string|jQuery)} element A reference to the Vimeo
+     *        player iframe, and id, or a jQuery object.
+     * @param {object} [options] oEmbed parameters to use when creating an embed in the element.
+     * @return {Player}
+     */
+    constructor(element, options = {}) {
+        /* global jQuery */
+        console.log('modificat');
+        if (window.jQuery && element instanceof jQuery) {
+            if (element.length > 1 && window.console && console.warn) {
+                console.warn('A jQuery object with multiple elements was passed, using the first element.');
+            }
+
+            element = element[0];
+        }
+
+        // Find an element by ID
+        if (typeof document !== 'undefined' && typeof element === 'string') {
+            element = document.getElementById(element);
+        }
+
+        // Not an element!
+        if (!Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["c" /* isDomElement */])(element)) {
+            throw new TypeError('You must pass either a valid element or a valid id.');
+        }
+
+        // Already initialized an embed in this div, so grab the iframe
+        if (element.nodeName !== 'IFRAME') {
+            const iframe = element.querySelector('iframe');
+
+            if (iframe) {
+                element = iframe;
+            }
+        }
+
+        // iframe url is not a Vimeo url
+        if (element.nodeName === 'IFRAME' && !Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["e" /* isVimeoUrl */])(element.getAttribute('src') || '')) {
+            throw new Error('The player element passed isn’t a Vimeo embed.');
+        }
+
+        // If there is already a player object in the map, return that
+        if (playerMap.has(element)) {
+            return playerMap.get(element);
+        }
+
+        this.element = element;
+        this.origin = '*';
+
+        const readyPromise = new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
+            const onMessage = (event) => {
+                if (!Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["e" /* isVimeoUrl */])(event.origin) || this.element.contentWindow !== event.source) {
+                    return;
+                }
+
+                if (this.origin === '*') {
+                    this.origin = event.origin;
+                }
+
+                const data = Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["a" /* parseMessageData */])(event.data);
+                const isReadyEvent = 'event' in data && data.event === 'ready';
+                const isPingResponse = 'method' in data && data.method === 'ping';
+
+                if (isReadyEvent || isPingResponse) {
+                    this.element.setAttribute('data-ready', 'true');
+                    resolve();
+                    return;
+                }
+
+                Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["c" /* processData */])(this, data);
+            };
+
+            if (window.addEventListener) {
+                window.addEventListener('message', onMessage, false);
+            }
+            else if (window.attachEvent) {
+                window.attachEvent('onmessage', onMessage);
+            }
+
+            if (this.element.nodeName !== 'IFRAME') {
+                const params = Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["c" /* getOEmbedParameters */])(element, options);
+                const url = Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["b" /* getVimeoUrl */])(params);
+
+                Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["b" /* getOEmbedData */])(url, params).then((data) => {
+                    const iframe = Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["a" /* createEmbed */])(data, element);
+                    // Overwrite element with the new iframe,
+                    // but store reference to the original element
+                    this.element = iframe;
+                    this._originalElement = element;
+
+                    Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["e" /* swapCallbacks */])(element, iframe);
+                    playerMap.set(this.element, this);
+
+                    return data;
+                }).catch((error) => reject(error));
+            }
+        });
+
+        // Store a copy of this Player in the map
+        readyMap.set(this, readyPromise);
+        playerMap.set(this.element, this);
+
+        // Send a ping to the iframe so the ready promise will be resolved if
+        // the player is already ready.
+        if (this.element.nodeName === 'IFRAME') {
+            Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["b" /* postMessage */])(this, 'ping');
+        }
+
+        return this;
+    }
+
+    /**
+     * Get a promise for a method.
+     *
+     * @param {string} name The API method to call.
+     * @param {Object} [args={}] Arguments to send via postMessage.
+     * @return {Promise}
+     */
+    callMethod(name, args = {}) {
+        return new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
+            // We are storing the resolve/reject handlers to call later, so we
+            // can’t return here.
+            // eslint-disable-next-line promise/always-return
+            return this.ready().then(() => {
+                Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["d" /* storeCallback */])(this, name, {
+                    resolve,
+                    reject
+                });
+
+                Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["b" /* postMessage */])(this, name, args);
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    }
+
+    /**
+     * Get a promise for the value of a player property.
+     *
+     * @param {string} name The property name
+     * @return {Promise}
+     */
+    get(name) {
+        return new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
+            name = Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["a" /* getMethodName */])(name, 'get');
+
+            // We are storing the resolve/reject handlers to call later, so we
+            // can’t return here.
+            // eslint-disable-next-line promise/always-return
+            return this.ready().then(() => {
+                Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["d" /* storeCallback */])(this, name, {
+                    resolve,
+                    reject
+                });
+
+                Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["b" /* postMessage */])(this, name);
+            });
+        });
+    }
+
+    /**
+     * Get a promise for setting the value of a player property.
+     *
+     * @param {string} name The API method to call.
+     * @param {mixed} value The value to set.
+     * @return {Promise}
+     */
+    set(name, value) {
+        return __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a.resolve(value).then((val) => {
+            name = Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["a" /* getMethodName */])(name, 'set');
+
+            if (val === undefined || val === null) {
+                throw new TypeError('There must be a value to set.');
+            }
+
+            return this.ready().then(() => {
+                return new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
+                    Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["d" /* storeCallback */])(this, name, {
+                        resolve,
+                        reject
+                    });
+
+                    Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["b" /* postMessage */])(this, name, val);
+                });
+            });
+        });
+    }
+
+    /**
+     * Add an event listener for the specified event. Will call the
+     * callback with a single parameter, `data`, that contains the data for
+     * that event.
+     *
+     * @param {string} eventName The name of the event.
+     * @param {function(*)} callback The function to call when the event fires.
+     * @return {void}
+     */
+    on(eventName, callback) {
+        if (!eventName) {
+            throw new TypeError('You must pass an event name.');
+        }
+
+        if (!callback) {
+            throw new TypeError('You must pass a callback function.');
+        }
+
+        if (typeof callback !== 'function') {
+            throw new TypeError('The callback must be a function.');
+        }
+
+        const callbacks = Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["a" /* getCallbacks */])(this, `event:${eventName}`);
+        if (callbacks.length === 0) {
+            this.callMethod('addEventListener', eventName).catch(() => {
+                // Ignore the error. There will be an error event fired that
+                // will trigger the error callback if they are listening.
+            });
+        }
+
+        Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["d" /* storeCallback */])(this, `event:${eventName}`, callback);
+    }
+
+    /**
+     * Remove an event listener for the specified event. Will remove all
+     * listeners for that event if a `callback` isn’t passed, or only that
+     * specific callback if it is passed.
+     *
+     * @param {string} eventName The name of the event.
+     * @param {function} [callback] The specific callback to remove.
+     * @return {void}
+     */
+    off(eventName, callback) {
+        if (!eventName) {
+            throw new TypeError('You must pass an event name.');
+        }
+
+        if (callback && typeof callback !== 'function') {
+            throw new TypeError('The callback must be a function.');
+        }
+
+        const lastCallback = Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["b" /* removeCallback */])(this, `event:${eventName}`, callback);
+
+        // If there are no callbacks left, remove the listener
+        if (lastCallback) {
+            this.callMethod('removeEventListener', eventName).catch((e) => {
+                // Ignore the error. There will be an error event fired that
+                // will trigger the error callback if they are listening.
+            });
+        }
+    }
+
+    /**
+     * A promise to load a new video.
+     *
+     * @promise LoadVideoPromise
+     * @fulfill {number} The video with this id successfully loaded.
+     * @reject {TypeError} The id was not a number.
+     */
+    /**
+     * Load a new video into this embed. The promise will be resolved if
+     * the video is successfully loaded, or it will be rejected if it could
+     * not be loaded.
+     *
+     * @param {number} id The id of the video.
+     * @return {LoadVideoPromise}
+     */
+    loadVideo(id) {
+        return this.callMethod('loadVideo', id);
+    }
+
+    /**
+     * A promise to perform an action when the Player is ready.
+     *
+     * @todo document errors
+     * @promise LoadVideoPromise
+     * @fulfill {void}
+     */
+    /**
+     * Trigger a function when the player iframe has initialized. You do not
+     * need to wait for `ready` to trigger to begin adding event listeners
+     * or calling other methods.
+     *
+     * @return {ReadyPromise}
+     */
+    ready() {
+        const readyPromise = readyMap.get(this) || new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
+            reject('Unknown player. Probably unloaded.');
+        });
+        return __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a.resolve(readyPromise);
+    }
+
+    /**
+     * A promise to add a cue point to the player.
+     *
+     * @promise AddCuePointPromise
+     * @fulfill {string} The id of the cue point to use for removeCuePoint.
+     * @reject {RangeError} the time was less than 0 or greater than the
+     *         video’s duration.
+     * @reject {UnsupportedError} Cue points are not supported with the current
+     *         player or browser.
+     */
+    /**
+     * Add a cue point to the player.
+     *
+     * @param {number} time The time for the cue point.
+     * @param {object} [data] Arbitrary data to be returned with the cue point.
+     * @return {AddCuePointPromise}
+     */
+    addCuePoint(time, data = {}) {
+        return this.callMethod('addCuePoint', { time, data });
+    }
+
+    /**
+     * A promise to remove a cue point from the player.
+     *
+     * @promise AddCuePointPromise
+     * @fulfill {string} The id of the cue point that was removed.
+     * @reject {InvalidCuePoint} The cue point with the specified id was not
+     *         found.
+     * @reject {UnsupportedError} Cue points are not supported with the current
+     *         player or browser.
+     */
+    /**
+     * Remove a cue point from the video.
+     *
+     * @param {string} id The id of the cue point to remove.
+     * @return {RemoveCuePointPromise}
+     */
+    removeCuePoint(id) {
+        return this.callMethod('removeCuePoint', id);
+    }
+
+    /**
+     * A representation of a text track on a video.
+     *
+     * @typedef {Object} VimeoTextTrack
+     * @property {string} language The ISO language code.
+     * @property {string} kind The kind of track it is (captions or subtitles).
+     * @property {string} label The human‐readable label for the track.
+     */
+    /**
+     * A promise to enable a text track.
+     *
+     * @promise EnableTextTrackPromise
+     * @fulfill {VimeoTextTrack} The text track that was enabled.
+     * @reject {InvalidTrackLanguageError} No track was available with the
+     *         specified language.
+     * @reject {InvalidTrackError} No track was available with the specified
+     *         language and kind.
+     */
+    /**
+     * Enable the text track with the specified language, and optionally the
+     * specified kind (captions or subtitles).
+     *
+     * When set via the API, the track language will not change the viewer’s
+     * stored preference.
+     *
+     * @param {string} language The two‐letter language code.
+     * @param {string} [kind] The kind of track to enable (captions or subtitles).
+     * @return {EnableTextTrackPromise}
+     */
+    enableTextTrack(language, kind) {
+        if (!language) {
+            throw new TypeError('You must pass a language.');
+        }
+
+        return this.callMethod('enableTextTrack', {
+            language,
+            kind
+        });
+    }
+
+    /**
+     * A promise to disable the active text track.
+     *
+     * @promise DisableTextTrackPromise
+     * @fulfill {void} The track was disabled.
+     */
+    /**
+     * Disable the currently-active text track.
+     *
+     * @return {DisableTextTrackPromise}
+     */
+    disableTextTrack() {
+        return this.callMethod('disableTextTrack');
+    }
+
+    /**
+     * A promise to pause the video.
+     *
+     * @promise PausePromise
+     * @fulfill {void} The video was paused.
+     */
+    /**
+     * Pause the video if it’s playing.
+     *
+     * @return {PausePromise}
+     */
+    pause() {
+        return this.callMethod('pause');
+    }
+
+    /**
+     * A promise to play the video.
+     *
+     * @promise PlayPromise
+     * @fulfill {void} The video was played.
+     */
+    /**
+     * Play the video if it’s paused. **Note:** on iOS and some other
+     * mobile devices, you cannot programmatically trigger play. Once the
+     * viewer has tapped on the play button in the player, however, you
+     * will be able to use this function.
+     *
+     * @return {PlayPromise}
+     */
+    play() {
+        return this.callMethod('play');
+    }
+
+    /**
+     * A promise to unload the video.
+     *
+     * @promise UnloadPromise
+     * @fulfill {void} The video was unloaded.
+     */
+    /**
+     * Return the player to its initial state.
+     *
+     * @return {UnloadPromise}
+     */
+    unload() {
+        return this.callMethod('unload');
+    }
+
+    /**
+     * Cleanup the player and remove it from the DOM
+     *
+     * It won't be usable and a new one should be constructed
+     *  in order to do any operations.
+     *
+     * @return {Promise}
+     */
+    destroy() {
+        return new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve) => {
+            readyMap.delete(this);
+            playerMap.delete(this.element);
+            if (this._originalElement) {
+                playerMap.delete(this._originalElement);
+                this._originalElement.removeAttribute('data-vimeo-initialized');
+            }
+            if (this.element && this.element.nodeName === 'IFRAME') {
+                this.element.remove();
+            }
+            resolve();
+        });
+    }
+
+    /**
+     * A promise to get the autopause behavior of the video.
+     *
+     * @promise GetAutopausePromise
+     * @fulfill {boolean} Whether autopause is turned on or off.
+     * @reject {UnsupportedError} Autopause is not supported with the current
+     *         player or browser.
+     */
+    /**
+     * Get the autopause behavior for this player.
+     *
+     * @return {GetAutopausePromise}
+     */
+    getAutopause() {
+        return this.get('autopause');
+    }
+
+    /**
+     * A promise to set the autopause behavior of the video.
+     *
+     * @promise SetAutopausePromise
+     * @fulfill {boolean} Whether autopause is turned on or off.
+     * @reject {UnsupportedError} Autopause is not supported with the current
+     *         player or browser.
+     */
+    /**
+     * Enable or disable the autopause behavior of this player.
+     *
+     * By default, when another video is played in the same browser, this
+     * player will automatically pause. Unless you have a specific reason
+     * for doing so, we recommend that you leave autopause set to the
+     * default (`true`).
+     *
+     * @param {boolean} autopause
+     * @return {SetAutopausePromise}
+     */
+    setAutopause(autopause) {
+        return this.set('autopause', autopause);
+    }
+
+    /**
+     * A promise to get the color of the player.
+     *
+     * @promise GetColorPromise
+     * @fulfill {string} The hex color of the player.
+     */
+    /**
+     * Get the color for this player.
+     *
+     * @return {GetColorPromise}
+     */
+    getColor() {
+        return this.get('color');
+    }
+
+    /**
+     * A promise to set the color of the player.
+     *
+     * @promise SetColorPromise
+     * @fulfill {string} The color was successfully set.
+     * @reject {TypeError} The string was not a valid hex or rgb color.
+     * @reject {ContrastError} The color was set, but the contrast is
+     *         outside of the acceptable range.
+     * @reject {EmbedSettingsError} The owner of the player has chosen to
+     *         use a specific color.
+     */
+    /**
+     * Set the color of this player to a hex or rgb string. Setting the
+     * color may fail if the owner of the video has set their embed
+     * preferences to force a specific color.
+     *
+     * @param {string} color The hex or rgb color string to set.
+     * @return {SetColorPromise}
+     */
+    setColor(color) {
+        return this.set('color', color);
+    }
+
+    /**
+     * A representation of a cue point.
+     *
+     * @typedef {Object} VimeoCuePoint
+     * @property {number} time The time of the cue point.
+     * @property {object} data The data passed when adding the cue point.
+     * @property {string} id The unique id for use with removeCuePoint.
+     */
+    /**
+     * A promise to get the cue points of a video.
+     *
+     * @promise GetCuePointsPromise
+     * @fulfill {VimeoCuePoint[]} The cue points added to the video.
+     * @reject {UnsupportedError} Cue points are not supported with the current
+     *         player or browser.
+     */
+    /**
+     * Get an array of the cue points added to the video.
+     *
+     * @return {GetCuePointsPromise}
+     */
+    getCuePoints() {
+        return this.get('cuePoints');
+    }
+
+    /**
+     * A promise to get the current time of the video.
+     *
+     * @promise GetCurrentTimePromise
+     * @fulfill {number} The current time in seconds.
+     */
+    /**
+     * Get the current playback position in seconds.
+     *
+     * @return {GetCurrentTimePromise}
+     */
+    getCurrentTime() {
+        return this.get('currentTime');
+    }
+
+    /**
+     * A promise to set the current time of the video.
+     *
+     * @promise SetCurrentTimePromise
+     * @fulfill {number} The actual current time that was set.
+     * @reject {RangeError} the time was less than 0 or greater than the
+     *         video’s duration.
+     */
+    /**
+     * Set the current playback position in seconds. If the player was
+     * paused, it will remain paused. Likewise, if the player was playing,
+     * it will resume playing once the video has buffered.
+     *
+     * You can provide an accurate time and the player will attempt to seek
+     * to as close to that time as possible. The exact time will be the
+     * fulfilled value of the promise.
+     *
+     * @param {number} currentTime
+     * @return {SetCurrentTimePromise}
+     */
+    setCurrentTime(currentTime) {
+        return this.set('currentTime', currentTime);
+    }
+
+    /**
+     * A promise to get the duration of the video.
+     *
+     * @promise GetDurationPromise
+     * @fulfill {number} The duration in seconds.
+     */
+    /**
+     * Get the duration of the video in seconds. It will be rounded to the
+     * nearest second before playback begins, and to the nearest thousandth
+     * of a second after playback begins.
+     *
+     * @return {GetDurationPromise}
+     */
+    getDuration() {
+        return this.get('duration');
+    }
+
+    /**
+     * A promise to get the ended state of the video.
+     *
+     * @promise GetEndedPromise
+     * @fulfill {boolean} Whether or not the video has ended.
+     */
+    /**
+     * Get the ended state of the video. The video has ended if
+     * `currentTime === duration`.
+     *
+     * @return {GetEndedPromise}
+     */
+    getEnded() {
+        return this.get('ended');
+    }
+
+    /**
+     * A promise to get the loop state of the player.
+     *
+     * @promise GetLoopPromise
+     * @fulfill {boolean} Whether or not the player is set to loop.
+     */
+    /**
+     * Get the loop state of the player.
+     *
+     * @return {GetLoopPromise}
+     */
+    getLoop() {
+        return this.get('loop');
+    }
+
+    /**
+     * A promise to set the loop state of the player.
+     *
+     * @promise SetLoopPromise
+     * @fulfill {boolean} The loop state that was set.
+     */
+    /**
+     * Set the loop state of the player. When set to `true`, the player
+     * will start over immediately once playback ends.
+     *
+     * @param {boolean} loop
+     * @return {SetLoopPromise}
+     */
+    setLoop(loop) {
+        return this.set('loop', loop);
+    }
+
+    /**
+     * A promise to get the paused state of the player.
+     *
+     * @promise GetLoopPromise
+     * @fulfill {boolean} Whether or not the video is paused.
+     */
+    /**
+     * Get the paused state of the player.
+     *
+     * @return {GetLoopPromise}
+     */
+    getPaused() {
+        return this.get('paused');
+    }
+
+    /**
+     * A promise to get the playback rate of the player.
+     *
+     * @promise GetPlaybackRatePromise
+     * @fulfill {number} The playback rate of the player on a scale from 0.5 to 2.
+     */
+    /**
+     * Get the playback rate of the player on a scale from `0.5` to `2`.
+     *
+     * @return {GetPlaybackRatePromise}
+     */
+    getPlaybackRate() {
+        return this.get('playbackRate');
+    }
+
+    /**
+     * A promise to set the playbackrate of the player.
+     *
+     * @promise SetPlaybackRatePromise
+     * @fulfill {number} The playback rate was set.
+     * @reject {RangeError} The playback rate was less than 0.5 or greater than 2.
+     */
+    /**
+     * Set the playback rate of the player on a scale from `0.5` to `2`. When set
+     * via the API, the playback rate will not be synchronized to other
+     * players or stored as the viewer's preference.
+     *
+     * @param {number} playbackRate
+     * @return {SetPlaybackRatePromise}
+     */
+    setPlaybackRate(playbackRate) {
+        return this.set('playbackRate', playbackRate);
+    }
+
+    /**
+     * A promise to get the text tracks of a video.
+     *
+     * @promise GetTextTracksPromise
+     * @fulfill {VimeoTextTrack[]} The text tracks associated with the video.
+     */
+    /**
+     * Get an array of the text tracks that exist for the video.
+     *
+     * @return {GetTextTracksPromise}
+     */
+    getTextTracks() {
+        return this.get('textTracks');
+    }
+
+    /**
+     * A promise to get the embed code for the video.
+     *
+     * @promise GetVideoEmbedCodePromise
+     * @fulfill {string} The `<iframe>` embed code for the video.
+     */
+    /**
+     * Get the `<iframe>` embed code for the video.
+     *
+     * @return {GetVideoEmbedCodePromise}
+     */
+    getVideoEmbedCode() {
+        return this.get('videoEmbedCode');
+    }
+
+    /**
+     * A promise to get the id of the video.
+     *
+     * @promise GetVideoIdPromise
+     * @fulfill {number} The id of the video.
+     */
+    /**
+     * Get the id of the video.
+     *
+     * @return {GetVideoIdPromise}
+     */
+    getVideoId() {
+        return this.get('videoId');
+    }
+
+    /**
+     * A promise to get the title of the video.
+     *
+     * @promise GetVideoTitlePromise
+     * @fulfill {number} The title of the video.
+     */
+    /**
+     * Get the title of the video.
+     *
+     * @return {GetVideoTitlePromise}
+     */
+    getVideoTitle() {
+        return this.get('videoTitle');
+    }
+
+    /**
+     * A promise to get the native width of the video.
+     *
+     * @promise GetVideoWidthPromise
+     * @fulfill {number} The native width of the video.
+     */
+    /**
+     * Get the native width of the currently‐playing video. The width of
+     * the highest‐resolution available will be used before playback begins.
+     *
+     * @return {GetVideoWidthPromise}
+     */
+    getVideoWidth() {
+        return this.get('videoWidth');
+    }
+
+    /**
+     * A promise to get the native height of the video.
+     *
+     * @promise GetVideoHeightPromise
+     * @fulfill {number} The native height of the video.
+     */
+    /**
+     * Get the native height of the currently‐playing video. The height of
+     * the highest‐resolution available will be used before playback begins.
+     *
+     * @return {GetVideoHeightPromise}
+     */
+    getVideoHeight() {
+        return this.get('videoHeight');
+    }
+
+    /**
+     * A promise to get the vimeo.com url for the video.
+     *
+     * @promise GetVideoUrlPromise
+     * @fulfill {number} The vimeo.com url for the video.
+     * @reject {PrivacyError} The url isn’t available because of the video’s privacy setting.
+     */
+    /**
+     * Get the vimeo.com url for the video.
+     *
+     * @return {GetVideoUrlPromise}
+     */
+    getVideoUrl() {
+        return this.get('videoUrl');
+    }
+
+    /**
+     * A promise to get the volume level of the player.
+     *
+     * @promise GetVolumePromise
+     * @fulfill {number} The volume level of the player on a scale from 0 to 1.
+     */
+    /**
+     * Get the current volume level of the player on a scale from `0` to `1`.
+     *
+     * Most mobile devices do not support an independent volume from the
+     * system volume. In those cases, this method will always return `1`.
+     *
+     * @return {GetVolumePromise}
+     */
+    getVolume() {
+        return this.get('volume');
+    }
+
+    /**
+     * A promise to set the volume level of the player.
+     *
+     * @promise SetVolumePromise
+     * @fulfill {number} The volume was set.
+     * @reject {RangeError} The volume was less than 0 or greater than 1.
+     */
+    /**
+     * Set the volume of the player on a scale from `0` to `1`. When set
+     * via the API, the volume level will not be synchronized to other
+     * players or stored as the viewer’s preference.
+     *
+     * Most mobile devices do not support setting the volume. An error will
+     * *not* be triggered in that situation.
+     *
+     * @param {number} volume
+     * @return {SetVolumePromise}
+     */
+    setVolume(volume) {
+        return this.set('volume', volume);
+    }
+}
+
+if (!__WEBPACK_IMPORTED_MODULE_4__lib_functions__["d" /* isNode */]) {
+    Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["d" /* initializeEmbeds */])();
+    Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["e" /* resizeEmbeds */])();
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Player);
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7)))
+
+/***/ }),
+/* 56 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__functions__ = __webpack_require__(11);
+
+
+const arrayIndexOfSupport = typeof Array.prototype.indexOf !== 'undefined';
+const postMessageSupport = typeof window !== 'undefined' && typeof window.postMessage !== 'undefined';
+
+if (!__WEBPACK_IMPORTED_MODULE_0__functions__["d" /* isNode */] && (!arrayIndexOfSupport || !postMessageSupport)) {
+    throw new Error('Sorry, the Vimeo Player API is not available in this browser.');
+}
+
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {(function (exports) {'use strict';
+  //shared pointer
+  var i;
+  //shortcuts
+  var defineProperty = Object.defineProperty, is = function(a,b) { return (a === b) || (a !== a && b !== b) };
+
+
+  //Polyfill global objects
+  if (typeof WeakMap == 'undefined') {
+    exports.WeakMap = createCollection({
+      // WeakMap#delete(key:void*):boolean
+      'delete': sharedDelete,
+      // WeakMap#clear():
+      clear: sharedClear,
+      // WeakMap#get(key:void*):void*
+      get: sharedGet,
+      // WeakMap#has(key:void*):boolean
+      has: mapHas,
+      // WeakMap#set(key:void*, value:void*):void
+      set: sharedSet
+    }, true);
+  }
+
+  if (typeof Map == 'undefined' || typeof ((new Map).values) !== 'function' || !(new Map).values().next) {
+    exports.Map = createCollection({
+      // WeakMap#delete(key:void*):boolean
+      'delete': sharedDelete,
+      //:was Map#get(key:void*[, d3fault:void*]):void*
+      // Map#has(key:void*):boolean
+      has: mapHas,
+      // Map#get(key:void*):boolean
+      get: sharedGet,
+      // Map#set(key:void*, value:void*):void
+      set: sharedSet,
+      // Map#keys(void):Iterator
+      keys: sharedKeys,
+      // Map#values(void):Iterator
+      values: sharedValues,
+      // Map#entries(void):Iterator
+      entries: mapEntries,
+      // Map#forEach(callback:Function, context:void*):void ==> callback.call(context, key, value, mapObject) === not in specs`
+      forEach: sharedForEach,
+      // Map#clear():
+      clear: sharedClear
+    });
+  }
+
+  if (typeof Set == 'undefined' || typeof ((new Set).values) !== 'function' || !(new Set).values().next) {
+    exports.Set = createCollection({
+      // Set#has(value:void*):boolean
+      has: setHas,
+      // Set#add(value:void*):boolean
+      add: sharedAdd,
+      // Set#delete(key:void*):boolean
+      'delete': sharedDelete,
+      // Set#clear():
+      clear: sharedClear,
+      // Set#keys(void):Iterator
+      keys: sharedValues, // specs actually say "the same function object as the initial value of the values property"
+      // Set#values(void):Iterator
+      values: sharedValues,
+      // Set#entries(void):Iterator
+      entries: setEntries,
+      // Set#forEach(callback:Function, context:void*):void ==> callback.call(context, value, index) === not in specs
+      forEach: sharedForEach
+    });
+  }
+
+  if (typeof WeakSet == 'undefined') {
+    exports.WeakSet = createCollection({
+      // WeakSet#delete(key:void*):boolean
+      'delete': sharedDelete,
+      // WeakSet#add(value:void*):boolean
+      add: sharedAdd,
+      // WeakSet#clear():
+      clear: sharedClear,
+      // WeakSet#has(value:void*):boolean
+      has: setHas
+    }, true);
+  }
+
+
+  /**
+   * ES6 collection constructor
+   * @return {Function} a collection class
+   */
+  function createCollection(proto, objectOnly){
+    function Collection(a){
+      if (!this || this.constructor !== Collection) return new Collection(a);
+      this._keys = [];
+      this._values = [];
+      this._itp = []; // iteration pointers
+      this.objectOnly = objectOnly;
+
+      //parse initial iterable argument passed
+      if (a) init.call(this, a);
+    }
+
+    //define size for non object-only collections
+    if (!objectOnly) {
+      defineProperty(proto, 'size', {
+        get: sharedSize
+      });
+    }
+
+    //set prototype
+    proto.constructor = Collection;
+    Collection.prototype = proto;
+
+    return Collection;
+  }
+
+
+  /** parse initial iterable argument passed */
+  function init(a){
+    var i;
+    //init Set argument, like `[1,2,3,{}]`
+    if (this.add)
+      a.forEach(this.add, this);
+    //init Map argument like `[[1,2], [{}, 4]]`
+    else
+      a.forEach(function(a){this.set(a[0],a[1])}, this);
+  }
+
+
+  /** delete */
+  function sharedDelete(key) {
+    if (this.has(key)) {
+      this._keys.splice(i, 1);
+      this._values.splice(i, 1);
+      // update iteration pointers
+      this._itp.forEach(function(p) { if (i < p[0]) p[0]--; });
+    }
+    // Aurora here does it while Canary doesn't
+    return -1 < i;
+  };
+
+  function sharedGet(key) {
+    return this.has(key) ? this._values[i] : undefined;
+  }
+
+  function has(list, key) {
+    if (this.objectOnly && key !== Object(key))
+      throw new TypeError("Invalid value used as weak collection key");
+    //NaN or 0 passed
+    if (key != key || key === 0) for (i = list.length; i-- && !is(list[i], key);){}
+    else i = list.indexOf(key);
+    return -1 < i;
+  }
+
+  function setHas(value) {
+    return has.call(this, this._values, value);
+  }
+
+  function mapHas(value) {
+    return has.call(this, this._keys, value);
+  }
+
+  /** @chainable */
+  function sharedSet(key, value) {
+    this.has(key) ?
+      this._values[i] = value
+      :
+      this._values[this._keys.push(key) - 1] = value
+    ;
+    return this;
+  }
+
+  /** @chainable */
+  function sharedAdd(value) {
+    if (!this.has(value)) this._values.push(value);
+    return this;
+  }
+
+  function sharedClear() {
+    (this._keys || 0).length =
+    this._values.length = 0;
+  }
+
+  /** keys, values, and iterate related methods */
+  function sharedKeys() {
+    return sharedIterator(this._itp, this._keys);
+  }
+
+  function sharedValues() {
+    return sharedIterator(this._itp, this._values);
+  }
+
+  function mapEntries() {
+    return sharedIterator(this._itp, this._keys, this._values);
+  }
+
+  function setEntries() {
+    return sharedIterator(this._itp, this._values, this._values);
+  }
+
+  function sharedIterator(itp, array, array2) {
+    var p = [0], done = false;
+    itp.push(p);
+    return {
+      next: function() {
+        var v, k = p[0];
+        if (!done && k < array.length) {
+          v = array2 ? [array[k], array2[k]]: array[k];
+          p[0]++;
+        } else {
+          done = true;
+          itp.splice(itp.indexOf(p), 1);
+        }
+        return { done: done, value: v };
+      }
+    };
+  }
+
+  function sharedSize() {
+    return this._values.length;
+  }
+
+  function sharedForEach(callback, context) {
+    var it = this.entries();
+    for (;;) {
+      var r = it.next();
+      if (r.done) break;
+      callback.call(context, r.value[1], r.value[0], this);
+    }
+  }
+
+})(typeof exports != 'undefined' && typeof global != 'undefined' ? global : window );
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, setImmediate) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! Native Promise Only
+    v0.8.1 (c) Kyle Simpson
+    MIT License: http://getify.mit-license.org
+*/
+
+(function UMD(name,context,definition){
+	// special form of UMD for polyfilling across evironments
+	context[name] = context[name] || definition();
+	if (typeof module != "undefined" && module.exports) { module.exports = context[name]; }
+	else if (true) { !(__WEBPACK_AMD_DEFINE_RESULT__ = (function $AMD$(){ return context[name]; }).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)); }
+})("Promise",typeof global != "undefined" ? global : this,function DEF(){
+	/*jshint validthis:true */
+	"use strict";
+
+	var builtInProp, cycle, scheduling_queue,
+		ToString = Object.prototype.toString,
+		timer = (typeof setImmediate != "undefined") ?
+			function timer(fn) { return setImmediate(fn); } :
+			setTimeout
+	;
+
+	// dammit, IE8.
+	try {
+		Object.defineProperty({},"x",{});
+		builtInProp = function builtInProp(obj,name,val,config) {
+			return Object.defineProperty(obj,name,{
+				value: val,
+				writable: true,
+				configurable: config !== false
+			});
+		};
+	}
+	catch (err) {
+		builtInProp = function builtInProp(obj,name,val) {
+			obj[name] = val;
+			return obj;
+		};
+	}
+
+	// Note: using a queue instead of array for efficiency
+	scheduling_queue = (function Queue() {
+		var first, last, item;
+
+		function Item(fn,self) {
+			this.fn = fn;
+			this.self = self;
+			this.next = void 0;
+		}
+
+		return {
+			add: function add(fn,self) {
+				item = new Item(fn,self);
+				if (last) {
+					last.next = item;
+				}
+				else {
+					first = item;
+				}
+				last = item;
+				item = void 0;
+			},
+			drain: function drain() {
+				var f = first;
+				first = last = cycle = void 0;
+
+				while (f) {
+					f.fn.call(f.self);
+					f = f.next;
+				}
+			}
+		};
+	})();
+
+	function schedule(fn,self) {
+		scheduling_queue.add(fn,self);
+		if (!cycle) {
+			cycle = timer(scheduling_queue.drain);
+		}
+	}
+
+	// promise duck typing
+	function isThenable(o) {
+		var _then, o_type = typeof o;
+
+		if (o != null &&
+			(
+				o_type == "object" || o_type == "function"
+			)
+		) {
+			_then = o.then;
+		}
+		return typeof _then == "function" ? _then : false;
+	}
+
+	function notify() {
+		for (var i=0; i<this.chain.length; i++) {
+			notifyIsolated(
+				this,
+				(this.state === 1) ? this.chain[i].success : this.chain[i].failure,
+				this.chain[i]
+			);
+		}
+		this.chain.length = 0;
+	}
+
+	// NOTE: This is a separate function to isolate
+	// the `try..catch` so that other code can be
+	// optimized better
+	function notifyIsolated(self,cb,chain) {
+		var ret, _then;
+		try {
+			if (cb === false) {
+				chain.reject(self.msg);
+			}
+			else {
+				if (cb === true) {
+					ret = self.msg;
+				}
+				else {
+					ret = cb.call(void 0,self.msg);
+				}
+
+				if (ret === chain.promise) {
+					chain.reject(TypeError("Promise-chain cycle"));
+				}
+				else if (_then = isThenable(ret)) {
+					_then.call(ret,chain.resolve,chain.reject);
+				}
+				else {
+					chain.resolve(ret);
+				}
+			}
+		}
+		catch (err) {
+			chain.reject(err);
+		}
+	}
+
+	function resolve(msg) {
+		var _then, self = this;
+
+		// already triggered?
+		if (self.triggered) { return; }
+
+		self.triggered = true;
+
+		// unwrap
+		if (self.def) {
+			self = self.def;
+		}
+
+		try {
+			if (_then = isThenable(msg)) {
+				schedule(function(){
+					var def_wrapper = new MakeDefWrapper(self);
+					try {
+						_then.call(msg,
+							function $resolve$(){ resolve.apply(def_wrapper,arguments); },
+							function $reject$(){ reject.apply(def_wrapper,arguments); }
+						);
+					}
+					catch (err) {
+						reject.call(def_wrapper,err);
+					}
+				})
+			}
+			else {
+				self.msg = msg;
+				self.state = 1;
+				if (self.chain.length > 0) {
+					schedule(notify,self);
+				}
+			}
+		}
+		catch (err) {
+			reject.call(new MakeDefWrapper(self),err);
+		}
+	}
+
+	function reject(msg) {
+		var self = this;
+
+		// already triggered?
+		if (self.triggered) { return; }
+
+		self.triggered = true;
+
+		// unwrap
+		if (self.def) {
+			self = self.def;
+		}
+
+		self.msg = msg;
+		self.state = 2;
+		if (self.chain.length > 0) {
+			schedule(notify,self);
+		}
+	}
+
+	function iteratePromises(Constructor,arr,resolver,rejecter) {
+		for (var idx=0; idx<arr.length; idx++) {
+			(function IIFE(idx){
+				Constructor.resolve(arr[idx])
+				.then(
+					function $resolver$(msg){
+						resolver(idx,msg);
+					},
+					rejecter
+				);
+			})(idx);
+		}
+	}
+
+	function MakeDefWrapper(self) {
+		this.def = self;
+		this.triggered = false;
+	}
+
+	function MakeDef(self) {
+		this.promise = self;
+		this.state = 0;
+		this.triggered = false;
+		this.chain = [];
+		this.msg = void 0;
+	}
+
+	function Promise(executor) {
+		if (typeof executor != "function") {
+			throw TypeError("Not a function");
+		}
+
+		if (this.__NPO__ !== 0) {
+			throw TypeError("Not a promise");
+		}
+
+		// instance shadowing the inherited "brand"
+		// to signal an already "initialized" promise
+		this.__NPO__ = 1;
+
+		var def = new MakeDef(this);
+
+		this["then"] = function then(success,failure) {
+			var o = {
+				success: typeof success == "function" ? success : true,
+				failure: typeof failure == "function" ? failure : false
+			};
+			// Note: `then(..)` itself can be borrowed to be used against
+			// a different promise constructor for making the chained promise,
+			// by substituting a different `this` binding.
+			o.promise = new this.constructor(function extractChain(resolve,reject) {
+				if (typeof resolve != "function" || typeof reject != "function") {
+					throw TypeError("Not a function");
+				}
+
+				o.resolve = resolve;
+				o.reject = reject;
+			});
+			def.chain.push(o);
+
+			if (def.state !== 0) {
+				schedule(notify,def);
+			}
+
+			return o.promise;
+		};
+		this["catch"] = function $catch$(failure) {
+			return this.then(void 0,failure);
+		};
+
+		try {
+			executor.call(
+				void 0,
+				function publicResolve(msg){
+					resolve.call(def,msg);
+				},
+				function publicReject(msg) {
+					reject.call(def,msg);
+				}
+			);
+		}
+		catch (err) {
+			reject.call(def,err);
+		}
+	}
+
+	var PromisePrototype = builtInProp({},"constructor",Promise,
+		/*configurable=*/false
+	);
+
+	// Note: Android 4 cannot use `Object.defineProperty(..)` here
+	Promise.prototype = PromisePrototype;
+
+	// built-in "brand" to signal an "uninitialized" promise
+	builtInProp(PromisePrototype,"__NPO__",0,
+		/*configurable=*/false
+	);
+
+	builtInProp(Promise,"resolve",function Promise$resolve(msg) {
+		var Constructor = this;
+
+		// spec mandated checks
+		// note: best "isPromise" check that's practical for now
+		if (msg && typeof msg == "object" && msg.__NPO__ === 1) {
+			return msg;
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			resolve(msg);
+		});
+	});
+
+	builtInProp(Promise,"reject",function Promise$reject(msg) {
+		return new this(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			reject(msg);
+		});
+	});
+
+	builtInProp(Promise,"all",function Promise$all(arr) {
+		var Constructor = this;
+
+		// spec mandated checks
+		if (ToString.call(arr) != "[object Array]") {
+			return Constructor.reject(TypeError("Not an array"));
+		}
+		if (arr.length === 0) {
+			return Constructor.resolve([]);
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			var len = arr.length, msgs = Array(len), count = 0;
+
+			iteratePromises(Constructor,arr,function resolver(idx,msg) {
+				msgs[idx] = msg;
+				if (++count === len) {
+					resolve(msgs);
+				}
+			},reject);
+		});
+	});
+
+	builtInProp(Promise,"race",function Promise$race(arr) {
+		var Constructor = this;
+
+		// spec mandated checks
+		if (ToString.call(arr) != "[object Array]") {
+			return Constructor.reject(TypeError("Not an array"));
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			iteratePromises(Constructor,arr,function resolver(idx,msg){
+				resolve(msg);
+			},reject);
+		});
+	});
+
+	return Promise;
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(13).setImmediate))
+
+/***/ }),
+/* 59 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["c"] = getOEmbedParameters;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getOEmbedData;
+/* harmony export (immutable) */ __webpack_exports__["a"] = createEmbed;
+/* harmony export (immutable) */ __webpack_exports__["d"] = initializeEmbeds;
+/* harmony export (immutable) */ __webpack_exports__["e"] = resizeEmbeds;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__functions__ = __webpack_require__(11);
+/**
+ * @module lib/embed
+ */
+
+
+
+const oEmbedParameters = [
+    'autopause',
+    'autoplay',
+    'background',
+    'byline',
+    'color',
+    'height',
+    'id',
+    'loop',
+    'maxheight',
+    'maxwidth',
+    'muted',
+    'playsinline',
+    'portrait',
+    'responsive',
+    'speed',
+    'title',
+    'transparent',
+    'url',
+    'width'
+];
+
+/**
+ * Get the 'data-vimeo'-prefixed attributes from an element as an object.
+ *
+ * @param {HTMLElement} element The element.
+ * @param {Object} [defaults={}] The default values to use.
+ * @return {Object<string, string>}
+ */
+function getOEmbedParameters(element, defaults = {}) {
+    return oEmbedParameters.reduce((params, param) => {
+        const value = element.getAttribute(`data-vimeo-${param}`);
+
+        if (value || value === '') {
+            params[param] = value === '' ? 1 : value;
+        }
+
+        return params;
+    }, defaults);
+}
+
+/**
+ * Make an oEmbed call for the specified URL.
+ *
+ * @param {string} videoUrl The vimeo.com url for the video.
+ * @param {Object} [params] Parameters to pass to oEmbed.
+ * @return {Promise}
+ */
+function getOEmbedData(videoUrl, params = {}) {
+    return new Promise((resolve, reject) => {
+        if (!Object(__WEBPACK_IMPORTED_MODULE_0__functions__["e" /* isVimeoUrl */])(videoUrl)) {
+            throw new TypeError(`“${videoUrl}” is not a vimeo.com url.`);
+        }
+
+        let url = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(videoUrl)}`;
+
+        for (const param in params) {
+            if (params.hasOwnProperty(param)) {
+                url += `&${param}=${encodeURIComponent(params[param])}`;
+            }
+        }
+
+        const xhr = 'XDomainRequest' in window ? new XDomainRequest() : new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        xhr.onload = function() {
+            if (xhr.status === 404) {
+                reject(new Error(`“${videoUrl}” was not found.`));
+                return;
+            }
+
+            if (xhr.status === 403) {
+                reject(new Error(`“${videoUrl}” is not embeddable.`));
+                return;
+            }
+
+            try {
+                const json = JSON.parse(xhr.responseText);
+                resolve(json);
+            }
+            catch (error) {
+                reject(error);
+            }
+        };
+
+        xhr.onerror = function() {
+            const status = xhr.status ? ` (${xhr.status})` : '';
+            reject(new Error(`There was an error fetching the embed code from Vimeo${status}.`));
+        };
+
+        xhr.send();
+    });
+}
+
+/**
+ * Create an embed from oEmbed data inside an element.
+ *
+ * @param {object} data The oEmbed data.
+ * @param {HTMLElement} element The element to put the iframe in.
+ * @return {HTMLIFrameElement} The iframe embed.
+ */
+function createEmbed({ html }, element) {
+    if (!element) {
+        throw new TypeError('An element must be provided');
+    }
+
+    if (element.getAttribute('data-vimeo-initialized') !== null) {
+        return element.querySelector('iframe');
+    }
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+
+    element.appendChild(div.firstChild);
+    element.setAttribute('data-vimeo-initialized', 'true');
+
+    return element.querySelector('iframe');
+}
+
+/**
+ * Initialize all embeds within a specific element
+ *
+ * @param {HTMLElement} [parent=document] The parent element.
+ * @return {void}
+ */
+function initializeEmbeds(parent = document) {
+    const elements = [].slice.call(parent.querySelectorAll('[data-vimeo-id], [data-vimeo-url]'));
+
+    const handleError = (error) => {
+        if ('console' in window && console.error) {
+            console.error(`There was an error creating an embed: ${error}`);
+        }
+    };
+
+    elements.forEach((element) => {
+        try {
+            // Skip any that have data-vimeo-defer
+            if (element.getAttribute('data-vimeo-defer') !== null) {
+                return;
+            }
+
+            const params = getOEmbedParameters(element);
+            const url = Object(__WEBPACK_IMPORTED_MODULE_0__functions__["b" /* getVimeoUrl */])(params);
+
+            getOEmbedData(url, params).then((data) => {
+                return createEmbed(data, element);
+            }).catch(handleError);
+        }
+        catch (error) {
+            handleError(error);
+        }
+    });
+}
+
+/**
+ * Resize embeds when messaged by the player.
+ *
+ * @param {HTMLElement} [parent=document] The parent element.
+ * @return {void}
+ */
+function resizeEmbeds(parent = document) {
+    const onMessage = (event) => {
+        if (!Object(__WEBPACK_IMPORTED_MODULE_0__functions__["e" /* isVimeoUrl */])(event.origin)) {
+            return;
+        }
+
+        if (!event.data || event.data.event !== 'spacechange') {
+            return;
+        }
+
+        const iframes = parent.querySelectorAll('iframe');
+
+        console.log('diasadad', iframes)
+
+        for (let i = 0; i < iframes.length; i++) {
+            if (iframes[i].contentWindow !== event.source) {
+                continue;
+            }
+
+            const space = iframes[i].parentElement;
+
+            if (space && space.className.indexOf('vimeo-space') !== -1) {
+              console.log('siamo qui', space);
+                // space.style.paddingBottom = `${event.data.data[0].bottom}px`;
+            }
+
+            break;
+        }
+    };
+
+    if (window.addEventListener) {
+        window.addEventListener('message', onMessage, false);
+    }
+    else if (window.attachEvent) {
+        window.attachEvent('onmessage', onMessage);
+    }
+}
+
+
+/***/ }),
+/* 60 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseMessageData;
+/* harmony export (immutable) */ __webpack_exports__["b"] = postMessage;
+/* harmony export (immutable) */ __webpack_exports__["c"] = processData;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__callbacks__ = __webpack_require__(18);
+/**
+ * @module lib/postmessage
+ */
+
+
+
+/**
+ * Parse a message received from postMessage.
+ *
+ * @param {*} data The data received from postMessage.
+ * @return {object}
+ */
+function parseMessageData(data) {
+    if (typeof data === 'string') {
+        data = JSON.parse(data);
+    }
+
+    return data;
+}
+
+/**
+ * Post a message to the specified target.
+ *
+ * @param {Player} player The player object to use.
+ * @param {string} method The API method to call.
+ * @param {object} params The parameters to send to the player.
+ * @return {void}
+ */
+function postMessage(player, method, params) {
+    if (!player.element.contentWindow || !player.element.contentWindow.postMessage) {
+        return;
+    }
+
+    let message = {
+        method
+    };
+
+    if (params !== undefined) {
+        message.value = params;
+    }
+
+    // IE 8 and 9 do not support passing messages, so stringify them
+    const ieVersion = parseFloat(navigator.userAgent.toLowerCase().replace(/^.*msie (\d+).*$/, '$1'));
+    if (ieVersion >= 8 && ieVersion < 10) {
+        message = JSON.stringify(message);
+    }
+
+    player.element.contentWindow.postMessage(message, player.origin);
+}
+
+/**
+ * Parse the data received from a message event.
+ *
+ * @param {Player} player The player that received the message.
+ * @param {(Object|string)} data The message data. Strings will be parsed into JSON.
+ * @return {void}
+ */
+function processData(player, data) {
+    data = parseMessageData(data);
+    let callbacks = [];
+    let param;
+
+    if (data.event) {
+        if (data.event === 'error') {
+            const promises = Object(__WEBPACK_IMPORTED_MODULE_0__callbacks__["a" /* getCallbacks */])(player, data.data.method);
+
+            promises.forEach((promise) => {
+                const error = new Error(data.data.message);
+                error.name = data.data.name;
+
+                promise.reject(error);
+                Object(__WEBPACK_IMPORTED_MODULE_0__callbacks__["b" /* removeCallback */])(player, data.data.method, promise);
+            });
+        }
+
+        callbacks = Object(__WEBPACK_IMPORTED_MODULE_0__callbacks__["a" /* getCallbacks */])(player, `event:${data.event}`);
+        param = data.data;
+    }
+    else if (data.method) {
+        const callback = Object(__WEBPACK_IMPORTED_MODULE_0__callbacks__["c" /* shiftCallbacks */])(player, data.method);
+
+        if (callback) {
+            callbacks.push(callback);
+            param = data.value;
+        }
+    }
+
+    callbacks.forEach((callback) => {
+        try {
+            if (typeof callback === 'function') {
+                callback.call(player, param);
+                return;
+            }
+
+            callback.resolve(param);
+        }
+        catch (e) {
+            // empty
+        }
+    });
+}
+
+
+/***/ }),
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("main", [
+  return _c("div", { attrs: { id: "hero-wrapper" } }, [
     _c("div", { staticClass: "action" }, [
       _c("div", { staticClass: "row" }, [
         _c(
@@ -40342,19 +42554,19 @@ if (false) {
 }
 
 /***/ }),
-/* 54 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(136)
+  __webpack_require__(63)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(57)
+var __vue_script__ = __webpack_require__(65)
 /* template */
-var __vue_template__ = __webpack_require__(138)
+var __vue_template__ = __webpack_require__(97)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -40393,9 +42605,47 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 55 */,
-/* 56 */,
-/* 57 */
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(64);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("31d6a5be", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-48b2be82\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Works.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-48b2be82\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Works.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "", ""]);
+
+// exports
+
+
+/***/ }),
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40405,11 +42655,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _GridEl = __webpack_require__(62);
+var _GridEl = __webpack_require__(66);
 
 var _GridEl2 = _interopRequireDefault(_GridEl);
 
-var _axios = __webpack_require__(18);
+var _axios = __webpack_require__(21);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -40444,23 +42694,19 @@ exports.default = {
 };
 
 /***/ }),
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(63)
+  __webpack_require__(67)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(65)
+var __vue_script__ = __webpack_require__(69)
 /* template */
-var __vue_template__ = __webpack_require__(74)
+var __vue_template__ = __webpack_require__(78)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -40499,17 +42745,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 63 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(64);
+var content = __webpack_require__(68);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("31f8fdd2", content, false, {});
+var update = __webpack_require__(4)("31f8fdd2", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -40525,10 +42771,10 @@ if(false) {
 }
 
 /***/ }),
-/* 64 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -40539,7 +42785,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 
 /***/ }),
-/* 65 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40549,11 +42795,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _lodash = __webpack_require__(16);
+var _lodash = __webpack_require__(19);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _MediaHover = __webpack_require__(67);
+var _MediaHover = __webpack_require__(71);
 
 var _MediaHover2 = _interopRequireDefault(_MediaHover);
 
@@ -40648,7 +42894,7 @@ exports.default = {
             });
         },
         resizeCol: function resizeCol() {
-            if (this.routeIsOpen) {
+            if (this.routeIsOpen && this.$refs.col) {
                 var col = this.$refs.col.offsetWidth;
                 this.mediaSize = col - 30;
             }
@@ -40659,14 +42905,14 @@ exports.default = {
 
         this.resizeCol();
         this.loadAnimation();
-        window.addEventListener('resize', _lodash2.default.debounce(function () {
+        window.addEventListener('resize', function () {
             _this.resizeCol();
-        }, 250));
+        });
     }
 };
 
 /***/ }),
-/* 66 */
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -40694,19 +42940,19 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 67 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(68)
+  __webpack_require__(72)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(70)
+var __vue_script__ = __webpack_require__(74)
 /* template */
-var __vue_template__ = __webpack_require__(73)
+var __vue_template__ = __webpack_require__(77)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -40745,17 +42991,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 68 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(69);
+var content = __webpack_require__(73);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("627b91ec", content, false, {});
+var update = __webpack_require__(4)("627b91ec", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -40771,10 +43017,10 @@ if(false) {
 }
 
 /***/ }),
-/* 69 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -40785,7 +43031,7 @@ exports.push([module.i, "\n.media-hover {\n  position: relative;\n  cursor: poin
 
 
 /***/ }),
-/* 70 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40797,15 +43043,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _gsap = __webpack_require__(6);
 
-var _MorphSVGPlugin = __webpack_require__(14);
+var _MorphSVGPlugin = __webpack_require__(16);
 
 var _MorphSVGPlugin2 = _interopRequireDefault(_MorphSVGPlugin);
 
-var _Draggable = __webpack_require__(71);
+var _Draggable = __webpack_require__(75);
 
 var _Draggable2 = _interopRequireDefault(_Draggable);
 
-var _GSDevTools = __webpack_require__(72);
+var _GSDevTools = __webpack_require__(76);
 
 var _GSDevTools2 = _interopRequireDefault(_GSDevTools);
 
@@ -41008,7 +43254,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 71 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -43494,11 +45740,11 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
 	if (typeof(module) !== "undefined" && module.exports) { //node
-		__webpack_require__(4);
+		__webpack_require__(1);
 		__webpack_require__(9);
 		module.exports = getGlobal();
 	} else if (true) { //AMD
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -43507,7 +45753,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 72 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -44713,12 +46959,12 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
 	if (typeof(module) !== "undefined" && module.exports) { //node
-		__webpack_require__(4);
-		__webpack_require__(17);
+		__webpack_require__(1);
+		__webpack_require__(20);
 		__webpack_require__(9);
 		module.exports = getGlobal();
 	} else if (true) { //AMD
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4), __webpack_require__(17), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(20), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -47270,7 +49516,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 73 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -47379,7 +49625,7 @@ if (false) {
 }
 
 /***/ }),
-/* 74 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -47452,16 +49698,16 @@ if (false) {
 }
 
 /***/ }),
-/* 75 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
-var bind = __webpack_require__(19);
-var Axios = __webpack_require__(77);
-var defaults = __webpack_require__(11);
+var utils = __webpack_require__(2);
+var bind = __webpack_require__(22);
+var Axios = __webpack_require__(81);
+var defaults = __webpack_require__(12);
 
 /**
  * Create an instance of Axios
@@ -47494,15 +49740,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(23);
-axios.CancelToken = __webpack_require__(91);
-axios.isCancel = __webpack_require__(22);
+axios.Cancel = __webpack_require__(26);
+axios.CancelToken = __webpack_require__(95);
+axios.isCancel = __webpack_require__(25);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(92);
+axios.spread = __webpack_require__(96);
 
 module.exports = axios;
 
@@ -47511,7 +49757,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 76 */
+/* 80 */
 /***/ (function(module, exports) {
 
 /*!
@@ -47538,18 +49784,18 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 77 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(11);
-var utils = __webpack_require__(5);
-var InterceptorManager = __webpack_require__(86);
-var dispatchRequest = __webpack_require__(87);
-var isAbsoluteURL = __webpack_require__(89);
-var combineURLs = __webpack_require__(90);
+var defaults = __webpack_require__(12);
+var utils = __webpack_require__(2);
+var InterceptorManager = __webpack_require__(90);
+var dispatchRequest = __webpack_require__(91);
+var isAbsoluteURL = __webpack_require__(93);
+var combineURLs = __webpack_require__(94);
 
 /**
  * Create a new instance of Axios
@@ -47631,13 +49877,13 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 78 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(2);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -47650,13 +49896,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 79 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(21);
+var createError = __webpack_require__(24);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -47683,7 +49929,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 80 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47711,13 +49957,13 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 81 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(2);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -47786,13 +50032,13 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 82 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(2);
 
 /**
  * Parse headers into an object
@@ -47830,13 +50076,13 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 83 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(2);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -47905,7 +50151,7 @@ module.exports = (
 
 
 /***/ }),
-/* 84 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47948,13 +50194,13 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 85 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(2);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -48008,13 +50254,13 @@ module.exports = (
 
 
 /***/ }),
-/* 86 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(2);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -48067,16 +50313,16 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 87 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
-var transformData = __webpack_require__(88);
-var isCancel = __webpack_require__(22);
-var defaults = __webpack_require__(11);
+var utils = __webpack_require__(2);
+var transformData = __webpack_require__(92);
+var isCancel = __webpack_require__(25);
+var defaults = __webpack_require__(12);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -48153,13 +50399,13 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 88 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(5);
+var utils = __webpack_require__(2);
 
 /**
  * Transform the data for a request or a response
@@ -48180,7 +50426,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 89 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48201,7 +50447,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 90 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48222,13 +50468,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 91 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(23);
+var Cancel = __webpack_require__(26);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -48286,7 +50532,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 92 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48320,21 +50566,45 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 93 */,
-/* 94 */,
-/* 95 */
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "row", attrs: { id: "works" } },
+    _vm._l(_vm.posts, function(post, key) {
+      return _c("grid-el", { key: key, attrs: { post: post, counter: key } })
+    })
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-48b2be82", module.exports)
+  }
+}
+
+/***/ }),
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(96)
+  __webpack_require__(99)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(98)
+var __vue_script__ = __webpack_require__(101)
 /* template */
-var __vue_template__ = __webpack_require__(99)
+var __vue_template__ = __webpack_require__(102)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -48373,17 +50643,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 96 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(97);
+var content = __webpack_require__(100);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("dfec12b8", content, false, {});
+var update = __webpack_require__(4)("dfec12b8", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -48399,21 +50669,21 @@ if(false) {
 }
 
 /***/ }),
-/* 97 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\n.container[data-v-49c1ab4a] {\n  height: calc(100vh - 92px);\n}\n", ""]);
+exports.push([module.i, "", ""]);
 
 // exports
 
 
 /***/ }),
-/* 98 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48433,41 +50703,33 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
-//
 
 exports.default = {};
 
 /***/ }),
-/* 99 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "row" }, [
     _c(
       "div",
-      { staticClass: "row h-100 justify-content-center align-items-center" },
+      { staticClass: "col text-center p-5" },
       [
+        _c("h1", { staticClass: "text-default" }, [_vm._v("Ciao!")]),
+        _vm._v(" "),
+        _vm._m(0),
+        _vm._v(" "),
         _c(
-          "div",
-          { staticClass: "col text-center p-5" },
-          [
-            _c("h1", { staticClass: "text-default" }, [_vm._v("Ciao!")]),
-            _vm._v(" "),
-            _vm._m(0),
-            _vm._v(" "),
-            _c(
-              "router-link",
-              { staticClass: "btn btn-primary", attrs: { to: "/cv" } },
-              [_vm._v("Download CV")]
-            )
-          ],
-          1
+          "router-link",
+          { staticClass: "btn btn-primary", attrs: { to: "/cv" } },
+          [_vm._v("Download CV")]
         )
-      ]
+      ],
+      1
     )
   ])
 }
@@ -48478,11 +50740,11 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("p", { staticClass: "pt-3 pb-5 text-default" }, [
       _vm._v(
-        "\n                I’m an Art Director, based in Milan, who ranges from motion to graphic design."
+        "\n            I’m an Art Director, based in Milan, who ranges from motion to graphic design."
       ),
       _c("br"),
       _vm._v(
-        " If you think my work can benefit you, I'll be happy to talk to you.\n            "
+        " If you think my work can benefit you, I'll be happy to talk to you.\n        "
       )
     ])
   }
@@ -48497,19 +50759,19 @@ if (false) {
 }
 
 /***/ }),
-/* 100 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(101)
+  __webpack_require__(104)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(103)
+var __vue_script__ = __webpack_require__(106)
 /* template */
-var __vue_template__ = __webpack_require__(105)
+var __vue_template__ = __webpack_require__(108)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -48548,17 +50810,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 101 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(102);
+var content = __webpack_require__(105);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("57614aea", content, false, {});
+var update = __webpack_require__(4)("57614aea", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -48574,21 +50836,21 @@ if(false) {
 }
 
 /***/ }),
-/* 102 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\n.container[data-v-3afe55c6] {\n  height: calc(100vh - 92px);\n}\ninput[data-v-3afe55c6],\ntextarea[data-v-3afe55c6] {\n  border-left: none !important;\n  border-right: none !important;\n  border-top: none !important;\n  border-bottom: 2px solid #1e1f1c;\n}\n#contact-form[data-v-3afe55c6] {\n  display: none;\n}\n.form-group[data-v-3afe55c6] {\n  opacity: 0;\n}\n#close[data-v-3afe55c6] {\n  top: -20px;\n  position: relative;\n}\n", ""]);
+exports.push([module.i, "\ninput[data-v-3afe55c6],\ntextarea[data-v-3afe55c6] {\n  border-left: none !important;\n  border-right: none !important;\n  border-top: none !important;\n  border-bottom: 2px solid #1e1f1c;\n}\n#contact-form[data-v-3afe55c6] {\n  display: none;\n}\n.form-group[data-v-3afe55c6] {\n  opacity: 0;\n}\n#close[data-v-3afe55c6] {\n  top: -20px;\n  position: relative;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 103 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48600,14 +50862,12 @@ Object.defineProperty(exports, "__esModule", {
 
 var _gsap = __webpack_require__(6);
 
-var _CustomEase = __webpack_require__(104);
+var _CustomEase = __webpack_require__(107);
 
 var _CustomEase2 = _interopRequireDefault(_CustomEase);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//
-//
 //
 //
 //
@@ -48733,7 +50993,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 104 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -49123,10 +51383,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
 	if (typeof(module) !== "undefined" && module.exports) { //node
-		__webpack_require__(4);
+		__webpack_require__(1);
 		module.exports = getGlobal();
 	} else if (true) { //AMD
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (getGlobal),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -49135,86 +51395,84 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 105 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container " }, [
-    _c("div", { staticClass: "row h-100 align-items-center" }, [
-      _c("div", { staticClass: "col " }, [
-        _c(
-          "div",
-          {
-            ref: "address",
-            staticClass: "row justify-content-center",
-            attrs: { id: "address" }
-          },
-          [_vm._m(0)]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            ref: "show_contact_btn",
-            staticClass: "row justify-content-center",
-            attrs: { id: "show-contact" }
-          },
-          [
-            _c("div", { staticClass: "col-12 pb-5" }, [
-              _c("div", { staticClass: "d-flex justify-content-around" }, [
-                _c(
-                  "a",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { href: "#" },
-                    on: { click: _vm.showContact }
-                  },
-                  [_vm._v("Send a message")]
-                )
-              ])
+  return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "col" }, [
+      _c(
+        "div",
+        {
+          ref: "address",
+          staticClass: "row justify-content-center",
+          attrs: { id: "address" }
+        },
+        [_vm._m(0)]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          ref: "show_contact_btn",
+          staticClass: "row justify-content-center",
+          attrs: { id: "show-contact" }
+        },
+        [
+          _c("div", { staticClass: "col-12 pb-5" }, [
+            _c("div", { staticClass: "d-flex justify-content-around" }, [
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { href: "#" },
+                  on: { click: _vm.showContact }
+                },
+                [_vm._v("Send a message")]
+              )
             ])
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "form",
-          {
-            ref: "contact_form",
-            attrs: { id: "contact-form", action: "", method: "" }
-          },
-          [
-            _c("div", { staticClass: "row justify-content-center" }, [
-              _c("div", { staticClass: "col-md-6" }, [
-                _c(
-                  "a",
-                  {
-                    ref: "close",
-                    staticClass: "close",
-                    attrs: { id: "close", href: "#" },
-                    on: { click: _vm.closeContact }
-                  },
-                  [
-                    _c("span", { attrs: { "aria-hidden": "true" } }, [
-                      _vm._v("×")
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _vm._m(1),
-                _vm._v(" "),
-                _vm._m(2),
-                _vm._v(" "),
-                _vm._m(3),
-                _vm._v(" "),
-                _vm._m(4)
-              ])
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          ref: "contact_form",
+          attrs: { id: "contact-form", action: "", method: "" }
+        },
+        [
+          _c("div", { staticClass: "row justify-content-center" }, [
+            _c("div", { staticClass: "col-md-6" }, [
+              _c(
+                "a",
+                {
+                  ref: "close",
+                  staticClass: "close",
+                  attrs: { id: "close", href: "#" },
+                  on: { click: _vm.closeContact }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×")
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _vm._m(1),
+              _vm._v(" "),
+              _vm._m(2),
+              _vm._v(" "),
+              _vm._m(3),
+              _vm._v(" "),
+              _vm._m(4)
             ])
-          ]
-        )
-      ])
+          ])
+        ]
+      )
     ])
   ])
 }
@@ -49323,19 +51581,19 @@ if (false) {
 }
 
 /***/ }),
-/* 106 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(107)
+  __webpack_require__(110)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(109)
+var __vue_script__ = __webpack_require__(112)
 /* template */
-var __vue_template__ = __webpack_require__(110)
+var __vue_template__ = __webpack_require__(113)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -49374,17 +51632,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 107 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(108);
+var content = __webpack_require__(111);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("68606a44", content, false, {});
+var update = __webpack_require__(4)("68606a44", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -49400,10 +51658,10 @@ if(false) {
 }
 
 /***/ }),
-/* 108 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -49414,7 +51672,7 @@ exports.push([module.i, "", ""]);
 
 
 /***/ }),
-/* 109 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49430,14 +51688,12 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
-//
 
 
 exports.default = {};
 
 /***/ }),
-/* 110 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -49451,14 +51707,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col py-5" }, [
-          _c("img", {
-            staticClass: "img-fluid",
-            attrs: { src: "/content/CV_IsabellaFornasiero_2017.jpg" }
-          })
-        ])
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col py-5" }, [
+        _c("img", {
+          staticClass: "img-fluid",
+          attrs: { src: "/content/CV_IsabellaFornasiero_2017.jpg" }
+        })
       ])
     ])
   }
@@ -49473,19 +51727,19 @@ if (false) {
 }
 
 /***/ }),
-/* 111 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(112)
+  __webpack_require__(115)
 }
-var normalizeComponent = __webpack_require__(3)
+var normalizeComponent = __webpack_require__(5)
 /* script */
-var __vue_script__ = __webpack_require__(114)
+var __vue_script__ = __webpack_require__(117)
 /* template */
-var __vue_template__ = __webpack_require__(115)
+var __vue_template__ = __webpack_require__(118)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -49524,23 +51778,23 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 112 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(113);
+var content = __webpack_require__(116);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("39d77944", content, false, {});
+var update = __webpack_require__(4)("527514c4", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0b98b735\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Work.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0b98b735\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Work.vue");
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0b98b735\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Work.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0b98b735\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Work.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -49550,21 +51804,21 @@ if(false) {
 }
 
 /***/ }),
-/* 113 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\n#hero-img[data-v-0b98b735] {\n    min-height: 140px;\n    background-size: cover !important;\n    background-position: center center !important;\n    -webkit-box-shadow: inset 0 0 5rem rgba(0, 0, 0, .05);\n            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .05);\n}\n.hero_img[data-v-0b98b735] {\n    overflow: hidden;\n    min-height: 100px;\n}\n", ""]);
+exports.push([module.i, "\n.main-container[data-v-0b98b735] {\n  width: 100%;\n}\n.main-container #hero-img[data-v-0b98b735] {\n    min-height: 140px;\n    background-size: cover !important;\n    background-position: center center !important;\n    -webkit-box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.05);\n            box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.05);\n    position: absolute;\n    left: 0;\n    top: 72px;\n}\n.main-container .hero_img[data-v-0b98b735] {\n    overflow: hidden;\n    min-height: 100px;\n}\n.main-container > article > #title[data-v-0b98b735] {\n    font-size: 3.75rem;\n    line-height: 3;\n    margin-bottom: 0;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 114 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49574,30 +51828,43 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _axios = __webpack_require__(18);
+var _axios = __webpack_require__(21);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _lodash = __webpack_require__(16);
+var _lodash = __webpack_require__(19);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _jquery = __webpack_require__(7);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
     data: function data() {
         return {
-            article: {},
-            loaded: false
+            article: {}
         };
     },
     methods: {
         resizeFeatured: function resizeFeatured() {
-            this.$refs['hero-img'].style.height = window.innerHeight - this.$refs['title'].offsetHeight - this.$refs['divider'].offsetHeight - 48 - 33 - 66 + 'px';
+            if (this.$refs.heroImg && this.$refs.article) {
+                var height = window.innerHeight;
+                var gold = 1.618;
+                var imgHeight = height / gold - 64;
+                this.$refs.heroImg.style.height = imgHeight + 'px';
+                this.$refs.article.style.marginTop = imgHeight + 'px';
+            }
         }
     },
     mounted: function mounted() {
@@ -49614,20 +51881,10 @@ exports.default = {
             _this.resizeFeatured();
         }, 250));
     }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+};
 
 /***/ }),
-/* 115 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -49636,13 +51893,13 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "main-container" }, [
     _c("div", {
-      ref: "hero-img",
+      ref: "heroImg",
       staticClass: "w-100",
       style: "background-image: url(" + _vm.article.featured_img + ");",
       attrs: { id: "hero-img" }
     }),
     _vm._v(" "),
-    _c("article", { ref: "container", staticClass: "container pt-5" }, [
+    _c("article", { ref: "article" }, [
       _c(
         "h1",
         { ref: "title", staticClass: "text-default", attrs: { id: "title" } },
@@ -49670,2282 +51927,10 @@ if (false) {
 }
 
 /***/ }),
-/* 116 */
+/* 119 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
-/***/ }),
-/* 117 */,
-/* 118 */,
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["getOEmbedParameters"] = getOEmbedParameters;
-/* harmony export (immutable) */ __webpack_exports__["getOEmbedData"] = getOEmbedData;
-/* harmony export (immutable) */ __webpack_exports__["createEmbed"] = createEmbed;
-/* harmony export (immutable) */ __webpack_exports__["initializeEmbeds"] = initializeEmbeds;
-/* harmony export (immutable) */ __webpack_exports__["resizeEmbeds"] = resizeEmbeds;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__functions__ = __webpack_require__(123);
-/**
- * @module lib/embed
- */
-
-
-
-const oEmbedParameters = [
-    'autopause',
-    'autoplay',
-    'background',
-    'byline',
-    'color',
-    'height',
-    'id',
-    'loop',
-    'maxheight',
-    'maxwidth',
-    'muted',
-    'playsinline',
-    'portrait',
-    'responsive',
-    'speed',
-    'title',
-    'transparent',
-    'url',
-    'width'
-];
-
-/**
- * Get the 'data-vimeo'-prefixed attributes from an element as an object.
- *
- * @param {HTMLElement} element The element.
- * @param {Object} [defaults={}] The default values to use.
- * @return {Object<string, string>}
- */
-function getOEmbedParameters(element, defaults = {}) {
-    return oEmbedParameters.reduce((params, param) => {
-        const value = element.getAttribute(`data-vimeo-${param}`);
-
-        if (value || value === '') {
-            params[param] = value === '' ? 1 : value;
-        }
-
-        return params;
-    }, defaults);
-}
-
-/**
- * Make an oEmbed call for the specified URL.
- *
- * @param {string} videoUrl The vimeo.com url for the video.
- * @param {Object} [params] Parameters to pass to oEmbed.
- * @return {Promise}
- */
-function getOEmbedData(videoUrl, params = {}) {
-    return new Promise((resolve, reject) => {
-        if (!Object(__WEBPACK_IMPORTED_MODULE_0__functions__["e" /* isVimeoUrl */])(videoUrl)) {
-            throw new TypeError(`“${videoUrl}” is not a vimeo.com url.`);
-        }
-
-        let url = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(videoUrl)}`;
-
-        for (const param in params) {
-            if (params.hasOwnProperty(param)) {
-                url += `&${param}=${encodeURIComponent(params[param])}`;
-            }
-        }
-
-        const xhr = 'XDomainRequest' in window ? new XDomainRequest() : new XMLHttpRequest();
-        xhr.open('GET', url, true);
-
-        xhr.onload = function() {
-            if (xhr.status === 404) {
-                reject(new Error(`“${videoUrl}” was not found.`));
-                return;
-            }
-
-            if (xhr.status === 403) {
-                reject(new Error(`“${videoUrl}” is not embeddable.`));
-                return;
-            }
-
-            try {
-                const json = JSON.parse(xhr.responseText);
-                resolve(json);
-            }
-            catch (error) {
-                reject(error);
-            }
-        };
-
-        xhr.onerror = function() {
-            const status = xhr.status ? ` (${xhr.status})` : '';
-            reject(new Error(`There was an error fetching the embed code from Vimeo${status}.`));
-        };
-
-        xhr.send();
-    });
-}
-
-/**
- * Create an embed from oEmbed data inside an element.
- *
- * @param {object} data The oEmbed data.
- * @param {HTMLElement} element The element to put the iframe in.
- * @return {HTMLIFrameElement} The iframe embed.
- */
-function createEmbed({ html }, element) {
-    if (!element) {
-        throw new TypeError('An element must be provided');
-    }
-
-    if (element.getAttribute('data-vimeo-initialized') !== null) {
-        return element.querySelector('iframe');
-    }
-
-    const div = document.createElement('div');
-    div.innerHTML = html;
-
-    element.appendChild(div.firstChild);
-    element.setAttribute('data-vimeo-initialized', 'true');
-
-    return element.querySelector('iframe');
-}
-
-/**
- * Initialize all embeds within a specific element
- *
- * @param {HTMLElement} [parent=document] The parent element.
- * @return {void}
- */
-function initializeEmbeds(parent = document) {
-    const elements = [].slice.call(parent.querySelectorAll('[data-vimeo-id], [data-vimeo-url]'));
-
-    const handleError = (error) => {
-        if ('console' in window && console.error) {
-            console.error(`There was an error creating an embed: ${error}`);
-        }
-    };
-
-    elements.forEach((element) => {
-        try {
-            // Skip any that have data-vimeo-defer
-            if (element.getAttribute('data-vimeo-defer') !== null) {
-                return;
-            }
-
-            const params = getOEmbedParameters(element);
-            const url = Object(__WEBPACK_IMPORTED_MODULE_0__functions__["b" /* getVimeoUrl */])(params);
-
-            getOEmbedData(url, params).then((data) => {
-                return createEmbed(data, element);
-            }).catch(handleError);
-        }
-        catch (error) {
-            handleError(error);
-        }
-    });
-}
-
-/**
- * Resize embeds when messaged by the player.
- *
- * @param {HTMLElement} [parent=document] The parent element.
- * @return {void}
- */
-function resizeEmbeds(parent = document) {
-    const onMessage = (event) => {
-        if (!Object(__WEBPACK_IMPORTED_MODULE_0__functions__["e" /* isVimeoUrl */])(event.origin)) {
-            return;
-        }
-
-        if (!event.data || event.data.event !== 'spacechange') {
-            return;
-        }
-
-        const iframes = parent.querySelectorAll('iframe');
-
-        for (let i = 0; i < iframes.length; i++) {
-            if (iframes[i].contentWindow !== event.source) {
-                continue;
-            }
-
-            const space = iframes[i].parentElement;
-
-            if (space && space.className.indexOf('vimeo-space') !== -1) {
-                space.style.paddingBottom = `${event.data.data[0].bottom}px`;
-            }
-
-            break;
-        }
-    };
-
-    if (window.addEventListener) {
-        window.addEventListener('message', onMessage, false);
-    }
-    else if (window.attachEvent) {
-        window.attachEvent('onmessage', onMessage);
-    }
-}
-
-
-/***/ }),
-/* 123 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (immutable) */ __webpack_exports__["a"] = getMethodName;
-/* harmony export (immutable) */ __webpack_exports__["c"] = isDomElement;
-/* unused harmony export isInteger */
-/* harmony export (immutable) */ __webpack_exports__["e"] = isVimeoUrl;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getVimeoUrl;
-/**
- * @module lib/functions
- */
-
-/**
- * Check to see this is a node environment.
- * @type {Boolean}
- */
-/* global global */
-const isNode = typeof global !== 'undefined' &&
-  ({}).toString.call(global) === '[object global]';
-/* harmony export (immutable) */ __webpack_exports__["d"] = isNode;
-
-
-/**
- * Get the name of the method for a given getter or setter.
- *
- * @param {string} prop The name of the property.
- * @param {string} type Either “get” or “set”.
- * @return {string}
- */
-function getMethodName(prop, type) {
-    if (prop.indexOf(type.toLowerCase()) === 0) {
-        return prop;
-    }
-
-    return `${type.toLowerCase()}${prop.substr(0, 1).toUpperCase()}${prop.substr(1)}`;
-}
-
-/**
- * Check to see if the object is a DOM Element.
- *
- * @param {*} element The object to check.
- * @return {boolean}
- */
-function isDomElement(element) {
-    return element instanceof window.HTMLElement;
-}
-
-/**
- * Check to see whether the value is a number.
- *
- * @see http://dl.dropboxusercontent.com/u/35146/js/tests/isNumber.html
- * @param {*} value The value to check.
- * @param {boolean} integer Check if the value is an integer.
- * @return {boolean}
- */
-function isInteger(value) {
-    // eslint-disable-next-line eqeqeq
-    return !isNaN(parseFloat(value)) && isFinite(value) && Math.floor(value) == value;
-}
-
-/**
- * Check to see if the URL is a Vimeo url.
- *
- * @param {string} url The url string.
- * @return {boolean}
- */
-function isVimeoUrl(url) {
-    return (/^(https?:)?\/\/((player|www).)?vimeo.com(?=$|\/)/).test(url);
-}
-
-/**
- * Get the Vimeo URL from an element.
- * The element must have either a data-vimeo-id or data-vimeo-url attribute.
- *
- * @param {object} oEmbedParameters The oEmbed parameters.
- * @return {string}
- */
-function getVimeoUrl(oEmbedParameters = {}) {
-    const id = oEmbedParameters.id;
-    const url = oEmbedParameters.url;
-    const idOrUrl = id || url;
-
-    if (!idOrUrl) {
-        throw new Error('An id or url must be passed, either in an options object or as a data-vimeo-id or data-vimeo-url attribute.');
-    }
-
-    if (isInteger(idOrUrl)) {
-        return `https://vimeo.com/${idOrUrl}`;
-    }
-
-    if (isVimeoUrl(idOrUrl)) {
-        return idOrUrl.replace('http:', 'https:');
-    }
-
-    if (id) {
-        throw new TypeError(`“${id}” is not a valid video id.`);
-    }
-
-    throw new TypeError(`“${idOrUrl}” is not a vimeo.com url.`);
-}
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
-
-/***/ }),
-/* 124 */,
-/* 125 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = storeCallback;
-/* harmony export (immutable) */ __webpack_exports__["a"] = getCallbacks;
-/* harmony export (immutable) */ __webpack_exports__["b"] = removeCallback;
-/* harmony export (immutable) */ __webpack_exports__["c"] = shiftCallbacks;
-/* harmony export (immutable) */ __webpack_exports__["e"] = swapCallbacks;
-/**
- * @module lib/callbacks
- */
-
-const callbackMap = new WeakMap();
-/* unused harmony export callbackMap */
-
-
-/**
- * Store a callback for a method or event for a player.
- *
- * @param {Player} player The player object.
- * @param {string} name The method or event name.
- * @param {(function(this:Player, *): void|{resolve: function, reject: function})} callback
- *        The callback to call or an object with resolve and reject functions for a promise.
- * @return {void}
- */
-function storeCallback(player, name, callback) {
-    const playerCallbacks = callbackMap.get(player.element) || {};
-
-    if (!(name in playerCallbacks)) {
-        playerCallbacks[name] = [];
-    }
-
-    playerCallbacks[name].push(callback);
-    callbackMap.set(player.element, playerCallbacks);
-}
-
-/**
- * Get the callbacks for a player and event or method.
- *
- * @param {Player} player The player object.
- * @param {string} name The method or event name
- * @return {function[]}
- */
-function getCallbacks(player, name) {
-    const playerCallbacks = callbackMap.get(player.element) || {};
-    return playerCallbacks[name] || [];
-}
-
-/**
- * Remove a stored callback for a method or event for a player.
- *
- * @param {Player} player The player object.
- * @param {string} name The method or event name
- * @param {function} [callback] The specific callback to remove.
- * @return {boolean} Was this the last callback?
- */
-function removeCallback(player, name, callback) {
-    const playerCallbacks = callbackMap.get(player.element) || {};
-
-    if (!playerCallbacks[name]) {
-        return true;
-    }
-
-    // If no callback is passed, remove all callbacks for the event
-    if (!callback) {
-        playerCallbacks[name] = [];
-        callbackMap.set(player.element, playerCallbacks);
-
-        return true;
-    }
-
-    const index = playerCallbacks[name].indexOf(callback);
-
-    if (index !== -1) {
-        playerCallbacks[name].splice(index, 1);
-    }
-
-    callbackMap.set(player.element, playerCallbacks);
-    return playerCallbacks[name] && playerCallbacks[name].length === 0;
-}
-
-/**
- * Return the first stored callback for a player and event or method.
- *
- * @param {Player} player The player object.
- * @param {string} name The method or event name.
- * @return {function} The callback, or false if there were none
- */
-function shiftCallbacks(player, name) {
-    const playerCallbacks = getCallbacks(player, name);
-
-    if (playerCallbacks.length < 1) {
-        return false;
-    }
-
-    const callback = playerCallbacks.shift();
-    removeCallback(player, name, callback);
-    return callback;
-}
-
-/**
- * Move callbacks associated with an element to another element.
- *
- * @param {HTMLElement} oldElement The old element.
- * @param {HTMLElement} newElement The new element.
- * @return {void}
- */
-function swapCallbacks(oldElement, newElement) {
-    const playerCallbacks = callbackMap.get(oldElement);
-
-    callbackMap.set(newElement, playerCallbacks);
-    callbackMap.delete(oldElement);
-}
-
-
-/***/ }),
-/* 126 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(jQuery) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_compatibility_check__ = __webpack_require__(127);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_es6_collections__ = __webpack_require__(128);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_es6_collections___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_es6_collections__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_native_promise_only__ = __webpack_require__(129);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_native_promise_only__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_callbacks__ = __webpack_require__(125);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_functions__ = __webpack_require__(123);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__lib_embed__ = __webpack_require__(122);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__lib_postmessage__ = __webpack_require__(130);
-
-
-
-
-
-
-
-
-
-
-const playerMap = new WeakMap();
-const readyMap = new WeakMap();
-
-class Player {
-     /**
-     * Create a Player.
-     *
-     * @param {(HTMLIFrameElement|HTMLElement|string|jQuery)} element A reference to the Vimeo
-     *        player iframe, and id, or a jQuery object.
-     * @param {object} [options] oEmbed parameters to use when creating an embed in the element.
-     * @return {Player}
-     */
-    constructor(element, options = {}) {
-        /* global jQuery */
-        if (window.jQuery && element instanceof jQuery) {
-            if (element.length > 1 && window.console && console.warn) {
-                console.warn('A jQuery object with multiple elements was passed, using the first element.');
-            }
-
-            element = element[0];
-        }
-
-        // Find an element by ID
-        if (typeof document !== 'undefined' && typeof element === 'string') {
-            element = document.getElementById(element);
-        }
-
-        // Not an element!
-        if (!Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["c" /* isDomElement */])(element)) {
-            throw new TypeError('You must pass either a valid element or a valid id.');
-        }
-
-        // Already initialized an embed in this div, so grab the iframe
-        if (element.nodeName !== 'IFRAME') {
-            const iframe = element.querySelector('iframe');
-
-            if (iframe) {
-                element = iframe;
-            }
-        }
-
-        // iframe url is not a Vimeo url
-        if (element.nodeName === 'IFRAME' && !Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["e" /* isVimeoUrl */])(element.getAttribute('src') || '')) {
-            throw new Error('The player element passed isn’t a Vimeo embed.');
-        }
-
-        // If there is already a player object in the map, return that
-        if (playerMap.has(element)) {
-            return playerMap.get(element);
-        }
-
-        this.element = element;
-        this.origin = '*';
-
-        const readyPromise = new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
-            const onMessage = (event) => {
-                if (!Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["e" /* isVimeoUrl */])(event.origin) || this.element.contentWindow !== event.source) {
-                    return;
-                }
-
-                if (this.origin === '*') {
-                    this.origin = event.origin;
-                }
-
-                const data = Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["a" /* parseMessageData */])(event.data);
-                const isReadyEvent = 'event' in data && data.event === 'ready';
-                const isPingResponse = 'method' in data && data.method === 'ping';
-
-                if (isReadyEvent || isPingResponse) {
-                    this.element.setAttribute('data-ready', 'true');
-                    resolve();
-                    return;
-                }
-
-                Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["c" /* processData */])(this, data);
-            };
-
-            if (window.addEventListener) {
-                window.addEventListener('message', onMessage, false);
-            }
-            else if (window.attachEvent) {
-                window.attachEvent('onmessage', onMessage);
-            }
-
-            if (this.element.nodeName !== 'IFRAME') {
-                const params = Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["getOEmbedParameters"])(element, options);
-                const url = Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["b" /* getVimeoUrl */])(params);
-
-                Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["getOEmbedData"])(url, params).then((data) => {
-                    const iframe = Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["createEmbed"])(data, element);
-                    // Overwrite element with the new iframe,
-                    // but store reference to the original element
-                    this.element = iframe;
-                    this._originalElement = element;
-
-                    Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["e" /* swapCallbacks */])(element, iframe);
-                    playerMap.set(this.element, this);
-
-                    return data;
-                }).catch((error) => reject(error));
-            }
-        });
-
-        // Store a copy of this Player in the map
-        readyMap.set(this, readyPromise);
-        playerMap.set(this.element, this);
-
-        // Send a ping to the iframe so the ready promise will be resolved if
-        // the player is already ready.
-        if (this.element.nodeName === 'IFRAME') {
-            Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["b" /* postMessage */])(this, 'ping');
-        }
-
-        return this;
-    }
-
-    /**
-     * Get a promise for a method.
-     *
-     * @param {string} name The API method to call.
-     * @param {Object} [args={}] Arguments to send via postMessage.
-     * @return {Promise}
-     */
-    callMethod(name, args = {}) {
-        return new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
-            // We are storing the resolve/reject handlers to call later, so we
-            // can’t return here.
-            // eslint-disable-next-line promise/always-return
-            return this.ready().then(() => {
-                Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["d" /* storeCallback */])(this, name, {
-                    resolve,
-                    reject
-                });
-
-                Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["b" /* postMessage */])(this, name, args);
-            }).catch((error) => {
-                reject(error);
-            });
-        });
-    }
-
-    /**
-     * Get a promise for the value of a player property.
-     *
-     * @param {string} name The property name
-     * @return {Promise}
-     */
-    get(name) {
-        return new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
-            name = Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["a" /* getMethodName */])(name, 'get');
-
-            // We are storing the resolve/reject handlers to call later, so we
-            // can’t return here.
-            // eslint-disable-next-line promise/always-return
-            return this.ready().then(() => {
-                Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["d" /* storeCallback */])(this, name, {
-                    resolve,
-                    reject
-                });
-
-                Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["b" /* postMessage */])(this, name);
-            });
-        });
-    }
-
-    /**
-     * Get a promise for setting the value of a player property.
-     *
-     * @param {string} name The API method to call.
-     * @param {mixed} value The value to set.
-     * @return {Promise}
-     */
-    set(name, value) {
-        return __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a.resolve(value).then((val) => {
-            name = Object(__WEBPACK_IMPORTED_MODULE_4__lib_functions__["a" /* getMethodName */])(name, 'set');
-
-            if (val === undefined || val === null) {
-                throw new TypeError('There must be a value to set.');
-            }
-
-            return this.ready().then(() => {
-                return new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
-                    Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["d" /* storeCallback */])(this, name, {
-                        resolve,
-                        reject
-                    });
-
-                    Object(__WEBPACK_IMPORTED_MODULE_6__lib_postmessage__["b" /* postMessage */])(this, name, val);
-                });
-            });
-        });
-    }
-
-    /**
-     * Add an event listener for the specified event. Will call the
-     * callback with a single parameter, `data`, that contains the data for
-     * that event.
-     *
-     * @param {string} eventName The name of the event.
-     * @param {function(*)} callback The function to call when the event fires.
-     * @return {void}
-     */
-    on(eventName, callback) {
-        if (!eventName) {
-            throw new TypeError('You must pass an event name.');
-        }
-
-        if (!callback) {
-            throw new TypeError('You must pass a callback function.');
-        }
-
-        if (typeof callback !== 'function') {
-            throw new TypeError('The callback must be a function.');
-        }
-
-        const callbacks = Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["a" /* getCallbacks */])(this, `event:${eventName}`);
-        if (callbacks.length === 0) {
-            this.callMethod('addEventListener', eventName).catch(() => {
-                // Ignore the error. There will be an error event fired that
-                // will trigger the error callback if they are listening.
-            });
-        }
-
-        Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["d" /* storeCallback */])(this, `event:${eventName}`, callback);
-    }
-
-    /**
-     * Remove an event listener for the specified event. Will remove all
-     * listeners for that event if a `callback` isn’t passed, or only that
-     * specific callback if it is passed.
-     *
-     * @param {string} eventName The name of the event.
-     * @param {function} [callback] The specific callback to remove.
-     * @return {void}
-     */
-    off(eventName, callback) {
-        if (!eventName) {
-            throw new TypeError('You must pass an event name.');
-        }
-
-        if (callback && typeof callback !== 'function') {
-            throw new TypeError('The callback must be a function.');
-        }
-
-        const lastCallback = Object(__WEBPACK_IMPORTED_MODULE_3__lib_callbacks__["b" /* removeCallback */])(this, `event:${eventName}`, callback);
-
-        // If there are no callbacks left, remove the listener
-        if (lastCallback) {
-            this.callMethod('removeEventListener', eventName).catch((e) => {
-                // Ignore the error. There will be an error event fired that
-                // will trigger the error callback if they are listening.
-            });
-        }
-    }
-
-    /**
-     * A promise to load a new video.
-     *
-     * @promise LoadVideoPromise
-     * @fulfill {number} The video with this id successfully loaded.
-     * @reject {TypeError} The id was not a number.
-     */
-    /**
-     * Load a new video into this embed. The promise will be resolved if
-     * the video is successfully loaded, or it will be rejected if it could
-     * not be loaded.
-     *
-     * @param {number} id The id of the video.
-     * @return {LoadVideoPromise}
-     */
-    loadVideo(id) {
-        return this.callMethod('loadVideo', id);
-    }
-
-    /**
-     * A promise to perform an action when the Player is ready.
-     *
-     * @todo document errors
-     * @promise LoadVideoPromise
-     * @fulfill {void}
-     */
-    /**
-     * Trigger a function when the player iframe has initialized. You do not
-     * need to wait for `ready` to trigger to begin adding event listeners
-     * or calling other methods.
-     *
-     * @return {ReadyPromise}
-     */
-    ready() {
-        const readyPromise = readyMap.get(this) || new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve, reject) => {
-            reject('Unknown player. Probably unloaded.');
-        });
-        return __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a.resolve(readyPromise);
-    }
-
-    /**
-     * A promise to add a cue point to the player.
-     *
-     * @promise AddCuePointPromise
-     * @fulfill {string} The id of the cue point to use for removeCuePoint.
-     * @reject {RangeError} the time was less than 0 or greater than the
-     *         video’s duration.
-     * @reject {UnsupportedError} Cue points are not supported with the current
-     *         player or browser.
-     */
-    /**
-     * Add a cue point to the player.
-     *
-     * @param {number} time The time for the cue point.
-     * @param {object} [data] Arbitrary data to be returned with the cue point.
-     * @return {AddCuePointPromise}
-     */
-    addCuePoint(time, data = {}) {
-        return this.callMethod('addCuePoint', { time, data });
-    }
-
-    /**
-     * A promise to remove a cue point from the player.
-     *
-     * @promise AddCuePointPromise
-     * @fulfill {string} The id of the cue point that was removed.
-     * @reject {InvalidCuePoint} The cue point with the specified id was not
-     *         found.
-     * @reject {UnsupportedError} Cue points are not supported with the current
-     *         player or browser.
-     */
-    /**
-     * Remove a cue point from the video.
-     *
-     * @param {string} id The id of the cue point to remove.
-     * @return {RemoveCuePointPromise}
-     */
-    removeCuePoint(id) {
-        return this.callMethod('removeCuePoint', id);
-    }
-
-    /**
-     * A representation of a text track on a video.
-     *
-     * @typedef {Object} VimeoTextTrack
-     * @property {string} language The ISO language code.
-     * @property {string} kind The kind of track it is (captions or subtitles).
-     * @property {string} label The human‐readable label for the track.
-     */
-    /**
-     * A promise to enable a text track.
-     *
-     * @promise EnableTextTrackPromise
-     * @fulfill {VimeoTextTrack} The text track that was enabled.
-     * @reject {InvalidTrackLanguageError} No track was available with the
-     *         specified language.
-     * @reject {InvalidTrackError} No track was available with the specified
-     *         language and kind.
-     */
-    /**
-     * Enable the text track with the specified language, and optionally the
-     * specified kind (captions or subtitles).
-     *
-     * When set via the API, the track language will not change the viewer’s
-     * stored preference.
-     *
-     * @param {string} language The two‐letter language code.
-     * @param {string} [kind] The kind of track to enable (captions or subtitles).
-     * @return {EnableTextTrackPromise}
-     */
-    enableTextTrack(language, kind) {
-        if (!language) {
-            throw new TypeError('You must pass a language.');
-        }
-
-        return this.callMethod('enableTextTrack', {
-            language,
-            kind
-        });
-    }
-
-    /**
-     * A promise to disable the active text track.
-     *
-     * @promise DisableTextTrackPromise
-     * @fulfill {void} The track was disabled.
-     */
-    /**
-     * Disable the currently-active text track.
-     *
-     * @return {DisableTextTrackPromise}
-     */
-    disableTextTrack() {
-        return this.callMethod('disableTextTrack');
-    }
-
-    /**
-     * A promise to pause the video.
-     *
-     * @promise PausePromise
-     * @fulfill {void} The video was paused.
-     */
-    /**
-     * Pause the video if it’s playing.
-     *
-     * @return {PausePromise}
-     */
-    pause() {
-        return this.callMethod('pause');
-    }
-
-    /**
-     * A promise to play the video.
-     *
-     * @promise PlayPromise
-     * @fulfill {void} The video was played.
-     */
-    /**
-     * Play the video if it’s paused. **Note:** on iOS and some other
-     * mobile devices, you cannot programmatically trigger play. Once the
-     * viewer has tapped on the play button in the player, however, you
-     * will be able to use this function.
-     *
-     * @return {PlayPromise}
-     */
-    play() {
-        return this.callMethod('play');
-    }
-
-    /**
-     * A promise to unload the video.
-     *
-     * @promise UnloadPromise
-     * @fulfill {void} The video was unloaded.
-     */
-    /**
-     * Return the player to its initial state.
-     *
-     * @return {UnloadPromise}
-     */
-    unload() {
-        return this.callMethod('unload');
-    }
-
-    /**
-     * Cleanup the player and remove it from the DOM
-     *
-     * It won't be usable and a new one should be constructed
-     *  in order to do any operations.
-     *
-     * @return {Promise}
-     */
-    destroy() {
-        return new __WEBPACK_IMPORTED_MODULE_2_native_promise_only___default.a((resolve) => {
-            readyMap.delete(this);
-            playerMap.delete(this.element);
-            if (this._originalElement) {
-                playerMap.delete(this._originalElement);
-                this._originalElement.removeAttribute('data-vimeo-initialized');
-            }
-            if (this.element && this.element.nodeName === 'IFRAME') {
-                this.element.remove();
-            }
-            resolve();
-        });
-    }
-
-    /**
-     * A promise to get the autopause behavior of the video.
-     *
-     * @promise GetAutopausePromise
-     * @fulfill {boolean} Whether autopause is turned on or off.
-     * @reject {UnsupportedError} Autopause is not supported with the current
-     *         player or browser.
-     */
-    /**
-     * Get the autopause behavior for this player.
-     *
-     * @return {GetAutopausePromise}
-     */
-    getAutopause() {
-        return this.get('autopause');
-    }
-
-    /**
-     * A promise to set the autopause behavior of the video.
-     *
-     * @promise SetAutopausePromise
-     * @fulfill {boolean} Whether autopause is turned on or off.
-     * @reject {UnsupportedError} Autopause is not supported with the current
-     *         player or browser.
-     */
-    /**
-     * Enable or disable the autopause behavior of this player.
-     *
-     * By default, when another video is played in the same browser, this
-     * player will automatically pause. Unless you have a specific reason
-     * for doing so, we recommend that you leave autopause set to the
-     * default (`true`).
-     *
-     * @param {boolean} autopause
-     * @return {SetAutopausePromise}
-     */
-    setAutopause(autopause) {
-        return this.set('autopause', autopause);
-    }
-
-    /**
-     * A promise to get the color of the player.
-     *
-     * @promise GetColorPromise
-     * @fulfill {string} The hex color of the player.
-     */
-    /**
-     * Get the color for this player.
-     *
-     * @return {GetColorPromise}
-     */
-    getColor() {
-        return this.get('color');
-    }
-
-    /**
-     * A promise to set the color of the player.
-     *
-     * @promise SetColorPromise
-     * @fulfill {string} The color was successfully set.
-     * @reject {TypeError} The string was not a valid hex or rgb color.
-     * @reject {ContrastError} The color was set, but the contrast is
-     *         outside of the acceptable range.
-     * @reject {EmbedSettingsError} The owner of the player has chosen to
-     *         use a specific color.
-     */
-    /**
-     * Set the color of this player to a hex or rgb string. Setting the
-     * color may fail if the owner of the video has set their embed
-     * preferences to force a specific color.
-     *
-     * @param {string} color The hex or rgb color string to set.
-     * @return {SetColorPromise}
-     */
-    setColor(color) {
-        return this.set('color', color);
-    }
-
-    /**
-     * A representation of a cue point.
-     *
-     * @typedef {Object} VimeoCuePoint
-     * @property {number} time The time of the cue point.
-     * @property {object} data The data passed when adding the cue point.
-     * @property {string} id The unique id for use with removeCuePoint.
-     */
-    /**
-     * A promise to get the cue points of a video.
-     *
-     * @promise GetCuePointsPromise
-     * @fulfill {VimeoCuePoint[]} The cue points added to the video.
-     * @reject {UnsupportedError} Cue points are not supported with the current
-     *         player or browser.
-     */
-    /**
-     * Get an array of the cue points added to the video.
-     *
-     * @return {GetCuePointsPromise}
-     */
-    getCuePoints() {
-        return this.get('cuePoints');
-    }
-
-    /**
-     * A promise to get the current time of the video.
-     *
-     * @promise GetCurrentTimePromise
-     * @fulfill {number} The current time in seconds.
-     */
-    /**
-     * Get the current playback position in seconds.
-     *
-     * @return {GetCurrentTimePromise}
-     */
-    getCurrentTime() {
-        return this.get('currentTime');
-    }
-
-    /**
-     * A promise to set the current time of the video.
-     *
-     * @promise SetCurrentTimePromise
-     * @fulfill {number} The actual current time that was set.
-     * @reject {RangeError} the time was less than 0 or greater than the
-     *         video’s duration.
-     */
-    /**
-     * Set the current playback position in seconds. If the player was
-     * paused, it will remain paused. Likewise, if the player was playing,
-     * it will resume playing once the video has buffered.
-     *
-     * You can provide an accurate time and the player will attempt to seek
-     * to as close to that time as possible. The exact time will be the
-     * fulfilled value of the promise.
-     *
-     * @param {number} currentTime
-     * @return {SetCurrentTimePromise}
-     */
-    setCurrentTime(currentTime) {
-        return this.set('currentTime', currentTime);
-    }
-
-    /**
-     * A promise to get the duration of the video.
-     *
-     * @promise GetDurationPromise
-     * @fulfill {number} The duration in seconds.
-     */
-    /**
-     * Get the duration of the video in seconds. It will be rounded to the
-     * nearest second before playback begins, and to the nearest thousandth
-     * of a second after playback begins.
-     *
-     * @return {GetDurationPromise}
-     */
-    getDuration() {
-        return this.get('duration');
-    }
-
-    /**
-     * A promise to get the ended state of the video.
-     *
-     * @promise GetEndedPromise
-     * @fulfill {boolean} Whether or not the video has ended.
-     */
-    /**
-     * Get the ended state of the video. The video has ended if
-     * `currentTime === duration`.
-     *
-     * @return {GetEndedPromise}
-     */
-    getEnded() {
-        return this.get('ended');
-    }
-
-    /**
-     * A promise to get the loop state of the player.
-     *
-     * @promise GetLoopPromise
-     * @fulfill {boolean} Whether or not the player is set to loop.
-     */
-    /**
-     * Get the loop state of the player.
-     *
-     * @return {GetLoopPromise}
-     */
-    getLoop() {
-        return this.get('loop');
-    }
-
-    /**
-     * A promise to set the loop state of the player.
-     *
-     * @promise SetLoopPromise
-     * @fulfill {boolean} The loop state that was set.
-     */
-    /**
-     * Set the loop state of the player. When set to `true`, the player
-     * will start over immediately once playback ends.
-     *
-     * @param {boolean} loop
-     * @return {SetLoopPromise}
-     */
-    setLoop(loop) {
-        return this.set('loop', loop);
-    }
-
-    /**
-     * A promise to get the paused state of the player.
-     *
-     * @promise GetLoopPromise
-     * @fulfill {boolean} Whether or not the video is paused.
-     */
-    /**
-     * Get the paused state of the player.
-     *
-     * @return {GetLoopPromise}
-     */
-    getPaused() {
-        return this.get('paused');
-    }
-
-    /**
-     * A promise to get the playback rate of the player.
-     *
-     * @promise GetPlaybackRatePromise
-     * @fulfill {number} The playback rate of the player on a scale from 0.5 to 2.
-     */
-    /**
-     * Get the playback rate of the player on a scale from `0.5` to `2`.
-     *
-     * @return {GetPlaybackRatePromise}
-     */
-    getPlaybackRate() {
-        return this.get('playbackRate');
-    }
-
-    /**
-     * A promise to set the playbackrate of the player.
-     *
-     * @promise SetPlaybackRatePromise
-     * @fulfill {number} The playback rate was set.
-     * @reject {RangeError} The playback rate was less than 0.5 or greater than 2.
-     */
-    /**
-     * Set the playback rate of the player on a scale from `0.5` to `2`. When set
-     * via the API, the playback rate will not be synchronized to other
-     * players or stored as the viewer's preference.
-     *
-     * @param {number} playbackRate
-     * @return {SetPlaybackRatePromise}
-     */
-    setPlaybackRate(playbackRate) {
-        return this.set('playbackRate', playbackRate);
-    }
-
-    /**
-     * A promise to get the text tracks of a video.
-     *
-     * @promise GetTextTracksPromise
-     * @fulfill {VimeoTextTrack[]} The text tracks associated with the video.
-     */
-    /**
-     * Get an array of the text tracks that exist for the video.
-     *
-     * @return {GetTextTracksPromise}
-     */
-    getTextTracks() {
-        return this.get('textTracks');
-    }
-
-    /**
-     * A promise to get the embed code for the video.
-     *
-     * @promise GetVideoEmbedCodePromise
-     * @fulfill {string} The `<iframe>` embed code for the video.
-     */
-    /**
-     * Get the `<iframe>` embed code for the video.
-     *
-     * @return {GetVideoEmbedCodePromise}
-     */
-    getVideoEmbedCode() {
-        return this.get('videoEmbedCode');
-    }
-
-    /**
-     * A promise to get the id of the video.
-     *
-     * @promise GetVideoIdPromise
-     * @fulfill {number} The id of the video.
-     */
-    /**
-     * Get the id of the video.
-     *
-     * @return {GetVideoIdPromise}
-     */
-    getVideoId() {
-        return this.get('videoId');
-    }
-
-    /**
-     * A promise to get the title of the video.
-     *
-     * @promise GetVideoTitlePromise
-     * @fulfill {number} The title of the video.
-     */
-    /**
-     * Get the title of the video.
-     *
-     * @return {GetVideoTitlePromise}
-     */
-    getVideoTitle() {
-        return this.get('videoTitle');
-    }
-
-    /**
-     * A promise to get the native width of the video.
-     *
-     * @promise GetVideoWidthPromise
-     * @fulfill {number} The native width of the video.
-     */
-    /**
-     * Get the native width of the currently‐playing video. The width of
-     * the highest‐resolution available will be used before playback begins.
-     *
-     * @return {GetVideoWidthPromise}
-     */
-    getVideoWidth() {
-        return this.get('videoWidth');
-    }
-
-    /**
-     * A promise to get the native height of the video.
-     *
-     * @promise GetVideoHeightPromise
-     * @fulfill {number} The native height of the video.
-     */
-    /**
-     * Get the native height of the currently‐playing video. The height of
-     * the highest‐resolution available will be used before playback begins.
-     *
-     * @return {GetVideoHeightPromise}
-     */
-    getVideoHeight() {
-        return this.get('videoHeight');
-    }
-
-    /**
-     * A promise to get the vimeo.com url for the video.
-     *
-     * @promise GetVideoUrlPromise
-     * @fulfill {number} The vimeo.com url for the video.
-     * @reject {PrivacyError} The url isn’t available because of the video’s privacy setting.
-     */
-    /**
-     * Get the vimeo.com url for the video.
-     *
-     * @return {GetVideoUrlPromise}
-     */
-    getVideoUrl() {
-        return this.get('videoUrl');
-    }
-
-    /**
-     * A promise to get the volume level of the player.
-     *
-     * @promise GetVolumePromise
-     * @fulfill {number} The volume level of the player on a scale from 0 to 1.
-     */
-    /**
-     * Get the current volume level of the player on a scale from `0` to `1`.
-     *
-     * Most mobile devices do not support an independent volume from the
-     * system volume. In those cases, this method will always return `1`.
-     *
-     * @return {GetVolumePromise}
-     */
-    getVolume() {
-        return this.get('volume');
-    }
-
-    /**
-     * A promise to set the volume level of the player.
-     *
-     * @promise SetVolumePromise
-     * @fulfill {number} The volume was set.
-     * @reject {RangeError} The volume was less than 0 or greater than 1.
-     */
-    /**
-     * Set the volume of the player on a scale from `0` to `1`. When set
-     * via the API, the volume level will not be synchronized to other
-     * players or stored as the viewer’s preference.
-     *
-     * Most mobile devices do not support setting the volume. An error will
-     * *not* be triggered in that situation.
-     *
-     * @param {number} volume
-     * @return {SetVolumePromise}
-     */
-    setVolume(volume) {
-        return this.set('volume', volume);
-    }
-
-    test() {
-        console.log('fdgsdfgdsfgfsdg')
-        Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["initializeEmbeds"])();
-        Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["resizeEmbeds"])();
-    }
-}
-
-if (!__WEBPACK_IMPORTED_MODULE_4__lib_functions__["d" /* isNode */]) {
-    Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["initializeEmbeds"])();
-    Object(__WEBPACK_IMPORTED_MODULE_5__lib_embed__["resizeEmbeds"])();
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (Player);
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7)))
-
-/***/ }),
-/* 127 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__functions__ = __webpack_require__(123);
-
-
-const arrayIndexOfSupport = typeof Array.prototype.indexOf !== 'undefined';
-const postMessageSupport = typeof window !== 'undefined' && typeof window.postMessage !== 'undefined';
-
-if (!__WEBPACK_IMPORTED_MODULE_0__functions__["d" /* isNode */] && (!arrayIndexOfSupport || !postMessageSupport)) {
-    throw new Error('Sorry, the Vimeo Player API is not available in this browser.');
-}
-
-
-/***/ }),
-/* 128 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {(function (exports) {'use strict';
-  //shared pointer
-  var i;
-  //shortcuts
-  var defineProperty = Object.defineProperty, is = function(a,b) { return (a === b) || (a !== a && b !== b) };
-
-
-  //Polyfill global objects
-  if (typeof WeakMap == 'undefined') {
-    exports.WeakMap = createCollection({
-      // WeakMap#delete(key:void*):boolean
-      'delete': sharedDelete,
-      // WeakMap#clear():
-      clear: sharedClear,
-      // WeakMap#get(key:void*):void*
-      get: sharedGet,
-      // WeakMap#has(key:void*):boolean
-      has: mapHas,
-      // WeakMap#set(key:void*, value:void*):void
-      set: sharedSet
-    }, true);
-  }
-
-  if (typeof Map == 'undefined' || typeof ((new Map).values) !== 'function' || !(new Map).values().next) {
-    exports.Map = createCollection({
-      // WeakMap#delete(key:void*):boolean
-      'delete': sharedDelete,
-      //:was Map#get(key:void*[, d3fault:void*]):void*
-      // Map#has(key:void*):boolean
-      has: mapHas,
-      // Map#get(key:void*):boolean
-      get: sharedGet,
-      // Map#set(key:void*, value:void*):void
-      set: sharedSet,
-      // Map#keys(void):Iterator
-      keys: sharedKeys,
-      // Map#values(void):Iterator
-      values: sharedValues,
-      // Map#entries(void):Iterator
-      entries: mapEntries,
-      // Map#forEach(callback:Function, context:void*):void ==> callback.call(context, key, value, mapObject) === not in specs`
-      forEach: sharedForEach,
-      // Map#clear():
-      clear: sharedClear
-    });
-  }
-
-  if (typeof Set == 'undefined' || typeof ((new Set).values) !== 'function' || !(new Set).values().next) {
-    exports.Set = createCollection({
-      // Set#has(value:void*):boolean
-      has: setHas,
-      // Set#add(value:void*):boolean
-      add: sharedAdd,
-      // Set#delete(key:void*):boolean
-      'delete': sharedDelete,
-      // Set#clear():
-      clear: sharedClear,
-      // Set#keys(void):Iterator
-      keys: sharedValues, // specs actually say "the same function object as the initial value of the values property"
-      // Set#values(void):Iterator
-      values: sharedValues,
-      // Set#entries(void):Iterator
-      entries: setEntries,
-      // Set#forEach(callback:Function, context:void*):void ==> callback.call(context, value, index) === not in specs
-      forEach: sharedForEach
-    });
-  }
-
-  if (typeof WeakSet == 'undefined') {
-    exports.WeakSet = createCollection({
-      // WeakSet#delete(key:void*):boolean
-      'delete': sharedDelete,
-      // WeakSet#add(value:void*):boolean
-      add: sharedAdd,
-      // WeakSet#clear():
-      clear: sharedClear,
-      // WeakSet#has(value:void*):boolean
-      has: setHas
-    }, true);
-  }
-
-
-  /**
-   * ES6 collection constructor
-   * @return {Function} a collection class
-   */
-  function createCollection(proto, objectOnly){
-    function Collection(a){
-      if (!this || this.constructor !== Collection) return new Collection(a);
-      this._keys = [];
-      this._values = [];
-      this._itp = []; // iteration pointers
-      this.objectOnly = objectOnly;
-
-      //parse initial iterable argument passed
-      if (a) init.call(this, a);
-    }
-
-    //define size for non object-only collections
-    if (!objectOnly) {
-      defineProperty(proto, 'size', {
-        get: sharedSize
-      });
-    }
-
-    //set prototype
-    proto.constructor = Collection;
-    Collection.prototype = proto;
-
-    return Collection;
-  }
-
-
-  /** parse initial iterable argument passed */
-  function init(a){
-    var i;
-    //init Set argument, like `[1,2,3,{}]`
-    if (this.add)
-      a.forEach(this.add, this);
-    //init Map argument like `[[1,2], [{}, 4]]`
-    else
-      a.forEach(function(a){this.set(a[0],a[1])}, this);
-  }
-
-
-  /** delete */
-  function sharedDelete(key) {
-    if (this.has(key)) {
-      this._keys.splice(i, 1);
-      this._values.splice(i, 1);
-      // update iteration pointers
-      this._itp.forEach(function(p) { if (i < p[0]) p[0]--; });
-    }
-    // Aurora here does it while Canary doesn't
-    return -1 < i;
-  };
-
-  function sharedGet(key) {
-    return this.has(key) ? this._values[i] : undefined;
-  }
-
-  function has(list, key) {
-    if (this.objectOnly && key !== Object(key))
-      throw new TypeError("Invalid value used as weak collection key");
-    //NaN or 0 passed
-    if (key != key || key === 0) for (i = list.length; i-- && !is(list[i], key);){}
-    else i = list.indexOf(key);
-    return -1 < i;
-  }
-
-  function setHas(value) {
-    return has.call(this, this._values, value);
-  }
-
-  function mapHas(value) {
-    return has.call(this, this._keys, value);
-  }
-
-  /** @chainable */
-  function sharedSet(key, value) {
-    this.has(key) ?
-      this._values[i] = value
-      :
-      this._values[this._keys.push(key) - 1] = value
-    ;
-    return this;
-  }
-
-  /** @chainable */
-  function sharedAdd(value) {
-    if (!this.has(value)) this._values.push(value);
-    return this;
-  }
-
-  function sharedClear() {
-    (this._keys || 0).length =
-    this._values.length = 0;
-  }
-
-  /** keys, values, and iterate related methods */
-  function sharedKeys() {
-    return sharedIterator(this._itp, this._keys);
-  }
-
-  function sharedValues() {
-    return sharedIterator(this._itp, this._values);
-  }
-
-  function mapEntries() {
-    return sharedIterator(this._itp, this._keys, this._values);
-  }
-
-  function setEntries() {
-    return sharedIterator(this._itp, this._values, this._values);
-  }
-
-  function sharedIterator(itp, array, array2) {
-    var p = [0], done = false;
-    itp.push(p);
-    return {
-      next: function() {
-        var v, k = p[0];
-        if (!done && k < array.length) {
-          v = array2 ? [array[k], array2[k]]: array[k];
-          p[0]++;
-        } else {
-          done = true;
-          itp.splice(itp.indexOf(p), 1);
-        }
-        return { done: done, value: v };
-      }
-    };
-  }
-
-  function sharedSize() {
-    return this._values.length;
-  }
-
-  function sharedForEach(callback, context) {
-    var it = this.entries();
-    for (;;) {
-      var r = it.next();
-      if (r.done) break;
-      callback.call(context, r.value[1], r.value[0], this);
-    }
-  }
-
-})(typeof exports != 'undefined' && typeof global != 'undefined' ? global : window );
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 129 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global, setImmediate) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! Native Promise Only
-    v0.8.1 (c) Kyle Simpson
-    MIT License: http://getify.mit-license.org
-*/
-
-(function UMD(name,context,definition){
-	// special form of UMD for polyfilling across evironments
-	context[name] = context[name] || definition();
-	if (typeof module != "undefined" && module.exports) { module.exports = context[name]; }
-	else if (true) { !(__WEBPACK_AMD_DEFINE_RESULT__ = (function $AMD$(){ return context[name]; }).call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)); }
-})("Promise",typeof global != "undefined" ? global : this,function DEF(){
-	/*jshint validthis:true */
-	"use strict";
-
-	var builtInProp, cycle, scheduling_queue,
-		ToString = Object.prototype.toString,
-		timer = (typeof setImmediate != "undefined") ?
-			function timer(fn) { return setImmediate(fn); } :
-			setTimeout
-	;
-
-	// dammit, IE8.
-	try {
-		Object.defineProperty({},"x",{});
-		builtInProp = function builtInProp(obj,name,val,config) {
-			return Object.defineProperty(obj,name,{
-				value: val,
-				writable: true,
-				configurable: config !== false
-			});
-		};
-	}
-	catch (err) {
-		builtInProp = function builtInProp(obj,name,val) {
-			obj[name] = val;
-			return obj;
-		};
-	}
-
-	// Note: using a queue instead of array for efficiency
-	scheduling_queue = (function Queue() {
-		var first, last, item;
-
-		function Item(fn,self) {
-			this.fn = fn;
-			this.self = self;
-			this.next = void 0;
-		}
-
-		return {
-			add: function add(fn,self) {
-				item = new Item(fn,self);
-				if (last) {
-					last.next = item;
-				}
-				else {
-					first = item;
-				}
-				last = item;
-				item = void 0;
-			},
-			drain: function drain() {
-				var f = first;
-				first = last = cycle = void 0;
-
-				while (f) {
-					f.fn.call(f.self);
-					f = f.next;
-				}
-			}
-		};
-	})();
-
-	function schedule(fn,self) {
-		scheduling_queue.add(fn,self);
-		if (!cycle) {
-			cycle = timer(scheduling_queue.drain);
-		}
-	}
-
-	// promise duck typing
-	function isThenable(o) {
-		var _then, o_type = typeof o;
-
-		if (o != null &&
-			(
-				o_type == "object" || o_type == "function"
-			)
-		) {
-			_then = o.then;
-		}
-		return typeof _then == "function" ? _then : false;
-	}
-
-	function notify() {
-		for (var i=0; i<this.chain.length; i++) {
-			notifyIsolated(
-				this,
-				(this.state === 1) ? this.chain[i].success : this.chain[i].failure,
-				this.chain[i]
-			);
-		}
-		this.chain.length = 0;
-	}
-
-	// NOTE: This is a separate function to isolate
-	// the `try..catch` so that other code can be
-	// optimized better
-	function notifyIsolated(self,cb,chain) {
-		var ret, _then;
-		try {
-			if (cb === false) {
-				chain.reject(self.msg);
-			}
-			else {
-				if (cb === true) {
-					ret = self.msg;
-				}
-				else {
-					ret = cb.call(void 0,self.msg);
-				}
-
-				if (ret === chain.promise) {
-					chain.reject(TypeError("Promise-chain cycle"));
-				}
-				else if (_then = isThenable(ret)) {
-					_then.call(ret,chain.resolve,chain.reject);
-				}
-				else {
-					chain.resolve(ret);
-				}
-			}
-		}
-		catch (err) {
-			chain.reject(err);
-		}
-	}
-
-	function resolve(msg) {
-		var _then, self = this;
-
-		// already triggered?
-		if (self.triggered) { return; }
-
-		self.triggered = true;
-
-		// unwrap
-		if (self.def) {
-			self = self.def;
-		}
-
-		try {
-			if (_then = isThenable(msg)) {
-				schedule(function(){
-					var def_wrapper = new MakeDefWrapper(self);
-					try {
-						_then.call(msg,
-							function $resolve$(){ resolve.apply(def_wrapper,arguments); },
-							function $reject$(){ reject.apply(def_wrapper,arguments); }
-						);
-					}
-					catch (err) {
-						reject.call(def_wrapper,err);
-					}
-				})
-			}
-			else {
-				self.msg = msg;
-				self.state = 1;
-				if (self.chain.length > 0) {
-					schedule(notify,self);
-				}
-			}
-		}
-		catch (err) {
-			reject.call(new MakeDefWrapper(self),err);
-		}
-	}
-
-	function reject(msg) {
-		var self = this;
-
-		// already triggered?
-		if (self.triggered) { return; }
-
-		self.triggered = true;
-
-		// unwrap
-		if (self.def) {
-			self = self.def;
-		}
-
-		self.msg = msg;
-		self.state = 2;
-		if (self.chain.length > 0) {
-			schedule(notify,self);
-		}
-	}
-
-	function iteratePromises(Constructor,arr,resolver,rejecter) {
-		for (var idx=0; idx<arr.length; idx++) {
-			(function IIFE(idx){
-				Constructor.resolve(arr[idx])
-				.then(
-					function $resolver$(msg){
-						resolver(idx,msg);
-					},
-					rejecter
-				);
-			})(idx);
-		}
-	}
-
-	function MakeDefWrapper(self) {
-		this.def = self;
-		this.triggered = false;
-	}
-
-	function MakeDef(self) {
-		this.promise = self;
-		this.state = 0;
-		this.triggered = false;
-		this.chain = [];
-		this.msg = void 0;
-	}
-
-	function Promise(executor) {
-		if (typeof executor != "function") {
-			throw TypeError("Not a function");
-		}
-
-		if (this.__NPO__ !== 0) {
-			throw TypeError("Not a promise");
-		}
-
-		// instance shadowing the inherited "brand"
-		// to signal an already "initialized" promise
-		this.__NPO__ = 1;
-
-		var def = new MakeDef(this);
-
-		this["then"] = function then(success,failure) {
-			var o = {
-				success: typeof success == "function" ? success : true,
-				failure: typeof failure == "function" ? failure : false
-			};
-			// Note: `then(..)` itself can be borrowed to be used against
-			// a different promise constructor for making the chained promise,
-			// by substituting a different `this` binding.
-			o.promise = new this.constructor(function extractChain(resolve,reject) {
-				if (typeof resolve != "function" || typeof reject != "function") {
-					throw TypeError("Not a function");
-				}
-
-				o.resolve = resolve;
-				o.reject = reject;
-			});
-			def.chain.push(o);
-
-			if (def.state !== 0) {
-				schedule(notify,def);
-			}
-
-			return o.promise;
-		};
-		this["catch"] = function $catch$(failure) {
-			return this.then(void 0,failure);
-		};
-
-		try {
-			executor.call(
-				void 0,
-				function publicResolve(msg){
-					resolve.call(def,msg);
-				},
-				function publicReject(msg) {
-					reject.call(def,msg);
-				}
-			);
-		}
-		catch (err) {
-			reject.call(def,err);
-		}
-	}
-
-	var PromisePrototype = builtInProp({},"constructor",Promise,
-		/*configurable=*/false
-	);
-
-	// Note: Android 4 cannot use `Object.defineProperty(..)` here
-	Promise.prototype = PromisePrototype;
-
-	// built-in "brand" to signal an "uninitialized" promise
-	builtInProp(PromisePrototype,"__NPO__",0,
-		/*configurable=*/false
-	);
-
-	builtInProp(Promise,"resolve",function Promise$resolve(msg) {
-		var Constructor = this;
-
-		// spec mandated checks
-		// note: best "isPromise" check that's practical for now
-		if (msg && typeof msg == "object" && msg.__NPO__ === 1) {
-			return msg;
-		}
-
-		return new Constructor(function executor(resolve,reject){
-			if (typeof resolve != "function" || typeof reject != "function") {
-				throw TypeError("Not a function");
-			}
-
-			resolve(msg);
-		});
-	});
-
-	builtInProp(Promise,"reject",function Promise$reject(msg) {
-		return new this(function executor(resolve,reject){
-			if (typeof resolve != "function" || typeof reject != "function") {
-				throw TypeError("Not a function");
-			}
-
-			reject(msg);
-		});
-	});
-
-	builtInProp(Promise,"all",function Promise$all(arr) {
-		var Constructor = this;
-
-		// spec mandated checks
-		if (ToString.call(arr) != "[object Array]") {
-			return Constructor.reject(TypeError("Not an array"));
-		}
-		if (arr.length === 0) {
-			return Constructor.resolve([]);
-		}
-
-		return new Constructor(function executor(resolve,reject){
-			if (typeof resolve != "function" || typeof reject != "function") {
-				throw TypeError("Not a function");
-			}
-
-			var len = arr.length, msgs = Array(len), count = 0;
-
-			iteratePromises(Constructor,arr,function resolver(idx,msg) {
-				msgs[idx] = msg;
-				if (++count === len) {
-					resolve(msgs);
-				}
-			},reject);
-		});
-	});
-
-	builtInProp(Promise,"race",function Promise$race(arr) {
-		var Constructor = this;
-
-		// spec mandated checks
-		if (ToString.call(arr) != "[object Array]") {
-			return Constructor.reject(TypeError("Not an array"));
-		}
-
-		return new Constructor(function executor(resolve,reject){
-			if (typeof resolve != "function" || typeof reject != "function") {
-				throw TypeError("Not a function");
-			}
-
-			iteratePromises(Constructor,arr,function resolver(idx,msg){
-				resolve(msg);
-			},reject);
-		});
-	});
-
-	return Promise;
-});
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(27).setImmediate))
-
-/***/ }),
-/* 130 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseMessageData;
-/* harmony export (immutable) */ __webpack_exports__["b"] = postMessage;
-/* harmony export (immutable) */ __webpack_exports__["c"] = processData;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__callbacks__ = __webpack_require__(125);
-/**
- * @module lib/postmessage
- */
-
-
-
-/**
- * Parse a message received from postMessage.
- *
- * @param {*} data The data received from postMessage.
- * @return {object}
- */
-function parseMessageData(data) {
-    if (typeof data === 'string') {
-        data = JSON.parse(data);
-    }
-
-    return data;
-}
-
-/**
- * Post a message to the specified target.
- *
- * @param {Player} player The player object to use.
- * @param {string} method The API method to call.
- * @param {object} params The parameters to send to the player.
- * @return {void}
- */
-function postMessage(player, method, params) {
-    if (!player.element.contentWindow || !player.element.contentWindow.postMessage) {
-        return;
-    }
-
-    let message = {
-        method
-    };
-
-    if (params !== undefined) {
-        message.value = params;
-    }
-
-    // IE 8 and 9 do not support passing messages, so stringify them
-    const ieVersion = parseFloat(navigator.userAgent.toLowerCase().replace(/^.*msie (\d+).*$/, '$1'));
-    if (ieVersion >= 8 && ieVersion < 10) {
-        message = JSON.stringify(message);
-    }
-
-    player.element.contentWindow.postMessage(message, player.origin);
-}
-
-/**
- * Parse the data received from a message event.
- *
- * @param {Player} player The player that received the message.
- * @param {(Object|string)} data The message data. Strings will be parsed into JSON.
- * @return {void}
- */
-function processData(player, data) {
-    data = parseMessageData(data);
-    let callbacks = [];
-    let param;
-
-    if (data.event) {
-        if (data.event === 'error') {
-            const promises = Object(__WEBPACK_IMPORTED_MODULE_0__callbacks__["a" /* getCallbacks */])(player, data.data.method);
-
-            promises.forEach((promise) => {
-                const error = new Error(data.data.message);
-                error.name = data.data.name;
-
-                promise.reject(error);
-                Object(__WEBPACK_IMPORTED_MODULE_0__callbacks__["b" /* removeCallback */])(player, data.data.method, promise);
-            });
-        }
-
-        callbacks = Object(__WEBPACK_IMPORTED_MODULE_0__callbacks__["a" /* getCallbacks */])(player, `event:${data.event}`);
-        param = data.data;
-    }
-    else if (data.method) {
-        const callback = Object(__WEBPACK_IMPORTED_MODULE_0__callbacks__["c" /* shiftCallbacks */])(player, data.method);
-
-        if (callback) {
-            callbacks.push(callback);
-            param = data.value;
-        }
-    }
-
-    callbacks.forEach((callback) => {
-        try {
-            if (typeof callback === 'function') {
-                callback.call(player, param);
-                return;
-            }
-
-            callback.resolve(param);
-        }
-        catch (e) {
-            // empty
-        }
-    });
-}
-
-
-/***/ }),
-/* 131 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(132);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(2)("0bde6028", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1c969660\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainMenu.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1c969660\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MainMenu.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 132 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n#main-menu > nav[data-v-1c969660] {\n  position: fixed;\n  top: 0;\n  width: 100%;\n  height: 72px;\n  padding: 0;\n  z-index: 9;\n}\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    width: 100%;\n    -webkit-box-pack: end;\n        -ms-flex-pack: end;\n            justify-content: flex-end;\n}\n#main-menu > nav > .navbar-nav > .nav-link[data-v-1c969660] {\n      padding: 0;\n}\n#main-menu > nav > .navbar-nav > .nav-link > h5[data-v-1c969660] {\n        margin-bottom: 0;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 133 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "main-menu" } }, [
-    _c("nav", { staticClass: "navbar navbar-light bg-success" }, [
-      _c(
-        "div",
-        { staticClass: "navbar-nav d-flex" },
-        [
-          _c(
-            "router-link",
-            {
-              staticClass: "nav-link active text-default",
-              attrs: { to: "/works" },
-              nativeOn: {
-                click: function($event) {
-                  return _vm.clicked($event)
-                }
-              }
-            },
-            [_c("h5", [_vm._v("Works")])]
-          ),
-          _vm._v(" "),
-          _c(
-            "router-link",
-            {
-              staticClass: "nav-link text-default",
-              attrs: { to: "/about" },
-              nativeOn: {
-                click: function($event) {
-                  return _vm.clicked($event)
-                }
-              }
-            },
-            [_c("h5", [_vm._v("About")])]
-          ),
-          _vm._v(" "),
-          _c(
-            "router-link",
-            {
-              staticClass: "nav-link text-default",
-              attrs: { to: "/contacts" },
-              nativeOn: {
-                click: function($event) {
-                  return _vm.clicked($event)
-                }
-              }
-            },
-            [_c("h5", [_vm._v("Contacts")])]
-          )
-        ],
-        1
-      )
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-1c969660", module.exports)
-  }
-}
-
-/***/ }),
-/* 134 */,
-/* 135 */,
-/* 136 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(137);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(2)("31d6a5be", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-48b2be82\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Works.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-48b2be82\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Works.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 137 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n#works-wrapper[data-v-48b2be82] {\n  margin-top: 72px;\n  padding-top: 32px;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 138 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "container", attrs: { id: "works-wrapper" } },
-    _vm._l(_vm.posts, function(post, key) {
-      return _c("grid-el", { key: key, attrs: { post: post, counter: key } })
-    })
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-48b2be82", module.exports)
-  }
-}
-
 /***/ })
-],[24]);
+],[27]);

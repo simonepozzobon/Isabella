@@ -1,5 +1,5 @@
 <template>
-    <main>
+    <div id="hero-wrapper">
         <div class="action">
             <div class="row">
                 <div class="col justify-content-around">
@@ -16,7 +16,7 @@
         <div id="video-hero-container">
             <div id="video-hero"></div>
         </div>
-    </main>
+    </div>
 </template>
 <script>
 import {
@@ -25,8 +25,6 @@ import {
     TimelineMax
 } from 'gsap'
 import Player from '@vimeo/player/src/player'
-import { getOEmbedParameters, getOEmbedData, createEmbed, initializeEmbeds, resizeEmbeds } from '@vimeo/player/src/lib/embed';
-
 
 export default {
     data: function () {
@@ -127,6 +125,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+#hero-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
 #enter {
     display: none;
     opacity: 0;

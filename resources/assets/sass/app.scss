@@ -4,6 +4,7 @@
 @import 'node_modules/normalize.css/normalize';
 
 @import 'node_modules/bootstrap/scss/functions';
+@import 'custom-variables';
 @import 'variables';
 
 @import 'node_modules/bootstrap/scss/bootstrap.scss';
@@ -15,7 +16,7 @@
 a {
   &.link-light {
     color: $white;
-    
+
     &:hover, &:active, &:visited {
       color: $white;
     }

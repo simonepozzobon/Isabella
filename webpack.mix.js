@@ -17,4 +17,11 @@ mix
         files: [
             '**/*',
         ]
+    })
+    .webpackConfig({
+        resolve: {
+            alias: {
+                'styles' : path.resolve(__dirname, 'resources/assets/sass')
+            }
+        }
     });

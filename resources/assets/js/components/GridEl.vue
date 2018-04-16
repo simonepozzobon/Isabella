@@ -86,7 +86,7 @@ export default {
             })
         },
         resizeCol: function() {
-            if (this.routeIsOpen) {
+            if (this.routeIsOpen && this.$refs.col) {
                 var col = this.$refs.col.offsetWidth
                 this.mediaSize = col - 30
             }
@@ -95,9 +95,9 @@ export default {
     mounted() {
         this.resizeCol()
         this.loadAnimation()
-        window.addEventListener('resize', _.debounce(() => {
+        window.addEventListener('resize', () => {
             this.resizeCol()
-        }, 250))
+        })
     },
 }
 </script>

@@ -1,6 +1,6 @@
 <template lang="html">
     <div id="main-menu">
-        <nav class="navbar navbar-light bg-success">
+        <nav class="navbar navbar-light bg-light">
             <div class="navbar-nav d-flex">
                 <router-link class="nav-link active text-default" :to="'/works'" @click.native="clicked">
                     <h5>Works</h5>
@@ -29,23 +29,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~styles/custom-variables';
     #main-menu {
         > nav {
             position: fixed;
             top: 0;
             width: 100%;
-            height: 72px;
+            height: $nav-height;
             padding: 0;
-            z-index: 9;
+            z-index: $nav-z-index;
 
             > .navbar-nav {
                 flex-direction: row;
                 width: 100%;
                 justify-content: flex-end;
-
+                padding-right: $spacer;
 
                 > .nav-link {
-                    padding: 0;
+                    padding: 0 $spacer 0 $spacer;
 
                     > h5 {
                         margin-bottom: 0;

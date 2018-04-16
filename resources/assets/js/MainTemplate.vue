@@ -1,11 +1,16 @@
 <template lang="html">
     <div class="main-container">
-        <!-- <canvas id="animationPage" ref="animationPage" resize></canvas> -->
-        <main-menu v-if="notHome"/>
-        <transition :css="false" @enter="enter" @leave="leave">
-            <router-view></router-view>
-        </transition>
-        <footer-layout v-if="notHome"/>
+        <div id="main-navigation">
+          <main-menu v-if="notHome"/>
+        </div>
+        <div id="content" class="container">
+          <transition :css="false" @enter="enter" @leave="leave">
+              <router-view></router-view>
+          </transition>
+        </div>
+        <div id="footer">
+          <footer-layout v-if="notHome"/>
+        </div>
     </div>
 </template>
 
@@ -79,6 +84,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    #content {
+        padding-top: 32px;
+        margin: 72px auto;
+        min-height: calc(100vh - 144px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
     #animationPage {
         position: absolute;
         width: 100%;

@@ -1,5 +1,6 @@
 <template>
-    <footer class="w-100 bg-danger" ref="footer">
+    <footer class="bg-light" ref="footer">
+        <div class="spacer"></div>
         <div class="copyright">
             <span class="pt-2 text-default">
                 <small>© Isabella Fornasiero 2018. All rights reserved.</small>
@@ -352,53 +353,59 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-footer {
-    position: fixed;
-    bottom: 0;
-    min-height: 72px;
-    height: 72px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+@import '~styles/custom-variables';
+  footer {
+      position: fixed;
+      bottom: 0;
+      height: $nav-height;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0 $spacer;
 
-    > .copyright {
-    }
+      > .spacer {
+          width: 47px;
+          display: block;
+      }
 
-    > .eye-animation {
-    }
+      > .copyright {
+      }
 
-    svg {
-        cursor: pointer;
-        display: block;
-    }
-}
+      > .eye-animation {
+      }
 
-#black-square {
-    display: none;
-    width: 54px;
-    height: 56px;
-    position: absolute;
-    bottom: 1.4rem;
-    right: 0.75rem;
-    transform: rotate(45deg);
-    opacity: 0;
-    z-index: 0;
-}
+      svg {
+          cursor: pointer;
+          display: block;
+      }
+  }
 
-.fill-black {
-    fill: #1e1f1c;
-}
+  #black-square {
+      display: none;
+      width: 54px;
+      height: 56px;
+      position: absolute;
+      bottom: 1.4rem;
+      right: 0.75rem;
+      transform: rotate(45deg);
+      opacity: 0;
+      z-index: 0;
+  }
 
-.stroke-black {
-    stroke: #1e1f1c;
-}
+  .fill-black {
+      fill: $black;
+  }
 
-.fill-secondary {
-    fill: #fffdf4;
-}
+  .stroke-black {
+      stroke: $black;
+  }
 
-.stroke-secondary {
-    stroke: #fffdf4;
-}
+  .fill-secondary {
+      fill: $white;
+  }
+
+  .stroke-secondary {
+      stroke: $white;
+  }
 </style>

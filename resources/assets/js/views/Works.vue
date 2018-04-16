@@ -1,5 +1,5 @@
 <template>
-    <div id="works-wrapper" class="container">
+    <div id="works" class="row">
         <grid-el
             v-for="(post, key) in posts"
             :key="key"
@@ -29,8 +29,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#works-wrapper {
-    margin-top: 72px;
-    padding-top: 32px;
-}
 </style>
