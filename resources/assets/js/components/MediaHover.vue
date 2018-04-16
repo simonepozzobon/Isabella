@@ -1,6 +1,6 @@
 <template lang="html">
     <router-link :to="'/work/'+link">
-        <div class="media-hover">
+        <div ref="mediaHover" class="media-hover">
             <svg viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g id="hover" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                     <!-- Image background -->
@@ -40,6 +40,10 @@ export default {
             type: String,
             default: 'none',
         },
+        size: {
+            type: Number,
+            default: 0,
+        },
         src: {
             type: String,
             default: 'none',
@@ -69,6 +73,10 @@ export default {
             if (status && this.current == this.id) {
                 this.animateIn()
             }
+        },
+        size: function(size) {
+            this.$refs.mediaHover.style.height = `${size}`
+            this.$refs.mediaHover.style.width = `${size}`
         },
         trigger: function(newtrigger) {
             if (this.current == this.id && this.canAnimateIn) {
@@ -191,11 +199,13 @@ export default {
     .media-hover {
         position: relative;
         cursor: pointer;
+        overflow: hidden;
+        border-radius: 5px;
 
         > svg {
-            position: relative;
             width: 100%;
             height: 100%;
+            display: block;
         }
     }
 

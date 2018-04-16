@@ -71820,7 +71820,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.img_grid[data-v-8f473df8] {\n    overflow: hidden;\n    border-radius: .15rem;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -71883,6 +71883,11 @@ exports.default = {
     components: {
         MediaHover: _MediaHover2.default
     },
+    data: function data() {
+        return {
+            mediaSize: 0
+        };
+    },
     computed: {
         isDark: function isDark() {
             if (localStorage.getItem('dark_theme')) {
@@ -71932,9 +71937,7 @@ exports.default = {
         resizeCol: function resizeCol() {
             if (this.routeIsOpen) {
                 var col = this.$refs.col.offsetWidth;
-                this.$refs.img_grid.$el.style.height = col - 30 + 'px';
-                this.$refs.img_grid.$el.style.background = 'url(' + this.img + ') center';
-                this.$refs.img_grid.$el.style.backgroundSize = 'cover';
+                this.mediaSize = col - 30;
             }
         }
     },
@@ -72063,7 +72066,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.media-hover {\n  position: relative;\n  cursor: pointer;\n}\n.media-hover > svg {\n    position: relative;\n    width: 100%;\n    height: 100%;\n}\n.fill-black {\n  fill: #1e1f1c;\n}\n.fill-secondary {\n  fill: #fffdf4;\n}\n.hidden {\n  visibility: hidden;\n}\n.start-hidden {\n  opacity: 0;\n}\n", ""]);
+exports.push([module.i, "\n.media-hover {\n  position: relative;\n  cursor: pointer;\n  overflow: hidden;\n  border-radius: 5px;\n}\n.media-hover > svg {\n    width: 100%;\n    height: 100%;\n    display: block;\n}\n.fill-black {\n  fill: #1e1f1c;\n}\n.fill-secondary {\n  fill: #fffdf4;\n}\n.hidden {\n  visibility: hidden;\n}\n.start-hidden {\n  opacity: 0;\n}\n", ""]);
 
 // exports
 
@@ -72133,6 +72136,10 @@ exports.default = {
             type: String,
             default: 'none'
         },
+        size: {
+            type: Number,
+            default: 0
+        },
         src: {
             type: String,
             default: 'none'
@@ -72162,6 +72169,10 @@ exports.default = {
             if (status && this.current == this.id) {
                 this.animateIn();
             }
+        },
+        size: function size(_size) {
+            this.$refs.mediaHover.style.height = '' + _size;
+            this.$refs.mediaHover.style.width = '' + _size;
         },
         trigger: function trigger(newtrigger) {
             if (this.current == this.id && this.canAnimateIn) {
@@ -78554,7 +78565,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("router-link", { attrs: { to: "/work/" + _vm.link } }, [
-    _c("div", { staticClass: "media-hover" }, [
+    _c("div", { ref: "mediaHover", staticClass: "media-hover" }, [
       _c(
         "svg",
         {
@@ -78684,9 +78695,12 @@ var render = function() {
           { staticClass: "col work" },
           [
             _c("media-hover", {
-              ref: "img_grid",
-              staticClass: "img_grid",
-              attrs: { id: _vm.id, src: _vm.img, link: _vm.link }
+              attrs: {
+                id: _vm.id,
+                src: _vm.img,
+                link: _vm.link,
+                size: _vm.mediaSize
+              }
             })
           ],
           1

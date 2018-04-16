@@ -2,7 +2,7 @@
 <div :id="'work-'+this.id" class="col-md-4 col-lg-4 box mb-4" ref="col" @mouseover="animateIn(id)" @mouseleave="animateOut(id)" >
     <div class="row pb-4">
         <div class="col work">
-            <media-hover :id="id" :src="img" :link="link" ref="img_grid" class="img_grid"/>
+            <media-hover :id="id" :src="img" :link="link" :size="mediaSize"/>
         </div>
     </div>
     <div class="row">
@@ -33,6 +33,11 @@ export default {
     },
     components: {
         MediaHover,
+    },
+    data: function() {
+        return {
+            mediaSize: 0,
+        }
     },
     computed: {
         isDark: function() {
@@ -83,9 +88,7 @@ export default {
         resizeCol: function() {
             if (this.routeIsOpen) {
                 var col = this.$refs.col.offsetWidth
-                this.$refs.img_grid.$el.style.height = (col - 30) + 'px'
-                this.$refs.img_grid.$el.style.background = 'url(' + this.img + ') center'
-                this.$refs.img_grid.$el.style.backgroundSize = 'cover'
+                this.mediaSize = col - 30
             }
         },
     },
@@ -99,8 +102,4 @@ export default {
 }
 </script>
 <style scoped>
-.img_grid {
-    overflow: hidden;
-    border-radius: .15rem;
-}
 </style>
