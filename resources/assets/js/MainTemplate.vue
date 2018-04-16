@@ -25,11 +25,14 @@ export default {
             }
             return true
         },
+        loggedIn: function() {
+            if (!localStorage.getItem('login')) {
+                this.$router.replace('/')
+            }
+        }
     },
     watch: {
-        $route: function(route) {
-            console.log(route)
-        }
+        $route: function() {}
     },
     methods: {
         enter: function(el, done) {
@@ -53,9 +56,10 @@ export default {
                     done()
                 }
             })
-        }
+        },
     },
-    mounted() {
+    mounted(){
+        this.loggedIn
     }
 }
 </script>

@@ -10663,53 +10663,7 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(3)
-/* script */
-var __vue_script__ = __webpack_require__(44)
-/* template */
-var __vue_template__ = __webpack_require__(50)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/layouts/MainLayout.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7799ea4a", Component.options)
-  } else {
-    hotAPI.reload("data-v-7799ea4a", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
+/* 8 */,
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33011,20 +32965,25 @@ var router = new _vueRouter2.default({
         component: __webpack_require__(34)
     }, {
         path: '/works',
+        name: 'Works',
         component: __webpack_require__(40)
     }, {
         path: '/about',
+        name: 'About',
         component: __webpack_require__(91)
     }, {
         path: '/contacts',
         alias: '/contact',
+        name: 'Contact',
         component: __webpack_require__(96)
     }, {
         path: '/cv',
         alias: '/curriculum',
+        name: 'Cv',
         component: __webpack_require__(102)
     }, {
         path: '/work/:slug',
+        name: 'Single-Work',
         component: __webpack_require__(107)
     }]
 });
@@ -33035,14 +32994,6 @@ var app = new _vue2.default({
     components: {
         MainTemplate: _MainTemplate2.default
     }
-    // created() {
-    //     AOS.init({
-    //         easing: 'ease-in-out-sine',
-    //         duration: 600,
-    //         once: true,
-    //     })
-    //     AOS.refresh()
-    // },
 }).$mount('#app');
 
 window.addEventListener('popstate', function () {
@@ -39406,57 +39357,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _FooterLayout = __webpack_require__(45);
-
-var _FooterLayout2 = _interopRequireDefault(_FooterLayout);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    mounted: function mounted() {
-        //login
-        this.login = localStorage.getItem('login') || false;
-        if (!this.login) {
-            this.$router.push('/');
-        }
-    },
-
-    methods: {
-        changeColor: function changeColor() {
-            var vue = this;
-        }
-    },
-    components: {
-        FooterLayout: _FooterLayout2.default
-    }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/***/ }),
+/* 44 */,
 /* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -40094,68 +39995,7 @@ if (false) {
 }
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "main",
-    { staticClass: "bg-default" },
-    [
-      _c("nav", { staticClass: "navbar navbar-light bg-light sticky-top" }, [
-        _c(
-          "div",
-          { staticClass: "d-flex justify-content-end ml-auto" },
-          [
-            _c(
-              "router-link",
-              {
-                staticClass: "nav-link active text-default",
-                attrs: { to: "/works" }
-              },
-              [_c("h5", [_vm._v("Works")])]
-            ),
-            _vm._v(" "),
-            _c(
-              "router-link",
-              { staticClass: "nav-link text-default", attrs: { to: "/about" } },
-              [_c("h5", [_vm._v("About")])]
-            ),
-            _vm._v(" "),
-            _c(
-              "router-link",
-              {
-                staticClass: "nav-link text-default",
-                attrs: { to: "/contacts" }
-              },
-              [_c("h5", [_vm._v("Contacts")])]
-            )
-          ],
-          1
-        )
-      ]),
-      _vm._v(" "),
-      _vm._t("default"),
-      _vm._v(" "),
-      _c("footer-layout")
-    ],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-7799ea4a", module.exports)
-  }
-}
-
-/***/ }),
+/* 50 */,
 /* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -40448,6 +40288,12 @@ exports.default = {
         MediaHover: _MediaHover2.default
     },
     computed: {
+        routeIsOpen: function routeIsOpen() {
+            if (this.$route.name == 'Works') {
+                return true;
+            }
+            return false;
+        },
         id: function id() {
             return parseInt(this.post.data.id);
         },
@@ -40482,10 +40328,12 @@ exports.default = {
             });
         },
         resizeCol: function resizeCol() {
-            var col = this.$refs.col.offsetWidth;
-            this.$refs.img_grid.$el.style.height = col - 30 + 'px';
-            this.$refs.img_grid.$el.style.background = 'url(' + this.img + ') center';
-            this.$refs.img_grid.$el.style.backgroundSize = 'cover';
+            if (this.routeIsOpen) {
+                var col = this.$refs.col.offsetWidth;
+                this.$refs.img_grid.$el.style.height = col - 30 + 'px';
+                this.$refs.img_grid.$el.style.background = 'url(' + this.img + ') center';
+                this.$refs.img_grid.$el.style.backgroundSize = 'cover';
+            }
         }
     },
     mounted: function mounted() {
@@ -48495,7 +48343,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n.container[data-v-3afe55c6] {\n  height: calc(100vh - 92px);\n}\ninput[data-v-3afe55c6], textarea[data-v-3afe55c6] {\n  border-left: none !important;\n  border-right: none !important;\n  border-top: none !important;\n  border-bottom: 2px solid #1e1f1c;\n}\n#contact-form[data-v-3afe55c6] {\n  display: none;\n}\n.form-group[data-v-3afe55c6] {\n  opacity: 0;\n}\n#close[data-v-3afe55c6] {\n  top: -20px;\n  position: relative;\n}\n", ""]);
+exports.push([module.i, "\n.container[data-v-3afe55c6] {\n  height: calc(100vh - 92px);\n}\ninput[data-v-3afe55c6],\ntextarea[data-v-3afe55c6] {\n  border-left: none !important;\n  border-right: none !important;\n  border-top: none !important;\n  border-bottom: 2px solid #1e1f1c;\n}\n#contact-form[data-v-3afe55c6] {\n  display: none;\n}\n.form-group[data-v-3afe55c6] {\n  opacity: 0;\n}\n#close[data-v-3afe55c6] {\n  top: -20px;\n  position: relative;\n}\n", ""]);
 
 // exports
 
@@ -48508,7 +48356,7 @@ exports.push([module.i, "\n.container[data-v-3afe55c6] {\n  height: calc(100vh -
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _gsap = __webpack_require__(7);
@@ -48566,84 +48414,83 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 
 exports.default = {
-  name: "",
-  mounted: function mounted() {
-
-    this.formGroups = document.getElementsByClassName('form-group');
-  },
-
-  methods: {
-    showContact: function showContact(e) {
-      e.preventDefault();
-      var vue = this;
-
-      var hide_contacts = new TimelineMax();
-      hide_contacts.to([this.$refs.address, this.$refs.show_contact_btn], .4, {
-        opacity: 0,
-        ease: _CustomEase2.default.create("custom", "M0,0,C0,0.500,0.500,1,1,1"),
-        display: 'none',
-        onComplete: function onComplete() {
-          vue.$refs.contact_form.style.display = 'inherit';
-        }
-      }).staggerFromTo(this.formGroups, .6, {
-        y: '+=100',
-        scale: 0.8,
-        opacity: 0
-      }, {
-        y: 0,
-        scale: 1,
-        opacity: 1,
-        ease: _CustomEase2.default.create("custom", "M0,0,C0,0.500,0.500,1,1,1")
-      }, .2);
-
-      var master = new TimelineMax();
-      master.add(hide_contacts);
-      master.add(_gsap.TweenMax.fromTo(this.$refs.close, 1, {
-        opacity: 0,
-        scale: 0,
-        x: 100
-      }, {
-        opacity: 1,
-        scale: 1,
-        x: 0,
-        rotation: -180,
-        ease: _CustomEase2.default.create("custom", "M0,0,C0,0.500,0.500,1,1,1")
-      }), .4);
+    name: "",
+    mounted: function mounted() {
+        this.formGroups = document.getElementsByClassName('form-group');
     },
-    closeContact: function closeContact(e) {
-      e.preventDefault();
-      var vue = this;
 
-      var hide_form = new TimelineMax();
+    methods: {
+        showContact: function showContact(e) {
+            e.preventDefault();
+            var vue = this;
 
-      hide_form.to(this.formGroups, .1, {
-        scale: 1.1
-      }).to(this.formGroups, .4, {
-        y: 0,
-        opacity: 0,
-        scale: 0.8,
-        ease: Power4.easeInOut
-      });
+            var t1 = new TimelineMax();
+            t1.to([this.$refs.address, this.$refs.show_contact_btn], .4, {
+                opacity: 0,
+                ease: _CustomEase2.default.create("custom", "M0,0,C0,0.500,0.500,1,1,1"),
+                display: 'none',
+                onComplete: function onComplete() {
+                    vue.$refs.contact_form.style.display = 'inherit';
+                }
+            }).staggerFromTo(this.formGroups, .6, {
+                y: '+=100',
+                scale: 0.8,
+                opacity: 0
+            }, {
+                y: 0,
+                scale: 1,
+                opacity: 1,
+                ease: _CustomEase2.default.create("custom", "M0,0,C0,0.500,0.500,1,1,1")
+            }, .2);
 
-      var master = new TimelineMax();
+            var master = new TimelineMax();
+            master.add(t1);
+            master.add(_gsap.TweenMax.fromTo(this.$refs.close, 1, {
+                opacity: 0,
+                scale: 0,
+                x: 100
+            }, {
+                opacity: 1,
+                scale: 1,
+                x: 0,
+                rotation: -180,
+                ease: _CustomEase2.default.create("custom", "M0,0,C0,0.500,0.500,1,1,1")
+            }), .4);
+        },
+        closeContact: function closeContact(e) {
+            e.preventDefault();
+            var vue = this;
 
-      master.add(hide_form);
-      master.add(_gsap.TweenMax.to(this.$refs.close, .6, {
-        opacity: 0,
-        scale: 0,
-        rotation: 180,
-        ease: Power4.easeInOut,
-        onComplete: function onComplete() {
-          vue.$refs.contact_form.style.display = 'none';
+            var hide_form = new TimelineMax();
+
+            hide_form.to(this.formGroups, .1, {
+                scale: 1.1
+            }).to(this.formGroups, .4, {
+                y: 0,
+                opacity: 0,
+                scale: 0.8,
+                ease: Power4.easeInOut
+            });
+
+            var master = new TimelineMax();
+
+            master.add(hide_form);
+            master.add(_gsap.TweenMax.to(this.$refs.close, .6, {
+                opacity: 0,
+                scale: 0,
+                rotation: 180,
+                ease: Power4.easeInOut,
+                onComplete: function onComplete() {
+                    vue.$refs.contact_form.style.display = 'none';
+                }
+            }), .1);
+            master.add(_gsap.TweenMax.to([this.$refs.address, this.$refs.show_contact_btn], .4, {
+                opacity: 1,
+                display: 'inherit',
+                ease: Power4.easeInOut
+            }), .6);
         }
-      }), .1);
-      master.add(_gsap.TweenMax.to([this.$refs.address, this.$refs.show_contact_btn], .4, {
-        opacity: 1,
-        display: 'inherit',
-        ease: Power4.easeInOut
-      }), .6);
     }
-  }
 };
 
 /***/ }),
@@ -49488,10 +49335,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _MainLayout = __webpack_require__(8);
-
-var _MainLayout2 = _interopRequireDefault(_MainLayout);
-
 var _axios = __webpack_require__(19);
 
 var _axios2 = _interopRequireDefault(_axios);
@@ -49506,96 +49349,43 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
 exports.default = {
-    props: [''],
     data: function data() {
         return {
-            article: [],
-            window: {}
+            article: {},
+            loaded: false
         };
+    },
+    methods: {
+        resizeFeatured: function resizeFeatured() {
+            this.$refs['hero-img'].style.height = window.innerHeight - this.$refs['title'].offsetHeight - this.$refs['divider'].offsetHeight - 48 - 33 - 66 + 'px';
+        }
     },
     mounted: function mounted() {
         var _this = this;
 
-        var vue = this;
-        var slug = this.$route.params.slug;
-        this._height = window.innerHeight;
-        this.getPost(slug);
+        _axios2.default.get('/api/search-post/' + this.$route.params.slug).then(function (response) {
+            _this.article = response.data.data;
+            _this.loaded = true;
+            _this.$nextTick(function () {
+                _this.resizeFeatured();
+            });
+        });
         window.addEventListener('resize', _lodash2.default.debounce(function () {
-            // this.resizeImg();
             _this.resizeFeatured();
         }, 250));
-        this.resizeFeatured();
-    },
-
-    methods: {
-        getPost: function getPost(slug) {
-            var _this2 = this;
-
-            _axios2.default.get('/api/search-post/' + slug).then(function (response) {
-                console.log(response);
-                _this2.article = response.data.data;
-                // var regex = /<img(.*?)>/g;
-                // this.article.html = this.article.html.replace(regex, '<img $1 class="mx-auto d-block pt-5">');
-                _lodash2.default.delay(function () {
-                    // this.resizeImg();
-                    _this2.resizeFeatured();
-                }, 50);
-            });
-        },
-        resizeImg: function resizeImg() {
-            var imgs = this.$refs['html'].querySelectorAll('img');
-            var nav = document.querySelector('nav').offsetHeight;
-            var h_max = window.innerHeight - nav * 2;
-            var w_max = window.innerWidth - nav;
-
-            var style = window.getComputedStyle(this.$refs['container'], null);
-            var test = style.getPropertyValue('width');
-            var title_w = this.$refs['title'].getBoundingClientRect().width;
-
-            if (w_max > title_w) {
-                w_max = title_w;
-            }
-
-            _lodash2.default.each(imgs, function (img) {
-                var h = img.offsetHeight;
-                var w = img.offsetWidth;
-                var k = h / w;
-                if (h_max / k < w_max) {
-                    img.style.height = h_max + 'px';
-                    img.style.width = h_max / k + 'px';
-                } else {
-                    img.style.width = w_max + 'px';
-                    img.style.height = w_max * k + 'px';
-                }
-            });
-        },
-        resizeFeatured: function resizeFeatured() {
-            console.log('resized');
-            this.$refs['hero-img'].style.height = window.innerHeight - this.$refs['title'].offsetHeight - this.$refs['divider'].offsetHeight - 48 - 33 - 66 + 'px';
-
-            // document.getElementById('hero-img').style.height = ( window.innerHeight - $('#title').height() - $('nav').height() - $('hr').height() - 48 - 16 - 8 - 33 )+'px';
-        }
-    },
-    components: {
-        MainLayout: _MainLayout2.default
     }
-};
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /***/ }),
 /* 111 */
@@ -49609,7 +49399,7 @@ var render = function() {
     _c("div", {
       ref: "hero-img",
       staticClass: "w-100",
-      style: "background: url(" + _vm.article.featured_img + ");",
+      style: "background-image: url(" + _vm.article.featured_img + ");",
       attrs: { id: "hero-img" }
     }),
     _vm._v(" "),
@@ -49736,7 +49526,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -49775,12 +49565,15 @@ exports.default = {
                 return false;
             }
             return true;
+        },
+        loggedIn: function loggedIn() {
+            if (!localStorage.getItem('login')) {
+                this.$router.replace('/');
+            }
         }
     },
     watch: {
-        $route: function $route(route) {
-            console.log(route);
-        }
+        $route: function $route() {}
     },
     methods: {
         enter: function enter(el, done) {
@@ -49806,7 +49599,9 @@ exports.default = {
             });
         }
     },
-    mounted: function mounted() {}
+    mounted: function mounted() {
+        this.loggedIn;
+    }
 }; //
 //
 //

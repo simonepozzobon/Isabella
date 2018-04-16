@@ -30,20 +30,25 @@ const router = new VueRouter({
             component: require('./views/Home.vue')
         }, {
             path: '/works',
+            name: 'Works',
             component: require('./views/Works.vue')
         }, {
             path: '/about',
+            name: 'About',
             component: require('./views/About.vue')
         }, {
             path: '/contacts',
             alias: '/contact',
+            name: 'Contact',
             component: require('./views/Contact.vue')
         }, {
             path: '/cv',
             alias: '/curriculum',
+            name: 'Cv',
             component: require('./views/Cv.vue')
         }, {
             path: '/work/:slug',
+            name: 'Single-Work',
             component: require('./views/single/Work.vue')
         }
     ]
@@ -56,15 +61,7 @@ const app = new Vue({
     router,
     components: {
         MainTemplate,
-    },
-    // created() {
-    //     AOS.init({
-    //         easing: 'ease-in-out-sine',
-    //         duration: 600,
-    //         once: true,
-    //     })
-    //     AOS.refresh()
-    // },
+    }
 }).$mount('#app')
 
 window.addEventListener('popstate', () => {

@@ -35,6 +35,12 @@ export default {
         MediaHover,
     },
     computed: {
+        routeIsOpen: function() {
+            if (this.$route.name == 'Works') {
+                return true
+            }
+            return false
+        },
         id: function() {
             return parseInt(this.post.data.id)
         },
@@ -69,10 +75,12 @@ export default {
             })
         },
         resizeCol: function() {
-            var col = this.$refs.col.offsetWidth
-            this.$refs.img_grid.$el.style.height = (col - 30) + 'px'
-            this.$refs.img_grid.$el.style.background = 'url(' + this.img + ') center'
-            this.$refs.img_grid.$el.style.backgroundSize = 'cover'
+            if (this.routeIsOpen) {
+                var col = this.$refs.col.offsetWidth
+                this.$refs.img_grid.$el.style.height = (col - 30) + 'px'
+                this.$refs.img_grid.$el.style.background = 'url(' + this.img + ') center'
+                this.$refs.img_grid.$el.style.backgroundSize = 'cover'
+            }
         },
     },
     mounted() {
