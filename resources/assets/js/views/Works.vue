@@ -1,19 +1,36 @@
 <template>
-    <div class="container pt-5">
-        <grid></grid>
+    <div id="works-wrapper" class="container">
+        <grid-el
+            v-for="(post, key) in posts"
+            :key="key"
+            :post="post"
+            :counter="key"
+            />
     </div>
 </template>
 <script>
-import Grid from '../components/grid.vue'
+import GridEl from '../components/GridEl.vue'
+import axios from 'axios'
 
 export default {
     components: {
-        Grid
+        GridEl
+    },
+    data: () => ({
+        posts: []
+    }),
+    mounted() {
+        var vue = this
+        axios.get('/api/search-posts')
+            .then(response => {
+                vue.posts = response.data[1]
+            })
     },
 }
 </script>
-<style>
-.sr .box {
-    visibility: hidden;
+<style lang="scss" scoped>
+#works-wrapper {
+    margin-top: 72px;
+    padding-top: 32px;
 }
 </style>

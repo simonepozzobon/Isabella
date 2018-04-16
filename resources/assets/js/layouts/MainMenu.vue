@@ -1,17 +1,19 @@
 <template lang="html">
-    <nav class="navbar navbar-light bg-light sticky-top">
-        <div class="d-flex justify-content-end ml-auto">
-            <router-link class="nav-link active text-default" :to="'/works'" @click.native="clicked">
-                <h5>Works</h5>
-            </router-link>
-            <router-link class="nav-link text-default" :to="'/about'" @click.native="clicked">
-                <h5>About</h5>
-            </router-link>
-            <router-link class="nav-link text-default" :to="'/contacts'" @click.native="clicked">
-                <h5>Contacts</h5>
-            </router-link>
-        </div>
-    </nav>
+    <div id="main-menu">
+        <nav class="navbar navbar-light bg-success">
+            <div class="navbar-nav d-flex">
+                <router-link class="nav-link active text-default" :to="'/works'" @click.native="clicked">
+                    <h5>Works</h5>
+                </router-link>
+                <router-link class="nav-link text-default" :to="'/about'" @click.native="clicked">
+                    <h5>About</h5>
+                </router-link>
+                <router-link class="nav-link text-default" :to="'/contacts'" @click.native="clicked">
+                    <h5>Contacts</h5>
+                </router-link>
+            </div>
+        </nav>
+    </div>
 </template>
 
 <script>
@@ -26,5 +28,30 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="scss" scoped>
+    #main-menu {
+        > nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 72px;
+            padding: 0;
+            z-index: 9;
+
+            > .navbar-nav {
+                flex-direction: row;
+                width: 100%;
+                justify-content: flex-end;
+
+
+                > .nav-link {
+                    padding: 0;
+
+                    > h5 {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
 </style>
