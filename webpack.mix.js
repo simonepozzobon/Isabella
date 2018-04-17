@@ -21,7 +21,8 @@ mix
     .webpackConfig({
         resolve: {
             alias: {
-                'styles' : path.resolve(__dirname, 'resources/assets/sass')
+                'styles'    : path.resolve(__dirname, 'resources/assets/sass'),
+                'utils'     : path.resolve(__dirname, 'resources/assets/js/utils')
             }
         }
     });

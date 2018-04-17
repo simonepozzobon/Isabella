@@ -39,6 +39,10 @@ export default {
             padding: 0;
             z-index: $nav-z-index;
 
+            &.bg-inverse {
+                background-color: $black;
+            }
+
             > .navbar-nav {
                 flex-direction: row;
                 width: 100%;

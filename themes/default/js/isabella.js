@@ -11096,7 +11096,7 @@ module.exports = Vue;
 
 /***/ }),
 
-/***/ 120:
+/***/ 121:
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(7);
@@ -31026,7 +31026,7 @@ return jQuery;
 
 /***/ })
 
-},[120]);
+},[121]);
 webpackJsonp([0],[
 /* 0 */,
 /* 1 */
@@ -64206,7 +64206,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(28);
-module.exports = __webpack_require__(119);
+module.exports = __webpack_require__(120);
 
 
 /***/ }),
@@ -68725,7 +68725,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\nfooter[data-v-68922f86] {\n  position: fixed;\n  bottom: 0;\n  height: 4rem;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  width: 100%;\n  padding: 0 1rem;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\nfooter > .spacer[data-v-68922f86] {\n    width: 47px;\n    display: block;\n}\nfooter svg[data-v-68922f86] {\n    cursor: pointer;\n    display: block;\n}\nfooter #sub-footer[data-v-68922f86] {\n    font-size: 12.8px;\n}\n@media (max-width: 575.98px) {\nfooter[data-v-68922f86] {\n      font-size: 60%;\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n}\n#black-square[data-v-68922f86] {\n  display: none;\n  width: 54px;\n  height: 56px;\n  position: absolute;\n  bottom: 1.4rem;\n  right: 0.75rem;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  opacity: 0;\n  z-index: 0;\n}\n.fill-black[data-v-68922f86] {\n  fill: #1e1f1c;\n}\n.stroke-black[data-v-68922f86] {\n  stroke: #1e1f1c;\n}\n.fill-secondary[data-v-68922f86] {\n  fill: #fffdf4;\n}\n.stroke-secondary[data-v-68922f86] {\n  stroke: #fffdf4;\n}\n", ""]);
+exports.push([module.i, "\nfooter[data-v-68922f86] {\n  position: fixed;\n  bottom: 0;\n  height: 4rem;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  width: 100%;\n  padding: 0 1rem;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\nfooter > .spacer[data-v-68922f86] {\n    width: 47px;\n    display: block;\n}\nfooter svg[data-v-68922f86] {\n    cursor: pointer;\n    display: block;\n}\nfooter #sub-footer[data-v-68922f86] {\n    font-size: 12.8px;\n}\n@media (max-width: 575.98px) {\nfooter[data-v-68922f86] {\n      font-size: 60%;\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n}\n#black-square[data-v-68922f86] {\n  display: none;\n  width: 32px;\n  height: 33px;\n  position: absolute;\n  bottom: 16px;\n  right: 24px;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  opacity: 0;\n  z-index: 0;\n}\n.fill-black[data-v-68922f86] {\n  fill: #1e1f1c;\n}\n.stroke-black[data-v-68922f86] {\n  stroke: #1e1f1c;\n}\n.fill-secondary[data-v-68922f86] {\n  fill: #fffdf4;\n}\n.stroke-secondary[data-v-68922f86] {\n  stroke: #fffdf4;\n}\n", ""]);
 
 // exports
 
@@ -68881,8 +68881,8 @@ exports.default = {
                     }
                 }
             }).to(this.$refs.rombo, .2, {
-                height: '54px',
-                width: '54px',
+                height: '32px',
+                width: '33px',
                 transformOrigin: '50% 50%',
                 opacity: 0,
                 delay: .2,
@@ -68893,126 +68893,128 @@ exports.default = {
             var palpebraInf = document.getElementById('palpebra-inf-open');
             var palpebraSup = document.getElementById('palpebra-sup-open');
 
-            var t1 = new _gsap.TimelineMax({
-                id: 'pupilla'
-            });
-            t1.to('#pupilla', .42, {
-                delay: .25,
-                x: '+=50'
-            }).to('#pupilla', .42, {
-                delay: .375,
-                x: '-=100'
-            }).to('#pupilla', .42, {
-                delay: .375,
-                x: '+=50'
-            });
+            if (palpebraInf && palpebraSup) {
+                var t1 = new _gsap.TimelineMax({
+                    id: 'pupilla'
+                });
+                t1.to('#pupilla', .42, {
+                    delay: .25,
+                    x: '+=50'
+                }).to('#pupilla', .42, {
+                    delay: .375,
+                    x: '-=100'
+                }).to('#pupilla', .42, {
+                    delay: .375,
+                    x: '+=50'
+                });
 
-            var t2 = new _gsap.TimelineMax({
-                id: 'palpebra-inf'
-            });
-            t2.to(palpebraInf, .08, {
-                morphSVG: '#palpebra-inf'
-            }).to(palpebraInf, 0, {
-                visibility: 'hidden'
-            }).to('#palpebra-inf-closed', 0, {
-                visibility: 'visible'
-            }).to('#palpebra-inf-closed', 0, {
-                delay: .08,
-                visibility: 'hidden'
-            }).to(palpebraInf, 0, {
-                visibility: 'visible'
-            }).to(palpebraInf, .08, {
-                morphSVG: palpebraInf
-            });
+                var t2 = new _gsap.TimelineMax({
+                    id: 'palpebra-inf'
+                });
+                t2.to(palpebraInf, .08, {
+                    morphSVG: '#palpebra-inf'
+                }).to(palpebraInf, 0, {
+                    visibility: 'hidden'
+                }).to('#palpebra-inf-closed', 0, {
+                    visibility: 'visible'
+                }).to('#palpebra-inf-closed', 0, {
+                    delay: .08,
+                    visibility: 'hidden'
+                }).to(palpebraInf, 0, {
+                    visibility: 'visible'
+                }).to(palpebraInf, .08, {
+                    morphSVG: palpebraInf
+                });
 
-            var t3 = new _gsap.TimelineMax({
-                id: 'palpebra-sup'
-            });
-            t3.to(palpebraSup, .08, {
-                morphSVG: '#palpebra-sup-closed'
-            }).to(palpebraSup, .08, {
-                delay: .08,
-                morphSVG: palpebraSup
-            });
+                var t3 = new _gsap.TimelineMax({
+                    id: 'palpebra-sup'
+                });
+                t3.to(palpebraSup, .08, {
+                    morphSVG: '#palpebra-sup-closed'
+                }).to(palpebraSup, .08, {
+                    delay: .08,
+                    morphSVG: palpebraSup
+                });
 
-            var palperbraTimeline = new _gsap.TimelineMax();
-            palperbraTimeline.add(t2, 0.01);
-            palperbraTimeline.add(t3, 0.01);
+                var palperbraTimeline = new _gsap.TimelineMax();
+                palperbraTimeline.add(t2, 0.01);
+                palperbraTimeline.add(t3, 0.01);
 
-            var t4 = new _gsap.TimelineMax({
-                id: 'lettere'
-            });
-            t4.to('#P-letter', 0.01, {
-                visibility: 'visible'
-            }).to('#P-letter', 0, {
-                delay: .5,
-                visibility: 'hidden'
-            }).to('#R-letter', 0, {
-                visibility: 'visible'
-            }).to('#R-letter', 0, {
-                delay: .33,
-                visibility: 'hidden'
-            }).to('#E-letter', 0, {
-                visibility: 'visible'
-            }).to('#E-letter', 0, {
-                delay: .33,
-                visibility: 'hidden'
-            }).to('#S-letter-1', 0, {
-                visibility: 'visible'
-            }).to('#S-letter-1', 0, {
-                delay: .33,
-                visibility: 'hidden'
-            }).to('#S-letter-2', 0, {
-                visibility: 'visible'
-            }).to('#S-letter-2', 0, {
-                delay: .33,
-                visibility: 'hidden'
-            });
+                var t4 = new _gsap.TimelineMax({
+                    id: 'lettere'
+                });
+                t4.to('#P-letter', 0.01, {
+                    visibility: 'visible'
+                }).to('#P-letter', 0, {
+                    delay: .5,
+                    visibility: 'hidden'
+                }).to('#R-letter', 0, {
+                    visibility: 'visible'
+                }).to('#R-letter', 0, {
+                    delay: .33,
+                    visibility: 'hidden'
+                }).to('#E-letter', 0, {
+                    visibility: 'visible'
+                }).to('#E-letter', 0, {
+                    delay: .33,
+                    visibility: 'hidden'
+                }).to('#S-letter-1', 0, {
+                    visibility: 'visible'
+                }).to('#S-letter-1', 0, {
+                    delay: .33,
+                    visibility: 'hidden'
+                }).to('#S-letter-2', 0, {
+                    visibility: 'visible'
+                }).to('#S-letter-2', 0, {
+                    delay: .33,
+                    visibility: 'hidden'
+                });
 
-            var t5 = new _gsap.TimelineMax({
-                id: 'palpebra-inf'
-            });
-            t5.to(palpebraInf, .08, {
-                morphSVG: '#palpebra-inf'
-            }).to(palpebraInf, 0, {
-                visibility: 'hidden'
-            }).to('#palpebra-inf-closed', 0, {
-                visibility: 'visible'
-            }).to('#palpebra-inf-closed', 0, {
-                delay: .08,
-                visibility: 'hidden'
-            }).to(palpebraInf, 0, {
-                visibility: 'visible'
-            }).to(palpebraInf, .08, {
-                morphSVG: palpebraInf
-            });
+                var t5 = new _gsap.TimelineMax({
+                    id: 'palpebra-inf'
+                });
+                t5.to(palpebraInf, .08, {
+                    morphSVG: '#palpebra-inf'
+                }).to(palpebraInf, 0, {
+                    visibility: 'hidden'
+                }).to('#palpebra-inf-closed', 0, {
+                    visibility: 'visible'
+                }).to('#palpebra-inf-closed', 0, {
+                    delay: .08,
+                    visibility: 'hidden'
+                }).to(palpebraInf, 0, {
+                    visibility: 'visible'
+                }).to(palpebraInf, .08, {
+                    morphSVG: palpebraInf
+                });
 
-            var t6 = new _gsap.TimelineMax({
-                id: 'palpebra-sup'
-            });
-            t6.to(palpebraSup, .08, {
-                morphSVG: '#palpebra-sup-closed'
-            }).to(palpebraSup, .08, {
-                delay: .08,
-                morphSVG: palpebraSup
-            });
+                var t6 = new _gsap.TimelineMax({
+                    id: 'palpebra-sup'
+                });
+                t6.to(palpebraSup, .08, {
+                    morphSVG: '#palpebra-sup-closed'
+                }).to(palpebraSup, .08, {
+                    delay: .08,
+                    morphSVG: palpebraSup
+                });
 
-            var palperbraTimeline2 = new _gsap.TimelineMax();
-            palperbraTimeline2.add(t5, 0.01);
-            palperbraTimeline2.add(t6, 0.01);
+                var palperbraTimeline2 = new _gsap.TimelineMax();
+                palperbraTimeline2.add(t5, 0.01);
+                palperbraTimeline2.add(t6, 0.01);
 
-            var master = new _gsap.TimelineMax({
-                id: 'master'
-            });
-            master.add(t1, 0.01);
-            master.add(palperbraTimeline, 2.26);
-            master.add(t4, 2.42);
-            master.add(palperbraTimeline2, 4.20);
+                var master = new _gsap.TimelineMax({
+                    id: 'master'
+                });
+                master.add(t1, 0.01);
+                master.add(palperbraTimeline, 2.26);
+                master.add(t4, 2.42);
+                master.add(palperbraTimeline2, 4.20);
 
-            master.play();
-            master.eventCallback('onComplete', function () {
-                master.restart();
-            });
+                master.play();
+                master.eventCallback('onComplete', function () {
+                    master.restart();
+                });
+            }
         },
         everyThingDark: function everyThingDark() {
             console.log('dark');
@@ -69422,7 +69424,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n#main-menu > nav[data-v-1c969660] {\n  position: fixed;\n  top: 0;\n  width: 100%;\n  height: 4rem;\n  padding: 0;\n  z-index: 9;\n}\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    width: 100%;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    -webkit-box-pack: end;\n        -ms-flex-pack: end;\n            justify-content: flex-end;\n    padding-right: 1rem;\n    transition: all 0.2s ease-in-out;\n}\n#main-menu > nav > .navbar-nav > .nav-link[data-v-1c969660] {\n      padding: 0 1rem 0 1rem;\n}\n#main-menu > nav > .navbar-nav > .nav-link > h5[data-v-1c969660] {\n        margin-bottom: 0;\n}\n@media (max-width: 575.98px) {\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n        -webkit-box-pack: center;\n            -ms-flex-pack: center;\n                justify-content: center;\n        -webkit-box-align: center;\n            -ms-flex-align: center;\n                align-items: center;\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n}\n}\n", ""]);
+exports.push([module.i, "\n#main-menu > nav[data-v-1c969660] {\n  position: fixed;\n  top: 0;\n  width: 100%;\n  height: 4rem;\n  padding: 0;\n  z-index: 9;\n}\n#main-menu > nav.bg-inverse[data-v-1c969660] {\n    background-color: #1e1f1c;\n}\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    width: 100%;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    -webkit-box-pack: end;\n        -ms-flex-pack: end;\n            justify-content: flex-end;\n    padding-right: 1rem;\n    transition: all 0.2s ease-in-out;\n}\n#main-menu > nav > .navbar-nav > .nav-link[data-v-1c969660] {\n      padding: 0 1rem 0 1rem;\n}\n#main-menu > nav > .navbar-nav > .nav-link > h5[data-v-1c969660] {\n        margin-bottom: 0;\n}\n@media (max-width: 575.98px) {\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n        -webkit-box-pack: center;\n            -ms-flex-pack: center;\n                justify-content: center;\n        -webkit-box-align: center;\n            -ms-flex-align: center;\n                align-items: center;\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n}\n}\n", ""]);
 
 // exports
 
@@ -71498,7 +71500,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n#hero-wrapper[data-v-6c0a33b2] {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n}\n#enter[data-v-6c0a33b2] {\n  display: none;\n  opacity: 0;\n}\n#video-hero-container[data-v-6c0a33b2] {\n  position: relative;\n  overflow: hidden;\n  z-index: -100;\n}\n#video-hero-container #video-hero[data-v-6c0a33b2] {\n    padding: 0;\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    -webkit-transform: translate(-50%, -50%);\n            transform: translate(-50%, -50%);\n}\n", ""]);
+exports.push([module.i, "\nhtml[data-v-6c0a33b2] {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n}\n#hero-wrapper[data-v-6c0a33b2] {\n  position: absolute;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n}\n#enter[data-v-6c0a33b2] {\n  display: none;\n  opacity: 0;\n}\n#video-hero-container[data-v-6c0a33b2] {\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n  min-height: 100%;\n  z-index: -100;\n}\n#video-hero-container #video-hero[data-v-6c0a33b2] {\n    padding: 0;\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    -webkit-transform: translate(-50%, -50%);\n            transform: translate(-50%, -50%);\n}\n", ""]);
 
 // exports
 
@@ -71542,13 +71544,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
 
 exports.default = {
     data: function data() {
         return {
             password: '',
             videoEl: null,
-            videoId: 264890702,
+            videoId: 264962454,
             videoPlayer: null
         };
     },
@@ -71576,19 +71579,31 @@ exports.default = {
             container.style.width = width + 'px';
             container.style.height = height + 'px';
 
-            width = height / padding;
-            this.videoPlayer.element.style.height = height + 'px';
-            this.videoPlayer.element.style.width = width + 'px';
+            var videoWidth = height / padding;
+
+            if (videoWidth < width) {
+                var videoHeight = width * padding;
+                this.videoPlayer.element.style.height = videoHeight + 'px';
+                this.videoPlayer.element.style.width = width + 'px';
+            } else {
+                this.videoPlayer.element.style.height = height + 'px';
+                this.videoPlayer.element.style.width = videoWidth + 'px';
+            }
         },
         loadVimeo: function loadVimeo() {
             var options = {
                 id: this.videoId,
                 background: true,
-                loop: true
+                autoplay: true,
+                loop: true,
+                muted: true,
+                playsinline: true,
+                controls: false
             };
             this.videoPlayer = new _player2.default('video-hero', options);
             this.videoPlayer.ready().then(function () {
                 this.windowResized();
+                console.log('video-loaded');
             }.bind(this));
         },
         signIn: function signIn(e) {
@@ -71599,18 +71614,14 @@ exports.default = {
                 t1.to([this.$refs.loginForm, this.$refs.loginBtn], .4, {
                     opacity: 0,
                     display: 'none'
-                }).to(this.$refs.enter.$el, .1, {
-                    opacity: 1,
-                    scale: 1.1,
-                    display: 'inherit',
-                    ease: _gsap.Power4.easeInOut
-                }).to(this.$refs.enter.$el, .1, {
-                    scale: 1,
-                    ease: _gsap.Power4.easeInOut
                 });
+                t1.eventCallback('onComplete', this.redirectToWorks);
             } else {
                 // wrong password
             }
+        },
+        redirectToWorks: function redirectToWorks() {
+            this.$router.push({ name: 'Works' });
         },
         windowResized: function windowResized() {
             var _this = this;
@@ -71680,7 +71691,6 @@ class Player {
      */
     constructor(element, options = {}) {
         /* global jQuery */
-        console.log('modificat');
         if (window.jQuery && element instanceof jQuery) {
             if (element.length > 1 && window.console && console.warn) {
                 console.warn('A jQuery object with multiple elements was passed, using the first element.');
@@ -73364,8 +73374,6 @@ function resizeEmbeds(parent = document) {
 
         const iframes = parent.querySelectorAll('iframe');
 
-        console.log('diasadad', iframes)
-
         for (let i = 0; i < iframes.length; i++) {
             if (iframes[i].contentWindow !== event.source) {
                 continue;
@@ -73374,8 +73382,7 @@ function resizeEmbeds(parent = document) {
             const space = iframes[i].parentElement;
 
             if (space && space.className.indexOf('vimeo-space') !== -1) {
-              console.log('siamo qui', space);
-                // space.style.paddingBottom = `${event.data.data[0].bottom}px`;
+                space.style.paddingBottom = `${event.data.data[0].bottom}px`;
             }
 
             break;
@@ -81769,7 +81776,7 @@ var render = function() {
       "div",
       { staticClass: "col text-center p-5" },
       [
-        _c("h1", { staticClass: "text-default" }, [_vm._v("Ciao!")]),
+        _c("h3", { staticClass: "text-default" }, [_vm._v("Ciao!")]),
         _vm._v(" "),
         _vm._m(0),
         _vm._v(" "),
@@ -82789,7 +82796,7 @@ var normalizeComponent = __webpack_require__(5)
 /* script */
 var __vue_script__ = __webpack_require__(117)
 /* template */
-var __vue_template__ = __webpack_require__(118)
+var __vue_template__ = __webpack_require__(119)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -82886,7 +82893,7 @@ var _lodash = __webpack_require__(19);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _getSize = __webpack_require__(124);
+var _getSize = __webpack_require__(118);
 
 var _getSize2 = _interopRequireDefault(_getSize);
 
@@ -82941,59 +82948,6 @@ exports.default = {
 
 /***/ }),
 /* 118 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "main-container" }, [
-    _c("div", {
-      ref: "heroImg",
-      staticClass: "w-100",
-      style: "background-image: url(" + _vm.article.featured_img + ");",
-      attrs: { id: "hero-img" }
-    }),
-    _vm._v(" "),
-    _c("article", { ref: "article" }, [
-      _c(
-        "h1",
-        { ref: "title", staticClass: "text-default", attrs: { id: "title" } },
-        [_vm._v(_vm._s(_vm.article.title))]
-      ),
-      _vm._v(" "),
-      _c("hr", { ref: "divider", staticClass: "pb-3" }),
-      _vm._v(" "),
-      _c("p", {
-        ref: "html",
-        staticClass: "text-default",
-        domProps: { innerHTML: _vm._s(_vm.article.html) }
-      })
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-0b98b735", module.exports)
-  }
-}
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -83208,6 +83162,55 @@ return getSize;
 
 });
 
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "main-container" }, [
+    _c("div", {
+      ref: "heroImg",
+      staticClass: "w-100",
+      style: "background-image: url(" + _vm.article.featured_img + ");",
+      attrs: { id: "hero-img" }
+    }),
+    _vm._v(" "),
+    _c("article", { ref: "article" }, [
+      _c(
+        "h1",
+        { ref: "title", staticClass: "text-default", attrs: { id: "title" } },
+        [_vm._v(_vm._s(_vm.article.title))]
+      ),
+      _vm._v(" "),
+      _c("hr", { ref: "divider", staticClass: "pb-3" }),
+      _vm._v(" "),
+      _c("p", {
+        ref: "html",
+        staticClass: "text-default",
+        domProps: { innerHTML: _vm._s(_vm.article.html) }
+      })
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0b98b735", module.exports)
+  }
+}
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 ],[27]);

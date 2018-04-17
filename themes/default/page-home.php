@@ -8,8 +8,8 @@
 
         <meta name="keywords" content="Isabella, Fornasiero, Art Director, Motion Graphics, After Effects, InDesign, Photoshop, Creative Media, Advertising, Digital, Video Editing, Post Production, Milano">
         <meta name="description" content="<?php echo site_description(); ?>">
-        
-        <link rel="stylesheet" href="<?php echo theme_url('/css/app.css'); ?>">
+
+        <link rel="stylesheet" href="<?php echo theme_url('/css/app.min.css'); ?>">
     </head>
     <body>
         <div id="app">

@@ -14,7 +14,8 @@
             </div>
         </div>
         <div id="video-hero-container">
-            <div id="video-hero"></div>
+            <div id="video-hero">
+            </div>
         </div>
     </div>
 </template>
@@ -31,7 +32,7 @@ export default {
         return {
             password: '',
             videoEl: null,
-            videoId: 264890702,
+            videoId: 264962454,
             videoPlayer: null,
         }
     },
@@ -57,19 +58,33 @@ export default {
             container.style.width = `${width}px`
             container.style.height = `${height}px`
 
-            width = height / padding
-            this.videoPlayer.element.style.height = `${height}px`
-            this.videoPlayer.element.style.width = `${width}px`
+            var videoWidth = height / padding
+
+            if (videoWidth < width) {
+                var videoHeight = width * padding
+                this.videoPlayer.element.style.height = `${videoHeight}px`
+                this.videoPlayer.element.style.width = `${width}px`
+            } else {
+                this.videoPlayer.element.style.height = `${height}px`
+                this.videoPlayer.element.style.width = `${videoWidth}px`
+            }
+
         },
         loadVimeo: function() {
             var options = {
                 id: this.videoId,
                 background: true,
+                autoplay: true,
                 loop: true,
+                muted: true,
+                playsinline: true,
+                controls: false,
             }
             this.videoPlayer = new Player('video-hero', options)
             this.videoPlayer.ready().then(function() {
                 this.windowResized()
+                console.log('video-loaded')
+
             }.bind(this))
         },
         signIn: function(e) {
@@ -81,19 +96,13 @@ export default {
                         opacity: 0,
                         display: 'none',
                     })
-                    .to(this.$refs.enter.$el, .1, {
-                        opacity: 1,
-                        scale: 1.1,
-                        display: 'inherit',
-                        ease: Power4.easeInOut
-                    })
-                    .to(this.$refs.enter.$el, .1, {
-                        scale: 1,
-                        ease: Power4.easeInOut
-                    })
+                t1.eventCallback('onComplete', this.redirectToWorks)
             } else {
                 // wrong password
             }
+        },
+        redirectToWorks: function() {
+            this.$router.push({name: 'Works'})
         },
         windowResized: function() {
             var player = this.videoPlayer
@@ -125,10 +134,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#hero-wrapper {
-    position: absolute;
+html {
     width: 100%;
     height: 100%;
+    overflow: hidden;
+}
+#hero-wrapper {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 #enter {
@@ -139,6 +155,8 @@ export default {
 #video-hero-container {
     position: relative;
     overflow: hidden;
+    height: 100%;
+    min-height: 100%;
     z-index: -100;
 
     #video-hero {
