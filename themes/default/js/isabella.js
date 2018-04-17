@@ -64246,6 +64246,9 @@ window.Tether = __webpack_require__(49);
 window.Popper = _popper2.default;
 __webpack_require__(17);
 
+// require('./commonJS/fittext')
+
+
 _vue2.default.use(_vueResource2.default);
 _vue2.default.use(_vueRouter2.default);
 
@@ -68722,7 +68725,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\nfooter[data-v-68922f86] {\n  position: fixed;\n  bottom: 0;\n  height: 4rem;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  width: 100%;\n  padding: 0 1rem;\n}\nfooter > .spacer[data-v-68922f86] {\n    width: 47px;\n    display: block;\n}\nfooter svg[data-v-68922f86] {\n    cursor: pointer;\n    display: block;\n}\n#black-square[data-v-68922f86] {\n  display: none;\n  width: 54px;\n  height: 56px;\n  position: absolute;\n  bottom: 1.4rem;\n  right: 0.75rem;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  opacity: 0;\n  z-index: 0;\n}\n.fill-black[data-v-68922f86] {\n  fill: #1e1f1c;\n}\n.stroke-black[data-v-68922f86] {\n  stroke: #1e1f1c;\n}\n.fill-secondary[data-v-68922f86] {\n  fill: #fffdf4;\n}\n.stroke-secondary[data-v-68922f86] {\n  stroke: #fffdf4;\n}\n", ""]);
+exports.push([module.i, "\nfooter[data-v-68922f86] {\n  position: fixed;\n  bottom: 0;\n  height: 4rem;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  width: 100%;\n  padding: 0 1rem;\n  -webkit-transition: all 0.2s ease-in-out;\n  transition: all 0.2s ease-in-out;\n}\nfooter > .spacer[data-v-68922f86] {\n    width: 47px;\n    display: block;\n}\nfooter svg[data-v-68922f86] {\n    cursor: pointer;\n    display: block;\n}\nfooter #sub-footer[data-v-68922f86] {\n    font-size: 12.8px;\n}\n@media (max-width: 575.98px) {\nfooter[data-v-68922f86] {\n      font-size: 60%;\n      -webkit-transition: all 0.2s ease-in-out;\n      transition: all 0.2s ease-in-out;\n}\n}\n#black-square[data-v-68922f86] {\n  display: none;\n  width: 54px;\n  height: 56px;\n  position: absolute;\n  bottom: 1.4rem;\n  right: 0.75rem;\n  -webkit-transform: rotate(45deg);\n          transform: rotate(45deg);\n  opacity: 0;\n  z-index: 0;\n}\n.fill-black[data-v-68922f86] {\n  fill: #1e1f1c;\n}\n.stroke-black[data-v-68922f86] {\n  stroke: #1e1f1c;\n}\n.fill-secondary[data-v-68922f86] {\n  fill: #fffdf4;\n}\n.stroke-secondary[data-v-68922f86] {\n  stroke: #fffdf4;\n}\n", ""]);
 
 // exports
 
@@ -68890,7 +68893,9 @@ exports.default = {
             var palpebraInf = document.getElementById('palpebra-inf-open');
             var palpebraSup = document.getElementById('palpebra-sup-open');
 
-            var t1 = new _gsap.TimelineMax({ id: 'pupilla' });
+            var t1 = new _gsap.TimelineMax({
+                id: 'pupilla'
+            });
             t1.to('#pupilla', .42, {
                 delay: .25,
                 x: '+=50'
@@ -68902,7 +68907,9 @@ exports.default = {
                 x: '+=50'
             });
 
-            var t2 = new _gsap.TimelineMax({ id: 'palpebra-inf' });
+            var t2 = new _gsap.TimelineMax({
+                id: 'palpebra-inf'
+            });
             t2.to(palpebraInf, .08, {
                 morphSVG: '#palpebra-inf'
             }).to(palpebraInf, 0, {
@@ -68918,7 +68925,9 @@ exports.default = {
                 morphSVG: palpebraInf
             });
 
-            var t3 = new _gsap.TimelineMax({ id: 'palpebra-sup' });
+            var t3 = new _gsap.TimelineMax({
+                id: 'palpebra-sup'
+            });
             t3.to(palpebraSup, .08, {
                 morphSVG: '#palpebra-sup-closed'
             }).to(palpebraSup, .08, {
@@ -68930,7 +68939,9 @@ exports.default = {
             palperbraTimeline.add(t2, 0.01);
             palperbraTimeline.add(t3, 0.01);
 
-            var t4 = new _gsap.TimelineMax({ id: 'lettere' });
+            var t4 = new _gsap.TimelineMax({
+                id: 'lettere'
+            });
             t4.to('#P-letter', 0.01, {
                 visibility: 'visible'
             }).to('#P-letter', 0, {
@@ -68958,7 +68969,9 @@ exports.default = {
                 visibility: 'hidden'
             });
 
-            var t5 = new _gsap.TimelineMax({ id: 'palpebra-inf' });
+            var t5 = new _gsap.TimelineMax({
+                id: 'palpebra-inf'
+            });
             t5.to(palpebraInf, .08, {
                 morphSVG: '#palpebra-inf'
             }).to(palpebraInf, 0, {
@@ -68974,7 +68987,9 @@ exports.default = {
                 morphSVG: palpebraInf
             });
 
-            var t6 = new _gsap.TimelineMax({ id: 'palpebra-sup' });
+            var t6 = new _gsap.TimelineMax({
+                id: 'palpebra-sup'
+            });
             t6.to(palpebraSup, .08, {
                 morphSVG: '#palpebra-sup-closed'
             }).to(palpebraSup, .08, {
@@ -68986,7 +69001,9 @@ exports.default = {
             palperbraTimeline2.add(t5, 0.01);
             palperbraTimeline2.add(t6, 0.01);
 
-            var master = new _gsap.TimelineMax({ id: 'master' });
+            var master = new _gsap.TimelineMax({
+                id: 'master'
+            });
             master.add(t1, 0.01);
             master.add(palperbraTimeline, 2.26);
             master.add(t4, 2.42);
@@ -69298,11 +69315,15 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "copyright" }, [
-      _c("span", { staticClass: "pt-2 text-default" }, [
-        _c("small", [
-          _vm._v("© Isabella Fornasiero 2018. All rights reserved.")
-        ])
-      ])
+      _c(
+        "span",
+        { staticClass: "pt-2 text-default", attrs: { id: "sub-footer" } },
+        [
+          _c("small", [
+            _vm._v("© Isabella Fornasiero 2018. All rights reserved.")
+          ])
+        ]
+      )
     ])
   }
 ]
@@ -69401,7 +69422,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n#main-menu > nav[data-v-1c969660] {\n  position: fixed;\n  top: 0;\n  width: 100%;\n  height: 4rem;\n  padding: 0;\n  z-index: 9;\n}\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    width: 100%;\n    -webkit-box-pack: end;\n        -ms-flex-pack: end;\n            justify-content: flex-end;\n    padding-right: 1rem;\n}\n#main-menu > nav > .navbar-nav > .nav-link[data-v-1c969660] {\n      padding: 0 1rem 0 1rem;\n}\n#main-menu > nav > .navbar-nav > .nav-link > h5[data-v-1c969660] {\n        margin-bottom: 0;\n}\n", ""]);
+exports.push([module.i, "\n#main-menu > nav[data-v-1c969660] {\n  position: fixed;\n  top: 0;\n  width: 100%;\n  height: 4rem;\n  padding: 0;\n  z-index: 9;\n}\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    width: 100%;\n    -webkit-transition: all 0.2s ease-in-out;\n    transition: all 0.2s ease-in-out;\n    -webkit-box-pack: end;\n        -ms-flex-pack: end;\n            justify-content: flex-end;\n    padding-right: 1rem;\n    transition: all 0.2s ease-in-out;\n}\n#main-menu > nav > .navbar-nav > .nav-link[data-v-1c969660] {\n      padding: 0 1rem 0 1rem;\n}\n#main-menu > nav > .navbar-nav > .nav-link > h5[data-v-1c969660] {\n        margin-bottom: 0;\n}\n@media (max-width: 575.98px) {\n#main-menu > nav > .navbar-nav[data-v-1c969660] {\n        -webkit-box-pack: center;\n            -ms-flex-pack: center;\n                justify-content: center;\n        -webkit-box-align: center;\n            -ms-flex-align: center;\n                align-items: center;\n        -webkit-transition: all 0.2s ease-in-out;\n        transition: all 0.2s ease-in-out;\n}\n}\n", ""]);
 
 // exports
 
@@ -82431,7 +82452,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
+  return _c("div", { staticClass: "row w-100" }, [
     _c("div", { staticClass: "col" }, [
       _c(
         "div",

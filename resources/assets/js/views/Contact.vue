@@ -1,45 +1,45 @@
 <template>
-    <div class="row">
-        <div class="col">
-            <div id="address" class="row justify-content-center" ref="address">
-                <div class="col-12 text-center p-5">
-                    <p class="text-default">info (at) isabellafornasiero.com</p>
-                    <p class="text-default">Milan, Italy</p>
-                </div>
+<div class="row w-100">
+    <div class="col">
+        <div id="address" class="row justify-content-center" ref="address">
+            <div class="col-12 text-center p-5">
+                <p class="text-default">info (at) isabellafornasiero.com</p>
+                <p class="text-default">Milan, Italy</p>
             </div>
-            <div id="show-contact" class="row justify-content-center" ref="show_contact_btn">
-                <div class="col-12 pb-5">
-                    <div class="d-flex justify-content-around">
-                        <a @click="showContact" href="#" class="btn btn-primary">Send a message</a>
-                    </div>
-                </div>
-            </div>
-            <form id="contact-form" action="" method="" ref="contact_form">
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        <a id="close" @click="closeContact" href="#" class="close" ref="close">
-                  <span aria-hidden="true">&times;</span>
-                </a>
-                        <div id="name" class="form-group pb-3">
-                            <label for="name" class="text-default">Name</label>
-                            <input type="text" name="name" value="" class="form-control">
-                        </div>
-                        <div id="email" class="form-group pb-3">
-                            <label for="email" class="text-default">E-mail</label>
-                            <input type="text" name="email" value="" class="form-control">
-                        </div>
-                        <div id="message" class="form-group pb-3">
-                            <label for="message" class="text-default">Message</label>
-                            <textarea name="message" class="form-control"></textarea>
-                        </div>
-                        <div id="send-btn" class="form-group d-flex justify-content-around">
-                            <button type="submit" name="button" class="btn btn-primary">Send</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
         </div>
+        <div id="show-contact" class="row justify-content-center" ref="show_contact_btn">
+            <div class="col-12 pb-5">
+                <div class="d-flex justify-content-around">
+                    <a @click="showContact" href="#" class="btn btn-primary">Send a message</a>
+                </div>
+            </div>
+        </div>
+        <form id="contact-form" action="" method="" ref="contact_form">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <a id="close" @click="closeContact" href="#" class="close" ref="close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <div id="name" class="form-group pb-3">
+                        <label for="name" class="text-default">Name</label>
+                        <input type="text" name="name" value="" class="form-control">
+                    </div>
+                    <div id="email" class="form-group pb-3">
+                        <label for="email" class="text-default">E-mail</label>
+                        <input type="text" name="email" value="" class="form-control">
+                    </div>
+                    <div id="message" class="form-group pb-3">
+                        <label for="message" class="text-default">Message</label>
+                        <textarea name="message" class="form-control"></textarea>
+                    </div>
+                    <div id="send-btn" class="form-group d-flex justify-content-around">
+                        <button type="submit" name="button" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
 </template>
 <script>
 import {
@@ -137,7 +137,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
 input,
 textarea {
     border-left: none !important;

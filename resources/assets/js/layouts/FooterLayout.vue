@@ -1,13 +1,13 @@
 <template>
-    <footer class="bg-light" ref="footer">
-        <div class="spacer"></div>
-        <div class="copyright">
-            <span class="pt-2 text-default">
+<footer class="bg-light" ref="footer">
+    <div class="spacer"></div>
+    <div class="copyright">
+        <span id="sub-footer" class="pt-2 text-default">
                 <small>© Isabella Fornasiero 2018. All rights reserved.</small>
             </span>
-        </div>
-        <div class="eye-animation">
-            <a @click="changeColor">
+    </div>
+    <div class="eye-animation">
+        <a @click="changeColor">
                 <svg width="47px" height="48px" viewBox="0 0 779 799" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <title>eye</title>
                     <defs>
@@ -64,12 +64,16 @@
                     </g>
                 </svg>
             </a>
-            <div ref="rombo" id="black-square"></div>
-        </div>
-    </footer>
+        <div ref="rombo" id="black-square"></div>
+    </div>
+</footer>
 </template>
 <script>
-import {TweenMax, Power4, TimelineMax} from 'gsap'
+import {
+    TweenMax,
+    Power4,
+    TimelineMax
+} from 'gsap'
 import MorphSVG from 'gsap/MorphSVGPlugin'
 
 export default {
@@ -87,7 +91,7 @@ export default {
             if (localStorage.getItem('dark_theme')) {
                 return true
             }
-            return  false
+            return false
         }
     },
     methods: {
@@ -148,7 +152,9 @@ export default {
             var palpebraInf = document.getElementById('palpebra-inf-open')
             var palpebraSup = document.getElementById('palpebra-sup-open')
 
-            var t1 = new TimelineMax({id: 'pupilla'})
+            var t1 = new TimelineMax({
+                id: 'pupilla'
+            })
             t1.to('#pupilla', .42, {
                     delay: .25,
                     x: '+=50',
@@ -162,7 +168,9 @@ export default {
                     x: '+=50'
                 })
 
-            var t2 = new TimelineMax({id: 'palpebra-inf'})
+            var t2 = new TimelineMax({
+                id: 'palpebra-inf'
+            })
             t2.to(palpebraInf, .08, {
                     morphSVG: '#palpebra-inf',
                 })
@@ -183,7 +191,9 @@ export default {
                     morphSVG: palpebraInf,
                 })
 
-            var t3 = new TimelineMax({id: 'palpebra-sup'})
+            var t3 = new TimelineMax({
+                id: 'palpebra-sup'
+            })
             t3.to(palpebraSup, .08, {
                     morphSVG: '#palpebra-sup-closed',
                 })
@@ -196,7 +206,9 @@ export default {
             palperbraTimeline.add(t2, 0.01)
             palperbraTimeline.add(t3, 0.01)
 
-            var t4 = new TimelineMax({id: 'lettere'})
+            var t4 = new TimelineMax({
+                id: 'lettere'
+            })
             t4.to('#P-letter', 0.01, {
                     visibility: 'visible'
                 })
@@ -233,7 +245,9 @@ export default {
                     visibility: 'hidden',
                 })
 
-            var t5 = new TimelineMax({id: 'palpebra-inf'})
+            var t5 = new TimelineMax({
+                id: 'palpebra-inf'
+            })
             t5.to(palpebraInf, .08, {
                     morphSVG: '#palpebra-inf',
                 })
@@ -254,7 +268,9 @@ export default {
                     morphSVG: palpebraInf,
                 })
 
-            var t6 = new TimelineMax({id: 'palpebra-sup'})
+            var t6 = new TimelineMax({
+                id: 'palpebra-sup'
+            })
             t6.to(palpebraSup, .08, {
                     morphSVG: '#palpebra-sup-closed',
                 })
@@ -267,7 +283,9 @@ export default {
             palperbraTimeline2.add(t5, 0.01)
             palperbraTimeline2.add(t6, 0.01)
 
-            var master = new TimelineMax({id: 'master'})
+            var master = new TimelineMax({
+                id: 'master'
+            })
             master.add(t1, 0.01)
             master.add(palperbraTimeline, 2.26)
             master.add(t4, 2.42)
@@ -354,58 +372,67 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '~styles/custom-variables';
-  footer {
-      position: fixed;
-      bottom: 0;
-      height: $nav-height;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: 0 $spacer;
+footer {
+    position: fixed;
+    bottom: 0;
+    height: $nav-height;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 $spacer;
 
-      > .spacer {
-          width: 47px;
-          display: block;
-      }
+    transition: $transition-base;
 
-      > .copyright {
-      }
+    > .spacer {
+        width: 47px;
+        display: block;
+    }
 
-      > .eye-animation {
-      }
+    > .copyright {}
 
-      svg {
-          cursor: pointer;
-          display: block;
-      }
-  }
+    > .eye-animation {}
 
-  #black-square {
-      display: none;
-      width: 54px;
-      height: 56px;
-      position: absolute;
-      bottom: 1.4rem;
-      right: 0.75rem;
-      transform: rotate(45deg);
-      opacity: 0;
-      z-index: 0;
-  }
+    svg {
+        cursor: pointer;
+        display: block;
+    }
 
-  .fill-black {
-      fill: $black;
-  }
+    #sub-footer {
+        font-size: 12.8px
+    }
 
-  .stroke-black {
-      stroke: $black;
-  }
+    @include media-breakpoint-down('xs') {
+        font-size: 60%;
+        transition: $transition-base;
+    };
+}
 
-  .fill-secondary {
-      fill: $white;
-  }
+#black-square {
+    display: none;
+    width: 54px;
+    height: 56px;
+    position: absolute;
+    bottom: 1.4rem;
+    right: 0.75rem;
+    transform: rotate(45deg);
+    opacity: 0;
+    z-index: 0;
+}
 
-  .stroke-secondary {
-      stroke: $white;
-  }
+.fill-black {
+    fill: $black;
+}
+
+.stroke-black {
+    stroke: $black;
+}
+
+.fill-secondary {
+    fill: $white;
+}
+
+.stroke-secondary {
+    stroke: $white;
+}
 </style>

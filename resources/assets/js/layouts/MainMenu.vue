@@ -42,8 +42,7 @@ export default {
             > .navbar-nav {
                 flex-direction: row;
                 width: 100%;
-                justify-content: flex-end;
-                padding-right: $spacer;
+                transition: $transition-base;
 
                 > .nav-link {
                     padding: 0 $spacer 0 $spacer;
@@ -52,6 +51,18 @@ export default {
                         margin-bottom: 0;
                     }
                 }
+
+                @include media-breakpoint-down('xs') {
+                    justify-content: center;
+                    align-items: center;
+                    transition: $transition-base;
+                };
+
+                @include media-breakpoint-up('xs') {
+                    justify-content: flex-end;
+                    padding-right: $spacer;
+                    transition: $transition-base;
+                };
             }
         }
     }

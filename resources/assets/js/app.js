@@ -4,6 +4,8 @@ import Popper from 'popper.js/dist/umd/popper.js'
 window.Popper = Popper
 require('bootstrap')
 
+// require('./commonJS/fittext')
+
 
 import Vue from 'vue'
 import VueResource from 'vue-resource'
