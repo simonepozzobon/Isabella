@@ -1,5 +1,15 @@
 <template>
     <div id="hero-wrapper">
+        <div id="mask-overlay">
+            <svg width="0" height="0">
+                <defs>
+                    <clipPath id="circle-mask">
+                        <circle id="init" cx="100" cy="100" r="1"></circle>
+                    </clipPath>
+                </defs>
+                <circle id="end" cx="100" cy="100" r="1" style="visibility: hidden"></circle>
+            </svg>
+        </div>
         <div class="action">
             <div class="row">
                 <div class="col justify-content-around">
@@ -20,11 +30,8 @@
     </div>
 </template>
 <script>
-import {
-    TweenMax,
-    Power4,
-    TimelineMax
-} from 'gsap'
+import {TweenMax, Power4, TimelineMax} from 'gsap'
+import MorphSVG from 'gsap/MorphSVGPlugin'
 import Player from '@vimeo/player/src/player'
 
 export default {
@@ -34,6 +41,8 @@ export default {
             videoEl: null,
             videoId: 264962454,
             videoPlayer: null,
+            path: null,
+            delta: 0,
         }
     },
     computed: {
@@ -84,7 +93,7 @@ export default {
             this.videoPlayer.ready().then(function() {
                 this.windowResized()
                 console.log('video-loaded')
-
+                this.animateInit()
             }.bind(this))
         },
         signIn: function(e) {
@@ -114,8 +123,47 @@ export default {
                 const ratio = vue.getAspectRatio(dimensions[0], dimensions[1])
                 vue.setAspectRatio.call(this, ratio)
             })
+        },
+        animateInit: function() {
+            var mask = document.getElementById('init')
+            var end = document.getElementById('end')
 
-        }
+            var width = window.innerWidth
+            var height = window.innerHeight
+
+            mask.setAttribute('cx', width / 2)
+            mask.setAttribute('cy', height / 2)
+            end.setAttribute('cx', width / 2)
+            end.setAttribute('cy', height / 2)
+
+            if (height > width) {
+                end.setAttribute('r', height)
+            } else {
+                end.setAttribute('r', width)
+            }
+
+            MorphSVG.convertToPath('#init')
+            MorphSVG.convertToPath('#end')
+
+            var t1 = new TweenMax.to('#init', .6, {
+                morphSVG: '#end',
+                transformOrigin: '50% 50%',
+                ease: Sine.easeOut
+            })
+
+            var t2 = new TweenMax.fromTo('#video-hero', .6, {
+                opacity: 0,
+                ease: Sine.easeOut
+            }, {
+                opacity: 1,
+                ease: Sine.easeOut
+            })
+
+            var master = new TimelineMax()
+            master.add(t1, 0.01)
+            master.add(t2, 0.01)
+            master.play()
+        },
     },
     mounted() {
         this.loadVimeo()
@@ -139,6 +187,16 @@ html {
     height: 100%;
     overflow: hidden;
 }
+
+#mask-overlay {
+    position: absolute;
+    min-width: 100%;
+    height: 100vh;
+    width: auto;
+    top: 50%;
+    left: 50%;
+}
+
 #hero-wrapper {
     position: absolute;
     top: 0;
@@ -158,6 +216,7 @@ html {
     height: 100%;
     min-height: 100%;
     z-index: -100;
+    clip-path: url(#circle-mask);
 
     #video-hero {
         padding: 0;
@@ -165,10 +224,6 @@ html {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-
-
-        > iframe {
-        }
     }
 
 }

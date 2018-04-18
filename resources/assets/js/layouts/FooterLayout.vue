@@ -299,7 +299,7 @@ export default {
             }
         },
         everyThingDark: function() {
-            console.log('dark')
+            // console.log('dark')
             $('body').addClass('bg-primary')
             $('.text-default').removeClass('text-default').addClass('text-light')
             $('.link-default').removeClass('link-default').addClass('link-light')
@@ -333,7 +333,7 @@ export default {
 
         },
         everyThingBright: function() {
-            console.log('bright')
+            // console.log('bright')
             $('body').removeClass('bg-primary')
             $('.text-light').removeClass('text-light').addClass('text-default')
             $('.link-light').removeClass('link-light').addClass('link-default')
