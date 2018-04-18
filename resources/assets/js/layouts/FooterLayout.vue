@@ -3,8 +3,8 @@
     <div class="spacer"></div>
     <div class="copyright">
         <span id="sub-footer" class="pt-2 text-default">
-                <small>© Isabella Fornasiero 2018. All rights reserved.</small>
-            </span>
+            © Isabella Fornasiero 2018. All rights reserved.
+        </span>
     </div>
     <div class="eye-animation">
         <a @click="changeColor">
@@ -374,6 +374,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '~styles/custom-variables';
+#sub-footer {
+    text-align: center;
+    display: inline-block;
+    font-size: 2vw;
+    width: 100%;
+
+    transition: $transition-base;
+
+    @include media-breakpoint-up('md') {
+        font-size: 12px;
+        transition: $transition-base;
+    }
+}
+
+
 footer {
     position: fixed;
     bottom: 0;
@@ -398,10 +413,6 @@ footer {
     svg {
         cursor: pointer;
         display: block;
-    }
-
-    #sub-footer {
-        font-size: 12.8px
     }
 
     @include media-breakpoint-down('xs') {

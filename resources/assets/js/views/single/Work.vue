@@ -30,7 +30,7 @@ export default {
                 this.$refs.article.style.marginTop = `${imgHeight - 32}px`
 
                 var spaceLeft = height - imgHeight
-                var titleHeight = (spaceLeft / gold) - 64
+                var titleHeight = (spaceLeft / gold / 1.11) - 64
                 this.$refs.title.style.lineHeight = `${titleHeight}px`
             }
         }
@@ -74,6 +74,7 @@ export default {
 
             > #title {
                 font-size: 3.75rem;
+                // line-height: 4rem;
                 margin-bottom: 0;
             }
         }

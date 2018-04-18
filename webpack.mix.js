@@ -8,8 +8,8 @@ mix
         'popper.js/dist/umd/popper.js': ['Popper'],
     })
     .sass('resources/assets/sass/app.scss', 'themes/default/css')
-    .combine(['themes/default/js/manifest.js', 'themes/default/js/vendor.js', 'themes/default/js/app.js'], 'themes/default/js/isabella.js')
-    .minify('themes/default/js/isabella.js')
+    .babel(['themes/default/js/manifest.js', 'themes/default/js/vendor.js', 'themes/default/js/app.js'], 'themes/default/js/isabella.js')
+    // .minify('themes/default/js/isabella.js')
     .minify('themes/default/css/app.css')
     .browserSync({
         proxy: 'http://isabella.test',
