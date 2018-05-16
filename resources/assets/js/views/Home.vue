@@ -1,14 +1,14 @@
 <template>
     <div id="hero-wrapper">
         <div id="mask-overlay">
-            <svg width="0" height="0">
+            <!-- <svg width="0" height="0">
                 <defs>
                     <clipPath id="circle-mask">
                         <circle id="init" cx="100" cy="100" r="1"></circle>
                     </clipPath>
                 </defs>
                 <circle id="end" cx="100" cy="100" r="1" style="visibility: hidden"></circle>
-            </svg>
+            </svg> -->
         </div>
         <div class="action">
             <div class="row">
@@ -25,6 +25,9 @@
         </div>
         <div id="video-hero-container">
             <div id="video-hero">
+                <!-- <video autoplay loop id="video-background" muted plays-inline>
+                    <source src="/themes/default/video/video.mp4" type="video/mp4">
+                </video> -->
             </div>
         </div>
     </div>
@@ -93,7 +96,7 @@ export default {
             this.videoPlayer.ready().then(function() {
                 this.windowResized()
                 console.log('video-loaded')
-                this.animateInit()
+                // this.animateInit()
             }.bind(this))
         },
         signIn: function(e) {
@@ -166,7 +169,7 @@ export default {
         },
     },
     mounted() {
-        this.loadVimeo()
+        // this.loadVimeo()
         if (this.login) {
             this.$refs.loginForm.style.display = 'none'
             this.$refs.loginBtn.style.cssText = 'display: none !important'
@@ -216,7 +219,7 @@ html {
     height: 100%;
     min-height: 100%;
     z-index: -100;
-    clip-path: url(#circle-mask);
+    // clip-path: url(#circle-mask);
 
     #video-hero {
         padding: 0;
@@ -224,6 +227,18 @@ html {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+        min-width: 100%;
+        min-height: 100%;
+
+        > #video-background {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+
+        }
     }
 
 }

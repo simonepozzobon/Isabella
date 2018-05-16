@@ -65,25 +65,25 @@ export default {
             }
         },
         canAnimateOut: function(status) {
-            if (status && this.current != this.id) {
-                this.animateOut()
-            }
+            // if (status && this.current != this.id) {
+            //     this.animateOut()
+            // }
         },
         canAnimateIn: function(status) {
-            if (status && this.current == this.id) {
-                this.animateIn()
-            }
+            // if (status && this.current == this.id) {
+            //     this.animateIn()
+            // }
         },
         size: function(size) {
             this.$refs.mediaHover.style.height = `${size}`
             this.$refs.mediaHover.style.width = `${size}`
         },
         trigger: function(newtrigger) {
-            if (this.current == this.id && this.canAnimateIn) {
-                this.animateIn()
-            } else if (this.current != this.id && this.canAnimateOut){
-                this.animateOut()
-            }
+            // if (this.current == this.id && this.canAnimateIn) {
+            //     this.animateIn()
+            // } else if (this.current != this.id && this.canAnimateOut){
+            //     this.animateOut()
+            // }
         },
     },
     methods: {
